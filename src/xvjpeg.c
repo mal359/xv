@@ -696,9 +696,12 @@ L2:
       do {
         register int cmy, k = 255 - q[3];
 
-        if ((cmy = *q++ - k) < 0) cmy = 0; *p++ = cmy; /* R */
-        if ((cmy = *q++ - k) < 0) cmy = 0; *p++ = cmy; /* G */
-        if ((cmy = *q++ - k) < 0) cmy = 0; *p++ = cmy; /* B */
+        if ((cmy = *q++ - k) < 0) cmy = 0; 
+		*p++ = cmy; /* R */
+        if ((cmy = *q++ - k) < 0) cmy = 0; 
+		*p++ = cmy; /* G */
+        if ((cmy = *q++ - k) < 0) cmy = 0; 
+		*p++ = cmy; /* B */
       } while (++q < pic_end);
     }
     else { /* assume normal data */
@@ -707,9 +710,12 @@ L2:
       do {
         register int cmy, k = 255 - q[3];
 
-        if ((cmy = k - *q++) < 0) cmy = 0; *p++ = cmy; /* R */
-        if ((cmy = k - *q++) < 0) cmy = 0; *p++ = cmy; /* G */
-        if ((cmy = k - *q++) < 0) cmy = 0; *p++ = cmy; /* B */
+        if ((cmy = k - *q++) < 0) cmy = 0; 
+		*p++ = cmy; /* R */
+        if ((cmy = k - *q++) < 0) cmy = 0; 
+		*p++ = cmy; /* G */
+        if ((cmy = k - *q++) < 0) cmy = 0; 
+		*p++ = cmy; /* B */
       } while (++q < pic_end);
     }
     pic = realloc(pic,p-pic); /* Release extra storage */
