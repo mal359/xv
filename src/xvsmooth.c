@@ -467,7 +467,7 @@ int   is24, swide, shigh, dwide, dhigh;
   lastline = linecnt = pixR = pixG = pixB = 0;
   cptr = pic824;
 
-  for (i=0; i<=shigh; i++) {
+  for (i=0; i<shigh; i++) {
     ProgressMeter(0, shigh, i, "Smooth");
     if ((i&15) == 0) WaitCursor();
 
