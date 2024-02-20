@@ -56,7 +56,7 @@
 
 #if defined(hpux) || defined(SVR4) || \
     defined(__386BSD__) || defined(__FreeBSD__) || defined(__NetBSD__) || \
-    defined(__linux__)
+    defined(__linux__) || defined(_AIX)
     /*
      I want to use BSD macro for checking if this OS is *BSD or not,
      but the macro is defined in <sys/parm.h>, which I don't know all

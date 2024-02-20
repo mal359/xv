@@ -357,6 +357,10 @@
 #  endif
 #endif
 
+#ifdef _AIX
+#  define __S_IWRITE	0000200			/* write permission, owner */
+#endif
+
 #ifndef S_IRWUSR
 #  define S_IRWUSR	(S_IRUSR|S_IWUSR)	/* or (S_IREAD|S_IWRITE) */
 #endif
