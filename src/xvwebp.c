@@ -113,7 +113,7 @@ WriteWEBP(fp, pic, ptype, w, h, rmap, gmap, bmap, numcols, colorstyle)
    */
   if (ptype == PIC24) {
     if (colorstyle == F_GREYSCALE) {
-        // Convert the pic to greyscale
+        /* Convert the pic to greyscale */
         webp_in = (uint8_t*)malloc(linesize*h);
         free_me = 1;
 

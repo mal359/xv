@@ -1197,7 +1197,8 @@ byte **xp, *rp, *gp, *bp;
     byte colmask;
 
     if (*xp == NULL)
-	*xp = pic2_new((size_t) pi->x_max * pi->y_max * 3, "pic2_make_xvpic");   // GRR POSSIBLE OVERFLOW / FIXME
+	*xp = pic2_new((size_t) pi->x_max * pi->y_max * 3, "pic2_make_xvpic");
+	/* GRR POSSIBLE OVERFLOW / FIXME */
 
     if (pi->block->flag & 1)
 	opaque = pi->block->opaque;
@@ -2798,7 +2799,8 @@ struct pic2_info *pi;
 
     wid = pi->block->x_wid;
 
-    p = pi->buf = (byte *) pic2_new((wid + 8) * sizeof(pixel) * 3   // GRR POSSIBLE OVERFLOW / FIXME
+    p = pi->buf = (byte *) pic2_new((wid + 8) * sizeof(pixel) * 3   
+    /* GRR POSSIBLE OVERFLOW / FIXME */
 				    + sizeof(pi->cache[0]) * 8 * 8 * 8
 				    + sizeof(pi->cache_pos[0]) * 8 * 8 * 8
 				    + sizeof(pi->mulu_tab[0]) * 16384
