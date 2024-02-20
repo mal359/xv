@@ -59,6 +59,7 @@ set(xv_sources
 	xvdir.c
 	xvevent.c
 	xvfits.c
+	xvg3.c
 	xvgam.c
 	xvgif.c
 	xvgifwr.c
@@ -100,7 +101,7 @@ set(xv_sources
 	xvtiffwr.c
 	xvvd.c
 	xvwbmp.c
-    xvwebp.c
+	xvwebp.c
 	xvxbm.c
 	xvxpm.c
 	xvxwd.c
