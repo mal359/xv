@@ -2671,7 +2671,7 @@ int xvErrorHandler(disp, err)
 
   /* in case the error occurred during the Grab command... */
   XUngrabServer(theDisp);
-  XUngrabButton(theDisp, (u_int) AnyButton, 0, rootW);
+  XUngrabButton(theDisp, (u_int) ThreeButtons, 0, rootW);
 
   xerrcode = err->error_code;
 
@@ -2689,6 +2689,8 @@ int xvErrorHandler(disp, err)
       (err->request_code == 113                       /* X_KillClient */ ) ||
       (xerrcode == BadLength && err->request_code==18 /* X_ChangeProp */ ) ||
       (xerrcode == BadMatch  && err->request_code==73 /* X_GetImage   */ ) ||
+      (xerrcode == BadDrawable&&err->request_code==14 /* X_GetGeometry*/)  ||
+      (xerrcode == BadAccess && err->request_code==28 /* X_GrabButton */)  ||
       (xerrcode == BadWindow && err->request_code==20 /* X_GetProperty*/))
     return 0;
 

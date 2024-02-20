@@ -8,10 +8,13 @@
  *     int LoadGrab();        - 'loads' the pic from the last succesful Grab
  *
  */
+ 
+#include <sched.h>
 
 #include "copyright.h"
 
 #define NEEDSTIME
+#define RECOLOR_GRAB_CURSOR
 #include "xv.h"
 
 /* Allow flexibility in use of buttons JPD */
@@ -103,7 +106,6 @@ int Grab()
     else if (ctrlW) CtrlBox(0);
   }
 
-
   XSync(theDisp, False);
 
   if (grabDelay>0) {    /* instead of sleep(), handle events while waiting */
@@ -133,7 +135,6 @@ int Grab()
     grabInProgress = 0;
   }
 
-
   rootGC   = DefaultGC(theDisp, theScreen);
 
   if (grabPic) {  /* throw away previous 'grabbed' pic, if there is one */
@@ -149,16 +150,12 @@ int Grab()
   XRecolorCursor(theDisp, tcross, &fc, &bc);
 #endif
 
-
   XBell(theDisp, 0);		/* beep once at start of grab */
 
   /* Change cursor to top_left_corner JPD */
   XGrabPointer(theDisp, rootW, False,
      PointerMotionMask|ButtonPressMask|ButtonReleaseMask,
      GrabModeAsync, GrabModeAsync, None, tlcorner, CurrentTime);
-
-  if (!autograb) XGrabButton(theDisp, (u_int) AnyButton, 0, rootW, False, 0,
-			     GrabModeAsync, GrabModeSync, None, tcross);
 
   if (autograb) {
     XGrabServer(theDisp);	 /* until we've done the grabImage */
@@ -172,14 +169,24 @@ int Grab()
   }
 
   else {   /* !autograb */
+
+    XGrabButton(theDisp, (u_int) ThreeButtons, AnyModifier, rootW, False, 0,
+		GrabModeAsync, GrabModeSync, None, tcross);
+    XSync(theDisp, False); 
+    sched_yield();
+
     /* wait for a button press */
     while (1) {
-      XEvent evt;  int done;
+      XEvent evt;
+      int done;
 
       /* recolor cursor to indicate that grabbing is active? */
 
       if (XQueryPointer(theDisp,rootW,&rW,&cW,&rx,&ry,&x1,&y1,&mask)) {
-	if (mask & (Button1Mask | Button2Mask | Button3Mask)) break;
+	if (mask & (Button1Mask | Button2Mask | Button3Mask)) {
+	    XUngrabButton(theDisp, (u_int) ThreeButtons, AnyModifier, rootW);
+	    break;
+	}
       }
 
       /* continue to handle events while waiting... */
@@ -191,7 +198,7 @@ int Grab()
       i = HandleEvent(&evt, &done);
       if (done) {                    /* only 'new image' cmd accepted=quit */
 	if (i==QUIT) {
-	  XUngrabButton(theDisp, (u_int) AnyButton, 0, rootW);
+	  XUngrabButton(theDisp, (u_int) ThreeButtons, AnyModifier, rootW);
 	  Quit(0);
 	}
 	else XBell(theDisp, 0);
@@ -217,7 +224,7 @@ int Grab()
       }
     }
 
-    XUngrabButton(theDisp, (u_int) AnyButton, 0, rootW);
+    XUngrabButton(theDisp, (u_int) ThreeButtons, AnyModifier, rootW);
     XBell(theDisp, 0);
     XBell(theDisp, 0);
     rv = 0;
@@ -489,7 +496,7 @@ static void endflash()
 static void ungrabX()
 {
   XUngrabServer(theDisp);
-  XUngrabButton(theDisp, (u_int) AnyButton, 0, rootW);
+  XUngrabButton(theDisp, (u_int) ThreeButtons, AnyModifier, rootW);
 }
 
 

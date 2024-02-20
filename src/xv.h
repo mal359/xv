@@ -98,12 +98,6 @@
 #  define SVR4
 #endif
 
-#if defined(__sony_news) && defined(bsd43) && !defined(__bsd43)
-#  define __bsd43
-#elif defined(__sony_news) && (defined(SYSTYPE_BSD) || defined(__SYSTYPE_BSD)) && !defined(bsd43) && !defined(__bsd43)
-#  define bsd43
-#  define __bsd43
-#endif
 
 #include <signal.h>      /* for interrupt handling */
 
@@ -158,16 +152,6 @@
 #  ifndef NODIRENT
 #    define NODIRENT
 #  endif
-#endif
-
-
-#if defined(__sony_news) && defined(__bsd43)
-#  include <unistd.h>
-#endif
-
-
-#if defined(__FreeBSD__)
-#  include <sys/param.h>
 #endif
 
 
@@ -333,7 +317,9 @@
 #  endif
 #endif
 
-
+#ifndef		S_IRWUSR
+#  define	S_IRWUSR	(S_IRUSR|__S_IWRITE)
+#endif
 
 /* Use S_ISxxx macros in stat-related stuff
  * make them if missing, along with a few fictitious ones
@@ -443,6 +429,12 @@
 #  define SEEK_SET 0
 #  define SEEK_CUR 1
 #  define SEEK_END 2
+#endif
+
+#if 1
+# define ThreeButtons	(Button1Mask|Button2Mask|Button3Mask)
+#else
+# define ThreeButtons	AnyButton
 #endif
 
 #if defined(__mips) && defined(__SYSTYPE_BSD43)

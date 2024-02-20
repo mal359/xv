@@ -146,17 +146,17 @@ set(man_pages
 foreach(file ${man_pages})
 	string(REGEX REPLACE "\\.[^.]*$" "" base ${file})
 	install(
-		FILES docs/${file} RENAME ${base}.1
+		FILES docs/${file} RENAME ${base}.1x
 		DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
 	)
 endforeach()
 
 install(FILES
-  pl/man1/xvpictoppm.1
+  pl/man1/xvpictoppm.1x
   DESTINATION "${CMAKE_INSTALL_MANDIR}/pl/man1")
 
 install(FILES
-  fi/man1/xv.1
+  fi/man1/xv.1x
   DESTINATION "${CMAKE_INSTALL_MANDIR}/fi/man1")
 
 # Install files into SYSCONFDIR.

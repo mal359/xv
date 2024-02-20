@@ -14,7 +14,7 @@
  * 'which gunzip' to find if you have gunzip, and where it lives; ditto for
  * gzip)
  */
-#define USE_GUNZIP
+#define USE_GUNZIP 1
 
 #ifdef USE_GUNZIP
 #  ifdef VMS
@@ -37,7 +37,7 @@
 #define USE_BUNZIP2
 
 #ifdef USE_BUNZIP2
-#  define BUNZIP2 "bzip2 -d"  /* should this include the full path? */
+#  define BUNZIP2 "bzip2 -dq"
 #endif
 
 
@@ -52,7 +52,7 @@
  * as it tries to be clever on systems where uncompress lives in an unusual
  * location.
  */
-#define UNCOMPRESS "/usr/ucb/uncompress"
+#define UNCOMPRESS "/usr/bin/uncompress"
 
 #if defined(hpux) || defined(SVR4) || \
     defined(__386BSD__) || defined(__FreeBSD__) || defined(__NetBSD__) || \
@@ -63,7 +63,7 @@
      machine has or not.
      */
 #  undef  UNCOMPRESS
-#  define UNCOMPRESS "uncompress"
+#  define UNCOMPRESS "/usr/bin/uncompress"
 #endif
 
 #if defined(sgi)
@@ -113,7 +113,7 @@
  */
 
 /* #define GS_PATH "/usr/local/bin/gs" */
-#define GS_PATH "gs"
+#define GS_PATH "/usr/bin/gs"
 /* #define GS_LIB  "."                 */
 /* #define GS_DEV  "ppmraw"            */
 
@@ -128,7 +128,7 @@
  * change 'undef' to 'define' in the following line:
  */
 
-#undef USEOLDPIC
+#define USEOLDPIC
 
 
 /***************************************************************************
@@ -174,13 +174,13 @@
 
 #define HAVE_PCD	/* believed to be reasonably safe */
 
-#undef HAVE_MAG		/* probable security issues */
-#undef HAVE_MAKI	/* probable security issues */
-#undef HAVE_PI		/* probable security issues */
-#undef HAVE_PIC		/* probable security issues */
-#undef HAVE_PIC2	/* probable security issues */
+#define HAVE_MAG	/* probable security issues */
+#define HAVE_MAKI	/* probable security issues */
+#define HAVE_PI		/* probable security issues */
+#define HAVE_PIC	/* probable security issues */
+#define HAVE_PIC2	/* probable security issues */
 
-#undef HAVE_HIPS	/* probable security issues */
+#define HAVE_HIPS	/* probable security issues */
 
 
 /***************************************************************************
@@ -191,7 +191,7 @@
  * in the following line.
  */
 
-#undef MACBINARY
+#define MACBINARY
 
 
 /***************************************************************************
@@ -207,7 +207,7 @@
  * is read-only), change 'undef' to 'define' the VIRTUAL_TD line.
  */
 
-#undef AUTO_EXPAND
+#define AUTO_EXPAND
 #undef VIRTUAL_TD
 
 #if defined(VIRTUAL_TD) && !defined(AUTO_EXPAND)
