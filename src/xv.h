@@ -453,6 +453,13 @@
 /* END OF CONFIGURATION INFO */
 /*****************************/
 
+#ifndef TRUE
+#  define TRUE 1
+#endif
+
+#ifndef FALSE
+#  define FALSE 0
+#endif
 
 #ifdef DOJPEG
 #  define HAVE_JPEG
@@ -1772,7 +1779,7 @@ char *GetDirFullName       PARM((void));
 void SetDirSaveMode        PARM((int, int));
 int  Globify               PARM((char *));
 FILE *OpenOutFile          PARM((const char *));
-int  CloseOutFileWhy          PARM((FILE *, const char *, int, const char *));
+int  CloseOutFileWhy       PARM((FILE *, const char *, int, const char *));
 #define CloseOutFile(fp, name, fail) CloseOutFileWhy((fp), (name), (fail), NULL)
 
 byte *GenSavePic           PARM((int*, int*,int*, int*, int*,
