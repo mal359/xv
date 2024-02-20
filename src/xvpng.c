@@ -31,8 +31,8 @@
 
 #ifdef HAVE_PNG
 
-#include "zlib.h"
-#include "png.h"
+#include <zlib.h>
+#include <png.h>
 
 /*** Stuff for PNG Dialog box ***/
 #define PWIDE 318
