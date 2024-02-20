@@ -171,7 +171,7 @@
 
 #ifndef VMS
 #  include <errno.h>
-#  if !defined(__NetBSD__) && !defined(__FreeBSD__)
+#  if !defined(__NetBSD__) && !defined(__FreeBSD__) && !defined(__APPLE__) && !defined(__CYGWIN__)
 #    if !(defined(BSD) && (BSD >= 199103)) && !(defined(__GLIBC__) && __GLIBC__ >= 2) && !defined(__OpenBSD__)
        extern int   errno;         /* SHOULD be in errno.h, but often isn't */
 #      ifndef XV_HAVE_SYSERRLISTDECL
@@ -187,7 +187,8 @@
 #  ifdef VMS
 #    define ERRSTR(x) strerror(x, vaxc$errno)
 #  else
-#    if defined(__BEOS__) || defined(__linux__) || defined(__INTERIX) || defined(__sun) /* or all modern/glibc systems? */
+#    if defined(__BEOS__) || defined(__linux__) defined(__INTERIX) || defined(__sun) || defined(__APPLE__) 
+     /* or all modern/glibc systems? */
 #      define ERRSTR(x) strerror(x)
 #    else
 #      define ERRSTR(x) sys_errlist[x]
@@ -225,9 +226,7 @@
 #  if defined(hp300) || defined(hp800) || defined(NeXT)
 #    include <sys/malloc.h>    /* it's in "sys" on HPs and NeXT */
 #  else
-#    ifndef __DARWIN__
-#      include <malloc.h>
-#    endif
+#    include <malloc.h>
 #  endif
 #endif
 
@@ -406,7 +405,7 @@
  *                them later. */
 #ifndef VMS       /* VMS hates multi-line definitions */
 #  if defined(__linux__) || defined(__OpenBSD__) || defined(__NetBSD__) || \
-      defined(__bsdi__)
+      defined(__bsdi__) || defined(__FreeBSD__) || defined(__APPLE__)
 #    ifndef USE_MKSTEMP
 #      define USE_MKSTEMP       /* use 'mkstemp()' instead of 'mktemp()' */
 #    endif                      /* >> SECURITY ISSUE << */
