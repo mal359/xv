@@ -504,6 +504,7 @@ void FatalError (identifier)
 }
 
 
+extern int InSignal;
 /***********************************/
 void Quit(i)
      int i;
@@ -597,6 +598,7 @@ void Quit(i)
     }
   }
 
+  if (InSignal == 0)
   XSync(theDisp, False);
   exit(i);
 }
