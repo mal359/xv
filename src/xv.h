@@ -427,7 +427,7 @@
 #  endif
 #endif
 
-#if (defined(SYSV) || defined(SVR4) || defined(linux) || defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)) && !defined(USE_GETCWD)
+#if (defined(SYSV) || defined(SVR4) || defined(__linux__) || defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)) && !defined(USE_GETCWD)
 #  define USE_GETCWD
 #endif
 
