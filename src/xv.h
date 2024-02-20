@@ -154,6 +154,7 @@
 #  endif
 #endif
 
+#include <sys/param.h>
 
 /* include files */
 #include <stdio.h>
@@ -170,8 +171,8 @@
 
 #ifndef VMS
 #  include <errno.h>
-#  ifndef __NetBSD__
-#    if !(defined(__GLIBC__) && __GLIBC__ >= 2) && !defined(__OpenBSD__)
+#  if !defined(__NetBSD__) && !defined(__FreeBSD__)
+#    if !(defined(BSD) && (BSD >= 199103)) && !(defined(__GLIBC__) && __GLIBC__ >= 2) && !defined(__OpenBSD__)
        extern int   errno;         /* SHOULD be in errno.h, but often isn't */
 #      ifndef XV_HAVE_SYSERRLISTDECL
          extern char *sys_errlist[]; /* this too... */
@@ -186,7 +187,7 @@
 #  ifdef VMS
 #    define ERRSTR(x) strerror(x, vaxc$errno)
 #  else
-#    if defined(__BEOS__) || defined(__linux__) /* or all modern/glibc systems? */
+#    if defined(__BEOS__) || defined(__linux__) || defined(__INTERIX) || defined(__sun) /* or all modern/glibc systems? */
 #      define ERRSTR(x) strerror(x)
 #    else
 #      define ERRSTR(x) sys_errlist[x]
@@ -224,7 +225,9 @@
 #  if defined(hp300) || defined(hp800) || defined(NeXT)
 #    include <sys/malloc.h>    /* it's in "sys" on HPs and NeXT */
 #  else
-#    include <malloc.h>
+#    ifndef __DARWIN__
+#      include <malloc.h>
+#    endif
 #  endif
 #endif
 
@@ -421,7 +424,7 @@
 #  endif
 #endif
 
-#if (defined(SYSV) || defined(SVR4) || defined(linux)) && !defined(USE_GETCWD)
+#if (defined(SYSV) || defined(SVR4) || defined(linux) || defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)) && !defined(USE_GETCWD)
 #  define USE_GETCWD
 #endif
 
@@ -2195,7 +2198,7 @@ int WriteWBMP              PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte *, int, int));
 
 /**************************** XVWEBP.C ***************************/
-int  LoadWEBP              PARM((char *, PICINFO *));
+int LoadWEBP              PARM((char *, PICINFO *));
 int WriteWEBP              PARM((FILE *, byte *, int, int, int, byte *,
 				                 byte *, byte *, int, int));
 
