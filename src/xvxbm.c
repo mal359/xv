@@ -77,8 +77,11 @@ int LoadXBM(fname, pinfo)
 	sscanf(line,"#define %s %d", name, &h)==2 &&
 	xv_strstr(name, "_height") != NULL) break;
   }
-
-
+  
+  /* scan forward until we see '= {' before bitmap array to skip filename */
+  c = getc(fp);
+  while (c!=EOF && c!='=') { c = getc(fp); }
+  while (c!=EOF && c!='{') { c = getc(fp); }
 
   /* scan forward until we see the first '0x' */
   c = getc(fp);  c1 = getc(fp);
