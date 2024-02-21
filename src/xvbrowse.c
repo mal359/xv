@@ -605,8 +605,10 @@ void CreateBrowse(geom, fgstr, bgstr, histr, lostr)
   bfIcons[BF_PM]  =MakePix1(br->win,br_pm_bits,  br_pm_width,  br_pm_height);
   bfIcons[BF_PNG] =MakePix1(br->win,br_png_bits, br_png_width, br_png_height);
   bfIcons[BF_PS]  =MakePix1(br->win,br_ps_bits,  br_ps_width,  br_ps_height);
+  bfIcons[BF_SIR] =MakePix1(br->win,br_sir_bits,  br_sir_width,  br_sir_height);
   bfIcons[BF_TGA] =MakePix1(br->win,br_tga_bits, br_tga_width, br_tga_height);
   bfIcons[BF_TIFF]=MakePix1(br->win,br_tiff_bits,br_tiff_width,br_tiff_height);
+  bfIcons[BF_WEBP]=MakePix1(br->win,br_webp_bits,br_webp_width,br_webp_height);
   bfIcons[BF_XBM] =MakePix1(br->win,br_xbm_bits, br_xbm_width, br_xbm_height);
   bfIcons[BF_XPM] =MakePix1(br->win,br_xpm_bits, br_xpm_width, br_xpm_height);
   bfIcons[BF_XWD] =MakePix1(br->win,br_xwd_bits, br_xwd_width, br_xwd_height);
