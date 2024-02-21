@@ -83,7 +83,7 @@
 /* Things to make xv more likely to just build, without the user tweaking
    the makefile */
 
-#ifdef hpux        /* HPUX machines (SVR3, (not SVR4) NO_RANDOM) */
+#ifdef __hpux        /* HPUX machines (SVR3, (not SVR4) NO_RANDOM) */
 #  undef  SVR4
 #  undef  SYSV
 #  define SYSV
@@ -93,7 +93,7 @@
 #endif
 
 
-#ifdef sgi         /* SGI machines (SVR4) */
+#ifdef __sgi         /* SGI machines (SVR4) */
 #  undef  SVR4
 #  define SVR4
 #endif
@@ -187,7 +187,7 @@
 #  ifdef VMS
 #    define ERRSTR(x) strerror(x, vaxc$errno)
 #  else
-#    if defined(__BEOS__) || defined(__linux__) defined(__INTERIX) || defined(__sun) || defined(__APPLE__) 
+#    if defined(__BEOS__) || defined(__linux__) || defined(__INTERIX) || defined(__sun) || defined(__APPLE__) || defined(__illumos__)
      /* or all modern/glibc systems? */
 #      define ERRSTR(x) strerror(x)
 #    else
@@ -263,7 +263,7 @@
 #    include <poll.h>      /* used in SVR4 version of Timer() */
 #  endif
 
-#  ifdef sgi               /* need 'CLK_TCK' value for sginap() call */
+#  ifdef __sgi               /* need 'CLK_TCK' value for sginap() call */
 #    include <limits.h>
 #  endif
 
@@ -405,7 +405,8 @@
  *                them later. */
 #ifndef VMS       /* VMS hates multi-line definitions */
 #  if defined(__linux__) || defined(__OpenBSD__) || defined(__NetBSD__) || \
-      defined(__bsdi__) || defined(__FreeBSD__) || defined(__APPLE__)
+      defined(__bsdi__) || defined(__FreeBSD__) || defined(__APPLE__) || \
+      defined(__illumos__)
 #    ifndef USE_MKSTEMP
 #      define USE_MKSTEMP       /* use 'mkstemp()' instead of 'mktemp()' */
 #    endif                      /* >> SECURITY ISSUE << */
@@ -427,7 +428,7 @@
 #  endif
 #endif
 
-#if (defined(SYSV) || defined(SVR4) || defined(__linux__) || defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)) && !defined(USE_GETCWD)
+#if (defined(SYSV) || defined(SVR4) || defined(__linux__) || defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)) || defined (__illumos__) && !defined(USE_GETCWD)
 #  define USE_GETCWD
 #endif
 
@@ -1533,7 +1534,7 @@ WHERE int           mgcsfxUp;      /* is mgcsfxW mapped, or what? */
 	   char *localeList[] = {"", "ja_JP.EUC", "none", "none"};
 #        elif defined(__linux__)
 	   char *localeList[] = {"", "ja_JP.eucJP", "none", "ja_JP.SJIS"};
-#        elif defined(__sun) || defined(sun)
+#        elif defined(__sun) || defined(sun) || defined(__illumos__)
 	   char *localeList[] = {"", "ja", "none", "none"};
 #        elif defined(__sgi)	/* sgi, __sgi, __sgi__ (gcc) */
 	   char *localeList[] = {"", "ja_JP.EUC", "none", "none"};
@@ -1547,7 +1548,7 @@ WHERE int           mgcsfxUp;      /* is mgcsfxW mapped, or what? */
 	   char *localeList[] = {"", "ja_JP.deckanji", "none", "ja_JP.SJIS"};
 #        elif defined(_AIX)
 	   char *localeList[] = {"", "ja_JP", "none", "Ja_JP" };
-#        elif defined(__bsdi)
+#        elif defined(__bsdi__)
 	   char *localeList[] = {"", "Japanese-EUC", "none", "none" };
 #        else
 	   char *localeList[] = {"", "ja_JP.EUC", "ja_JP.JIS", "ja_JP.SJIS"};
