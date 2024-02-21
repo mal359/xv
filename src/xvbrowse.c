@@ -127,6 +127,8 @@ typedef unsigned int mode_t;  /* file mode bits */
 #define BF_PI       (JP_EXT_BF + 4)
 #define BF_PIC2     (JP_EXT_BF + 5)
 #define BF_MGCSFX   (JP_EXT_BF + 6)
+#define BF_WEBP     (JP_EXT_BF + 7)
+#define BF_SIR      (JP_EXT_BF + 8)
 #define JP_EXT_BF_END  (BF_MGCSFX)
 #define BF_MAX      (JP_EXT_BF_END + 1)    /* # of built-in icons */
 
