@@ -69,6 +69,7 @@ typedef unsigned int mode_t;  /* file mode bits */
 #include "bits/br_targa"
 #include "bits/br_tiff"
 #include "bits/br_utah"
+#include "bits/br_webp"
 #include "bits/br_xbm"
 #include "bits/br_xpm"
 #include "bits/br_xwd"
