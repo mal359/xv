@@ -3,6 +3,9 @@
  * xvvd.c - extract archived file automatically and regard it as a
  *          (virtual) directory.
  */
+#ifdef __linux__
+#  include <signal.h>
+#endif
 
 #define NEEDSDIR
 
@@ -216,6 +219,13 @@ char *dir;
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sighold(SIGHUP);
     sighold(SIGCHLD);
+#elif defined __linux__
+    int mask;
+    sigset_t SIGSET;
+    sigemptyset (&SIGSET);
+    sigaddset (&SIGSET, SIGHUP);
+    sigaddset (&SIGSET, SIGCHLD);
+    mask = sigprocmask(SIG_BLOCK, &SIGSET, NULL);
 #else
     int mask;
     mask = sigblock(sigmask(SIGHUP)|sigmask(SIGCHLD));
@@ -249,6 +259,11 @@ MKVDIR_END:
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sigrelse(SIGHUP);
     sigrelse(SIGCHLD);
+#elif defined __linux__
+    sigset_t SIGCHLDSET;
+    sigemptyset (&SIGCHLDSET);
+    sigaddset (&SIGCHLDSET, SIGCHLD);
+    mask = sigprocmask(SIG_BLOCK, &SIGCHLDSET, NULL);
 #else
     sigsetmask(mask);
 #endif
@@ -1058,6 +1073,12 @@ static void HUPhandler(XtPointer dummy, XtSignalId* Id)
 {
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sighold(SIGHUP);
+#elif defined __linux__
+    int mask;
+    sigset_t SIGSET;
+    sigemptyset (&SIGSET);
+    sigaddset (&SIGSET, SIGHUP);
+    mask = sigprocmask(SIG_BLOCK, &SIGSET, NULL);
 #else
     int mask;
     mask = sigblock(sigmask(SIGHUP));
@@ -1067,6 +1088,8 @@ static void HUPhandler(XtPointer dummy, XtSignalId* Id)
 
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sigrelse(SIGHUP);
+#elif defined __linux__
+    sigprocmask(SIG_BLOCK, &SIGSET, NULL);
 #else
     sigsetmask(mask);
 #endif
@@ -1084,6 +1107,11 @@ static void INThandler(XtPointer dummy, XtSignalId* Id)
 {
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sighold(UsedSignal);
+#elif defined __linux__
+    sigset_t SIGSET;
+    sigemptyset (&SIGSET);
+    sigaddset (&SIGSET, UsedSignal);
+    sigprocmask(SIG_BLOCK, &SIGSET, NULL);
 #else
     sigblock(sigmask(UsedSignal));
 #endif
