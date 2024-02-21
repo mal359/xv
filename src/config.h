@@ -182,6 +182,14 @@
 
 #define HAVE_HIPS	/* probable security issues */
 
+/***************************************************************************
+ * BYU SIR image support:
+ *
+ * Support for BYU SIR geospatial images. NOTE: This is buggy for now. -Matt
+ */
+
+#define HAVE_SIR
+
 
 /***************************************************************************
  * MacBinary file support:

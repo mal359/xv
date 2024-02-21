@@ -72,6 +72,7 @@ set(xv_sources
 	xviris.c
 	xvjp2k.c
 	xvjpeg.c
+	xvloadsir.c
 	xvmag.c
 	xvmaki.c
 	xvmask.c

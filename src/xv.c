@@ -39,12 +39,14 @@
 
 
 /* default positions for various windows */
-#define DEFINFOGEOM "-10+10"       /* default position of info window */
-#define DEFCTRLGEOM "+170+380"     /* default position of ctrl window */
-#define DEFGAMGEOM  "+10-10"       /* default position of gamma window */
-#define DEFBROWGEOM "-10-10"       /* default position of browse window */
-#define DEFTEXTGEOM "-10+320"      /* default position of text window */
-#define DEFCMTGEOM  "-10+300"      /* default position of comment window */
+#define DEFINFOGEOM "-10+10"	/* default position of info window */
+#define DEFCTRLGEOM "+170+380"	/* default position of ctrl window */
+#define DEFGAMGEOM  "+10-10"	/* default position of gamma window */
+#define DEFBROWGEOM "-10-10"	/* default position of browse window */
+#define DEFTEXTGEOM "-10+320"	/* default position of text window */
+#define DEFCMTGEOM  "-10+300"	/* default position of comment window */
+
+float gSIRlow = 0.0, gSIRhigh = 0.0;	/* special variables for SIR files */
 
 
 
@@ -1757,6 +1759,13 @@ static void parseCmdLine(argc, argv)
       { if (++i<argc) whitestr = argv[i]; }
 
     else if (!argcmp(argv[i],"-wloop",3,1,&waitloop));	/* waitloop */
+    
+    else if (!argcmp(argv[i],"-scale",4,0,&pm))	/* SIR image grayscale range */
+       { 
+         if (++i<argc) gSIRlow=atof(argv[i]);
+         if (++i<argc) gSIRhigh=atof(argv[i]);
+	 fprintf(stdout,"got SIR scale arguments %f %f\n",gSIRlow,gSIRhigh);
+       }
 
     else if (not_in_first_half) cmdSyntax(1);
   }
@@ -3064,94 +3073,93 @@ int ReadFileType(fname)
   else
 #endif
        if (strncmp((char *) magicno,"GIF87a", (size_t) 6)==0 ||
-	   strncmp((char *) magicno,"GIF89a", (size_t) 6)==0) rv = RFT_GIF;
+	   strncmp((char *) magicno,"GIF89a", (size_t) 6)==0)	rv = RFT_GIF;
 
   else if (strncmp((char *) magicno,"VIEW", (size_t) 4)==0 ||
-	   strncmp((char *) magicno,"WEIV", (size_t) 4)==0)   rv = RFT_PM;
+	   strncmp((char *) magicno,"WEIV", (size_t) 4)==00)	rv = RFT_PM;
 
 #ifdef HAVE_PIC2
   else if (magicno[0]=='P' && magicno[1]=='2' &&
-	   magicno[2]=='D' && magicno[3]=='T')                rv = RFT_PIC2;
+	   magicno[2]=='D' && magicno[3]=='T')			rv = RFT_PIC2;
 #endif
 
   else if (magicno[0] == 'P' && magicno[1]>='1' &&
-	   (magicno[1]<='6' || magicno[1]=='8'))              rv = RFT_PBM;
+	   (magicno[1]<='6' || magicno[1]=='8'))		rv = RFT_PBM;
 
   /* note: have to check XPM before XBM, as first 2 chars are the same */
   else if (strncmp((char *) magicno, "/* XPM */", (size_t) 9)==0) rv = RFT_XPM;
 
   else if (strncmp((char *) magicno,"#define", (size_t) 7)==0 ||
-	   (magicno[0] == '/' && magicno[1] == '*'))          rv = RFT_XBM;
+	   (magicno[0] == '/' && magicno[1] == '*'))		rv = RFT_XBM;
 
   else if (magicno[0]==0x59 && (magicno[1]&0x7f)==0x26 &&
-	   magicno[2]==0x6a && (magicno[3]&0x7f)==0x15)       rv = RFT_SUNRAS;
+	   magicno[2]==0x6a && (magicno[3]&0x7f)==0x15)		rv = RFT_SUNRAS;
 
-  else if (magicno[0] == 'B' && magicno[1] == 'M')            rv = RFT_BMP;
+  else if (magicno[0] == 'B' && magicno[1] == 'M')		rv = RFT_BMP;
 
-  else if (magicno[0]==0x52 && magicno[1]==0xcc)              rv = RFT_UTAHRLE;
+  else if (magicno[0]==0x52 && magicno[1]==0xcc)	       rv = RFT_UTAHRLE;
 
   else if ((magicno[0]==0x01 && magicno[1]==0xda) ||
-	   (magicno[0]==0xda && magicno[1]==0x01))            rv = RFT_IRIS;
+	   (magicno[0]==0xda && magicno[1]==0x01))		rv = RFT_IRIS;
 
-  else if (magicno[0]==0x1f && magicno[1]==0x9d)              rv = RFT_COMPRESS;
+  else if (magicno[0]==0x1f && magicno[1]==0x9d)	      rv = RFT_COMPRESS;
 
 #ifdef GUNZIP
   else if (magicno[0]==0x1f && magicno[1]==0x8b)              rv = RFT_COMPRESS;
 #endif
 
 #ifdef BUNZIP2
-  else if (magicno[0]==0x42 && magicno[1]==0x5a)              rv = RFT_BZIP2;
+  else if (magicno[0]==0x42 && magicno[1]==0x5a)		rv = RFT_BZIP2;
 #endif
 
-  else if (magicno[0]==0x0a && magicno[1] <= 5)               rv = RFT_PCX;
+  else if (magicno[0]==0x0a && magicno[1] <= 5)			rv = RFT_PCX;
 
   else if (strncmp((char *) magicno,   "FORM", (size_t) 4)==0 &&
-	   strncmp((char *) magicno+8, "ILBM", (size_t) 4)==0) rv = RFT_IFF;
+	   strncmp((char *) magicno+8, "ILBM", (size_t) 4)==0)	rv = RFT_IFF;
 
   else if (magicno[0]==0 && magicno[1]==0 &&
 	   magicno[2]==2 && magicno[3]==0 &&
 	   magicno[4]==0 && magicno[5]==0 &&
-	   magicno[6]==0 && magicno[7]==0)                    rv = RFT_TARGA;
+	   magicno[6]==0 && magicno[7]==0)			rv = RFT_TARGA;
 
   else if (magicno[4]==0x00 && magicno[5]==0x00 &&
-	   magicno[6]==0x00 && magicno[7]==0x07)              rv = RFT_XWD;
+	   magicno[6]==0x00 && magicno[7]==0x07)		rv = RFT_XWD;
 
   else if (strncmp((char *) magicno,"SIMPLE  ", (size_t) 8)==0 &&
-	   magicno[29] == 'T')                                rv = RFT_FITS;
+	   magicno[29] == 'T')					rv = RFT_FITS;
 
   /* [JCE] Spectrum screen */
-  else if (memcmp(magicno, ZXheader, (size_t) 18)==0)         rv = RFT_ZX;
+  else if (memcmp(magicno, ZXheader, (size_t) 18)==0)		rv = RFT_ZX;
 
 #ifdef HAVE_JPEG
   else if (magicno[0]==0xff && magicno[1]==0xd8 &&
-	   magicno[2]==0xff)                                  rv = RFT_JFIF;
+	   magicno[2]==0xff)					rv = RFT_JFIF;
 #endif
 
 #ifdef HAVE_JP2K
   else if (magicno[0]==0xff && magicno[1]==0x4f &&
-           magicno[2]==0xff && magicno[3]==0x51)              rv = RFT_JPC;
+           magicno[2]==0xff && magicno[3]==0x51)		rv = RFT_JPC;
 
-/* else if (memcmp(magicno, jp2k_magic, sizeof(jp2k_magic))==0) rv = RFT_JP2; */
   else if (((int *)magicno)[0]==0x0000000c &&
            ((int *)magicno)[1]==0x6a502020 &&
-           ((int *)magicno)[2]==0x0d0a870a)             rv = RFT_JP2;
+           ((int *)magicno)[2]==0x0d0a870a)			rv = RFT_JP2;
 #endif
 
 #ifdef HAVE_TIFF
   else if ((magicno[0]=='M' && magicno[1]=='M') ||
-	   (magicno[0]=='I' && magicno[1]=='I'))              rv = RFT_TIFF;
+	   (magicno[0]=='I' && magicno[1]=='I'))		rv = RFT_TIFF;
 #endif
 
 #ifdef HAVE_PNG
   else if (magicno[0]==0x89 && magicno[1]=='P' &&
-           magicno[2]=='N'  && magicno[3]=='G')               rv = RFT_PNG;
+           magicno[2]=='N'  && magicno[3]=='G')			rv = RFT_PNG;
 #endif
 
 #ifdef HAVE_WEBP
   else if (magicno[0]=='R'  && magicno[1]=='I' &&
            magicno[2]=='F'  && magicno[3]=='F' &&
            magicno[8]=='W'  && magicno[9]=='E' &&
-           magicno[10]=='B' && magicno[11]=='P')               rv = RFT_WEBP;
+           magicno[10]=='B' && magicno[11]=='P')		rv = RFT_WEBP;
 #endif
 
 #ifdef HAVE_PDS
@@ -3166,7 +3174,11 @@ int ReadFileType(fname)
 #ifdef GS_PATH   /* Ghostscript handles both PostScript and PDF */
   else if (strncmp((char *) magicno, "%!",     (size_t) 2)==0 ||
 	   strncmp((char *) magicno, "\004%!", (size_t) 3)==0 ||
-           strncmp((char *) magicno, "%PDF",   (size_t) 4)==0) rv = RFT_PS;
+           strncmp((char *) magicno, "%PDF",   (size_t) 4)==0)	rv = RFT_PS;
+#endif
+
+#ifdef HAVE_SIR
+  else if (magicno[8]==0 && magicno[9]>=20) 			rv = RFT_SIR;
 #endif
 
 #ifdef HAVE_G3
@@ -3182,12 +3194,12 @@ int ReadFileType(fname)
 #endif
 
 #ifdef HAVE_MAG
-  else if (strncmp((char *) magicno,"MAKI02  ", (size_t) 8)==0) rv = RFT_MAG;
+  else if (strncmp((char *) magicno,"MAKI02  ", (size_t) 8)==0)	rv = RFT_MAG;
 #endif
 
 #ifdef HAVE_MAKI
   else if (strncmp((char *) magicno,"MAKI01A ", (size_t) 8)==0 ||
-	   strncmp((char *) magicno,"MAKI01B ", (size_t) 8)==0) rv = RFT_MAKI;
+	   strncmp((char *) magicno,"MAKI01B ", (size_t) 8)==0)	rv = RFT_MAKI;
 #endif
 
 #ifdef HAVE_PIC
@@ -3195,16 +3207,16 @@ int ReadFileType(fname)
 #endif
 
 #ifdef HAVE_PI
-  else if (magicno[0]=='P' && magicno[1]=='i')                rv = RFT_PI;
+  else if (magicno[0]=='P' && magicno[1]=='i')			rv = RFT_PI;
 #endif
 
 #ifdef HAVE_HIPS
-  else if (strstr((char *) magicno, "./digest"))              rv = RFT_HIPS;
+  else if (strstr((char *) magicno, "./digest"))		rv = RFT_HIPS;
 #endif
 
 #ifdef HAVE_PCD
   else if (magicno[0]==0xff && magicno[1]==0xff &&
-           magicno[2]==0xff && magicno[3]==0xff)              rv = RFT_PCD;
+           magicno[2]==0xff && magicno[3]==0xff)		rv = RFT_PCD;
 #endif
 
 #ifdef MACBINARY
@@ -3300,7 +3312,7 @@ int ReadPicFile(fname, ftype, pinfo, quick)
 #endif
 
 #ifdef HAVE_WEBP
-  case RFT_WEBP:     rv = LoadWEBP (fname, pinfo);       break;
+  case RFT_WEBP:     rv = LoadWEBP (fname, pinfo);         break;
 #endif
 
 #ifdef HAVE_PDS
@@ -3309,6 +3321,10 @@ int ReadPicFile(fname, ftype, pinfo, quick)
 
 #ifdef GS_PATH
   case RFT_PS:      rv = LoadPS    (fname, pinfo, quick);  break;
+#endif
+
+#ifdef HAVE_SIR
+  case RFT_SIR:	    rv = LoadSIR   (fname, pinfo);	   break;
 #endif
 
 #ifdef HAVE_MAG

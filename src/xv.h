@@ -751,6 +751,7 @@
 #define RFT_PI       (JP_EXT_RFT + 4)
 #define RFT_PIC2     (JP_EXT_RFT + 5)
 #define RFT_MGCSFX   (JP_EXT_RFT + 6)
+#define RFT_SIR      (JP_EXT_RFT + 7)
 
 /* definitions for page up/down, arrow up/down list control */
 #define LS_PAGEUP   0
@@ -2051,7 +2052,7 @@ void  vd_handler_setup     PARM((void));
 /*                             IMAGE FORMATS                             */
 /*=======================================================================*/
 
-/**************************** XVBMP.C ***************************/
+/**************************** XVBMP.C ****************************/
 int LoadBMP                PARM((char *, PICINFO *));
 int WriteBMP               PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte *, int, int));
@@ -2061,11 +2062,11 @@ int LoadFITS               PARM((char *, PICINFO *, int));
 int WriteFITS              PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte *, int, int, char *));
 
-/**************************** XVG3.C ****************************/
+/**************************** XVG3.C *****************************/
 int LoadG3                 PARM((char *, PICINFO *));
 
 
-/**************************** XVGIF.C ***************************/
+/**************************** XVGIF.C ****************************/
 int LoadGIF                PARM((char *, PICINFO *));
 
 /**************************** XVGIFWR.C **************************/
@@ -2075,7 +2076,7 @@ int WriteGIF               PARM((FILE *, byte *, int, int, int,
 /**************************** XVHIPS.C ***************************/
 int   LoadHIPS             PARM((char *, PICINFO *));
 
-/**************************** XVIFF.C ***************************/
+/**************************** XVIFF.C ****************************/
 int LoadIFF                PARM((char *, PICINFO *));
 
 /**************************** XVIRIS.C ***************************/
@@ -2100,7 +2101,10 @@ int  JPEGCheckEvent        PARM((XEvent *));
 void JPEGSaveParams        PARM((char *, int));
 void VersionInfoJPEG       PARM((void));		/* GRR 19980605 */
 
-/**************************** XVMAG.C ***************************/
+/**************************** XVLOADSIR.C ************************/
+int   LoadSIR		   PARM((char *, PICINFO *));
+
+/**************************** XVMAG.C ****************************/
 int   LoadMAG              PARM((char *, PICINFO *));
 int   WriteMAG             PARM((FILE *, byte *, int, int, int,
 				 byte *, byte *, byte *, int, int, char *));
@@ -2115,7 +2119,7 @@ int   WriteMAKI            PARM((FILE *, byte *, int, int, int,
 MKT  *calcMEKO             PARM((int));
 
 
-/**************************** XVMGCSFX.C ***************************/
+/**************************** XVMGCSFX.C *************************/
 int   is_mgcsfx            PARM((char *, unsigned char *, int));
 char *mgcsfx_auto_input_com PARM((char *));
 int   LoadMGCSFX           PARM((char *, PICINFO *));
@@ -2127,7 +2131,7 @@ int   MGCSFXSaveParams     PARM((char *, int));
 int getInputCom            PARM((void));
 int getOutputCom           PARM((void));
 
-/**************************** XVPBM.C ***************************/
+/**************************** XVPBM.C ****************************/
 #ifdef HAVE_MGCSFX
 int LoadPBM                PARM((char *, PICINFO *, int));
 #else
@@ -2136,25 +2140,25 @@ int LoadPBM                PARM((char *, PICINFO *));
 int WritePBM               PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte *, int, int, int, char *));
 
-/**************************** XVPCD.C ***************************/
+/**************************** XVPCD.C ****************************/
 int   LoadPCD              PARM((char *, PICINFO *, int));
 void  CreatePCDW           PARM((void));
 void  PCDDialog            PARM((int));
 int   PCDCheckEvent        PARM((XEvent *));
 void  PCDSetParamOptions   PARM((const char *));
 
-/**************************** XVPCX.C ***************************/
+/**************************** XVPCX.C ****************************/
 int LoadPCX                PARM((char *, PICINFO *));
 
-/**************************** XVPDS.C ***************************/
+/**************************** XVPDS.C ****************************/
 int LoadPDS                PARM((char *, PICINFO *));
 
-/**************************** XVPI.C ***************************/
+/**************************** XVPI.C *****************************/
 int   LoadPi               PARM((char *, PICINFO *));
 int   WritePi              PARM((FILE *, byte *, int, int, int,
 				 byte *, byte *, byte *, int, int, char *));
 
-/**************************** XVPIC.C ***************************/
+/**************************** XVPIC.C ****************************/
 int   LoadPIC              PARM((char *, PICINFO *));
 int   WritePIC             PARM((FILE *, byte *, int, int, int,
 				 byte *, byte *, byte *, int, int, char *));
@@ -2166,12 +2170,12 @@ void  PIC2Dialog           PARM((int));
 int   PIC2CheckEvent       PARM((XEvent *));
 int   PIC2SetParamOptions  PARM((char *));
 
-/**************************** XVPM.C ****************************/
+/**************************** XVPM.C *****************************/
 int LoadPM                 PARM((char *, PICINFO *));
 int WritePM                PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte *, int, int, char *));
 
-/**************************** XVPNG.C ***************************/
+/**************************** XVPNG.C ****************************/
 int  LoadPNG               PARM((char *, PICINFO *));
 void CreatePNGW            PARM((void));
 void PNGDialog             PARM((int));
@@ -2179,7 +2183,7 @@ int  PNGCheckEvent         PARM((XEvent *));
 void PNGSaveParams         PARM((char *, int));
 void VersionInfoPNG        PARM((void));		/* GRR 19980605 */
 
-/**************************** XVPS.C ****************************/
+/**************************** XVPS.C *****************************/
 void  CreatePSD            PARM((char *));
 void  PSDialog             PARM((int));
 int   PSCheckEvent         PARM((XEvent *));
@@ -2187,15 +2191,15 @@ void  PSSaveParams         PARM((char *, int));
 void  PSResize             PARM((void));
 int   LoadPS               PARM((char *, PICINFO *, int));
 
-/**************************** XVRLE.C ***************************/
+/**************************** XVRLE.C ****************************/
 int LoadRLE                PARM((char *, PICINFO *));
 
-/**************************** XVSUNRAS.C ***************************/
+/**************************** XVSUNRAS.C *************************/
 int LoadSunRas             PARM((char *, PICINFO *));
 int WriteSunRas            PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte*, int, int, int));
 
-/**************************** XVTARGA.C ***************************/
+/**************************** XVTARGA.C **************************/
 int LoadTarga              PARM((char *, PICINFO *));
 int WriteTarga             PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte *, int, int));
@@ -2221,20 +2225,20 @@ int WriteWEBP              PARM((FILE *, byte *, int, int, int, byte *,
 void VersionInfoWEBP       PARM((void));
 
 
-/**************************** XVXBM.C ***************************/
+/**************************** XVXBM.C ****************************/
 int LoadXBM                PARM((char *, PICINFO *));
 int WriteXBM               PARM((FILE *, byte *, int, int, byte *, byte *,
 				 byte *, char *));
 
-/**************************** XVXPM.C ***************************/
+/**************************** XVXPM.C ****************************/
 int LoadXPM                PARM((char *, PICINFO *));
 int WriteXPM               PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte *, int, int, char *, char *));
 
-/**************************** XVXWD.C ***************************/
+/**************************** XVXWD.C ****************************/
 int LoadXWD                PARM((char *, PICINFO *));
 
-/**************************** XVZX.C [JCE] **********************/
+/**************************** XVZX.C [JCE] ***********************/
 int LoadZX                 PARM((char *, PICINFO *));
 int WriteZX                PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte *, int, int, char *));
