@@ -1201,7 +1201,7 @@ static int gtStripContig(tif, raster, Map, h, w, bpp)
 static int gtStripSeparate(tif, raster, Map, h, w, bpp)
      TIFF *tif;
      byte *raster;
-     register RGBvalue *Map;
+     RGBvalue *Map;
      uint32_t h, w;
      int bpp;
 {
@@ -1278,9 +1278,9 @@ static int gtStripSeparate(tif, raster, Map, h, w, bpp)
  */
 static int makebwmap()
 {
-  register int i;
+  int i;
   int nsamples = 8 / bitspersample;
-  register byte *p;
+  byte *p;
 
   BWmap = (byte **)malloc(
 			  256*sizeof (byte *)+(256*nsamples*sizeof(byte)));
@@ -1332,9 +1332,9 @@ static int makebwmap()
  */
 static int makecmap()
 {
-  register int i;
+  int i;
   int nsamples = 8 / bitspersample;
-  register byte *p;
+  byte *p;
 
   PALmap = (byte **)malloc(
 			   256*sizeof (byte *)+(256*nsamples*sizeof(byte)));
@@ -1467,7 +1467,7 @@ static void put4bitcmaptile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t    w, h;
      int       fromskew, toskew;
 {
-  register byte *bw;
+  byte *bw;
 
   fromskew /= 2;
   while (h-- > 0) {
@@ -1488,7 +1488,7 @@ static void put2bitcmaptile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t    w, h;
      int       fromskew, toskew;
 {
-  register byte *bw;
+  byte *bw;
 
   fromskew /= 4;
   while (h-- > 0) {
@@ -1508,7 +1508,7 @@ static void put1bitcmaptile(cp, pp, Map, w, h, fromskew, toskew)
 	uint32_t    w, h;
 	int       fromskew, toskew;
 {
-  register byte *bw;
+  byte *bw;
 
   fromskew /= 8;
   while (h-- > 0) {
@@ -1523,14 +1523,14 @@ static void put1bitcmaptile(cp, pp, Map, w, h, fromskew, toskew)
  * 8-bit greyscale => colormap/RGB
  */
 static void putgreytile(cp, pp, Map, w, h, fromskew, toskew)
-     register byte *cp;
-     register u_char *pp;
+     byte *cp;
+     u_char *pp;
      RGBvalue *Map;
      uint32_t w, h;
      int fromskew, toskew;
 {
   while (h-- > 0) {
-    register uint32_t x;
+    uint32_t x;
     for (x = w; x-- > 0;)
       *cp++ = BWmap[*pp++][0];
     cp += toskew;
@@ -1549,7 +1549,7 @@ static void put1bitbwtile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
-  register byte *bw;
+  byte *bw;
 
   fromskew /= 8;
   while (h-- > 0) {
@@ -1569,7 +1569,7 @@ static void put2bitbwtile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
-  register byte *bw;
+  byte *bw;
 
   fromskew /= 4;
   while (h-- > 0) {
@@ -1589,7 +1589,7 @@ static void put4bitbwtile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
-  register byte *bw;
+  byte *bw;
 
   fromskew /= 2;
   while (h-- > 0) {
@@ -1609,7 +1609,7 @@ static void put16bitbwtile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
-  register uint32_t   x;
+  uint32_t   x;
 
   while (h-- > 0) {
     for (x=w; x>0; x--) {
@@ -1635,7 +1635,7 @@ static void putRGBcontig8bittile(cp, pp, Map, w, h, fromskew, toskew)
   fromskew *= samplesperpixel;
   if (Map) {
     while (h-- > 0) {
-      register uint32_t x;
+      uint32_t x;
       for (x = w; x-- > 0;) {
 	*cp++ = Map[pp[0]];
 	*cp++ = Map[pp[1]];
@@ -1668,7 +1668,7 @@ static void putRGBcontig16bittile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
-  register u_int x;
+  u_int x;
 
   fromskew *= samplesperpixel;
   if (Map) {
@@ -1709,7 +1709,7 @@ static void putRGBseparate8bittile(cp, r, g, b, Map, w, h, fromskew, toskew)
 {
   if (Map) {
     while (h-- > 0) {
-      register uint32_t x;
+      uint32_t x;
       for (x = w; x > 0; x--) {
 	*cp++ = Map[*r++];
 	*cp++ = Map[*g++];

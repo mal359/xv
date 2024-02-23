@@ -5863,7 +5863,7 @@ static void cp_file(st, exists)
      int exists;
 /*****************************/
 {
-  register int       srcFd, dstFd, rcount, wcount;
+  int		     srcFd, dstFd, rcount, wcount;
   char               buf[8192];
   static const char *owbuts[] = { "\nOk", "aAlways", "nNo", "NNever", "\033Cancel" };
 

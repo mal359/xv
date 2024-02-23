@@ -66,8 +66,8 @@ int LoadIFF(fname, pinfo)
 {
   /* returns '1' on success */
 
-  register byte bitmsk, rval, gval, bval;
-  register long col, colbit;
+  byte		bitmsk, rval, gval, bval;
+  long		col, colbit;
   FILE          *fp;
   int           rv;
   int           BMHDok, CMAPok, CAMGok;
@@ -475,9 +475,9 @@ int LoadIFF(fname, pinfo)
 /*******************************************/
 static void decomprle(sptr, dptr, slen, dlen)
      byte *sptr, *dptr;
-     register long slen, dlen;
+     long slen, dlen;
 {
-  register byte codeByte, dataByte;
+  byte codeByte, dataByte;
 
   while ((slen > 0) && (dlen > 0)) {
 
@@ -519,7 +519,7 @@ static void decomprle(sptr, dptr, slen, dlen)
 static unsigned int iff_getword(ptr)
      byte *ptr;
 {
-  register unsigned int v;
+  unsigned int v;
 
   v = *ptr++;
   v = (v << 8) + *ptr;
@@ -532,7 +532,7 @@ static unsigned int iff_getword(ptr)
 static unsigned long iff_getlong(ptr)
      byte *ptr;
 {
-  register unsigned long l;
+  unsigned long l;
 
   l = *ptr++;
   l = (l << 8) + *ptr++;

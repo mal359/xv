@@ -562,8 +562,8 @@ static void doBlurConvolv(pic24, w, h, results, selx,sely,selw,selh, n)
      Region is guaranteed to be completely within pic boundaries
      'n' must be odd */
 
-  register byte *p24;
-  register int   rsum,gsum,bsum;
+  byte		*p24;
+  int		rsum,gsum,bsum;
   byte          *rp;
   int            x,y,x1,y1,count,n2;
 
@@ -742,8 +742,8 @@ static void doEdgeConvolv(pic24, w, h, results, selx,sely,selw,selh)
      (no pesky boundary conditionals)  */
 
 
-  register byte *p24;
-  register int   bperlin, a, b, c, d, rsum, gsum, bsum;
+  byte		*p24;
+  int		bperlin, a, b, c, d, rsum, gsum, bsum;
   byte          *rp;
   int            x, y;
 
@@ -830,8 +830,8 @@ static void doAngleConvolv(pic24, w, h, results, selx,sely,selw,selh)
 
      Adds value of rsum,gsum,bsum to results pic */
 
-  register byte *p24;
-  register int   bperlin,rsum,gsum,bsum;
+  byte		*p24;
+  int		bperlin,rsum,gsum,bsum;
   byte          *rp;
   int            x,y;
 
@@ -919,8 +919,8 @@ static void doOilPaint(pic24, w, h, results, selx,sely,selw,selh, n)
      (jhb, 6/94)  */
 
 
-  register byte *pp;
-  register int   bperlin;
+  byte		*pp;
+  int		bperlin;
   byte          *rp, *p24, *plin;
   int            i,j,k,x,y,n2,col,cnt,maxcnt;
   int           *nnrect;

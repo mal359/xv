@@ -123,7 +123,7 @@ static int print_log(jas_logtype_t type, const char *format, va_list ap) {
 }
 #endif
 
-static int LoadJP2K(char *fname, register PICINFO *pinfo, int quick,
+static int LoadJP2K(char *fname, PICINFO *pinfo, int quick,
   bool jpc_format) {
 	jas_image_t *img = 0;
 	jas_stream_t *str = 0;
@@ -132,7 +132,7 @@ static int LoadJP2K(char *fname, register PICINFO *pinfo, int quick,
 	unsigned long filesize;
 	long w, h, npixels, bufsize;
 	int vstride;
-	register int i;
+	int i;
 	jas_matrix_t *data = 0;
 
 	int ret = 1;
@@ -390,11 +390,11 @@ done:
 	return ret;
 }
 
-int LoadJP2(char *fname, register PICINFO *pinfo, int quick) {
+int LoadJP2(char *fname, PICINFO *pinfo, int quick) {
 	return LoadJP2K(fname, pinfo, quick, false);
 }
 
-int LoadJPC(char *fname, register PICINFO *pinfo, int quick) {
+int LoadJPC(char *fname, PICINFO *pinfo, int quick) {
 	return LoadJP2K(fname, pinfo, quick, true);
 }
 
@@ -622,7 +622,7 @@ static void StoreJP2K(char *options) {
 	int nc, w, h;
 	int pfree, ptype;
 	int error = 1;
-	register int i;
+	int i;
 	jas_matrix_t *data = 0;
 	int debug_level = get_debug_level();
 
@@ -853,7 +853,7 @@ void JP2KDialog(int vis) {
 
 static void TWRedraw(Window w, unsigned int val) {
 	char buf[11];
-	register int i;
+	int i;
 
 	/* Draw a 1-line numeric text string in the specified window, representing
 	   the argument value as a left-justified unsigned decimal integer, followed
@@ -876,7 +876,7 @@ static void TWRedraw(Window w, unsigned int val) {
 	XDrawLine(theDisp, w, theGC, i + 3, 2 + CHIGH + 1, i + 1, 2 + CHIGH + 3);
 }
 
-int JP2KCheckEvent(register XEvent *xev) {
+int JP2KCheckEvent(XEvent *xev) {
 	int ok = 0;
 
 	/* Check whether the argument "X Windows" event is for one of our
@@ -888,7 +888,7 @@ int JP2KCheckEvent(register XEvent *xev) {
 		KeySym ks;
 		int len;
 		char buf[128];
-		register int i;
+		int i;
 
 		/* Throw away excess "expose" events for "dumb" windows. */
 
@@ -954,7 +954,7 @@ int JP2KCheckEvent(register XEvent *xev) {
 	case ButtonPress:
 #define E ((XButtonEvent *)xev)
 		if (E->button == Button1 && E->window == jp2kW) {
-			register int j;
+			int j;
 
 			ok = 1; /* Check whether a regular button was pressed */
 			i = sizeof button / sizeof *button;
@@ -964,8 +964,8 @@ int JP2KCheckEvent(register XEvent *xev) {
 			if (i >= 0) /* our button was pressed */
 			{
 				char options[1024];
-				register char *p;
-				register const char *q;
+				char *p;
+				const char *q;
 
 				if (!BTTrack(&button[i]))
 					break;		/* Ignore it */
@@ -1121,7 +1121,7 @@ int JP2KCheckEvent(register XEvent *xev) {
 				;
 			if (i >= 0) /* our button was pressed */
 			{
-				register int j;
+				int j;
 
 				if ((j = MBTrack(&menu[i])) >= 0) {
 					switch (i) {
@@ -1181,7 +1181,7 @@ int JP2KCheckEvent(register XEvent *xev) {
 		if (i >= 0) /* a key was pressed in our text window */
 		{
 			int oldval = textval[i]; /* Save this subwindow's old value */
-			register int c, j = 0;
+			int c, j = 0;
 
 			/* This is a *very* simple text-input editing loop that assembles an
 			   an unsigned integer from successive ASCII decimal digits, typed

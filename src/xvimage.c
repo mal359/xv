@@ -1489,11 +1489,11 @@ static void floydDitherize1(ximage,pic824,ptype, wide, high, rmap, gmap, bmap)
    * Note: this algorithm is *only* used when running on a 1-bit display
    */
 
-  register byte   pix8, bit;
-  int            *thisline, *nextline;
-  int            *thisptr, *nextptr, *tmpptr;
-  int             i, j, err, bperpix, bperln, order;
-  byte           *pp, *image, w1, b1, w8, b8, rgb[256];
+  byte		pix8, bit;
+  int		*thisline, *nextline;
+  int		*thisptr, *nextptr, *tmpptr;
+  int		i, j, err, bperpix, bperln, order;
+  byte		*pp, *image, w1, b1, w8, b8, rgb[256];
 
 
   if (ptype == PIC8) {   /* monoify colormap */

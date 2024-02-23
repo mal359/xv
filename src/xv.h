@@ -2086,12 +2086,12 @@ int WriteIRIS              PARM((FILE *, byte *, int, int, int, byte *,
 				 byte *, byte *, int, int));
 
 /**************************** XVJP2K.C ***************************/
-int  LoadJPC               PARM((char *, register PICINFO *, int));
-int  LoadJP2               PARM((char *, register PICINFO *, int));
+int  LoadJPC               PARM((char *, PICINFO *, int));
+int  LoadJP2               PARM((char *, PICINFO *, int));
 void CreateJP2KW           PARM((void));
 void JP2KSaveParams        PARM((int, char *, int));
 void JP2KDialog            PARM((int vis));
-int  JP2KCheckEvent        PARM((register XEvent *));
+int  JP2KCheckEvent        PARM((XEvent *));
 void VersionInfoJP2K       PARM((void));		/* GRR 20070304 */
 
 /**************************** XVJPEG.C ***************************/

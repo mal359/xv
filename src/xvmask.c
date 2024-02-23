@@ -313,9 +313,9 @@ doMEKOmask (pic24, w, h, results, selx, sely, selw, selh, flag)
      byte *pic24, *results;
      int w, h, selx, sely, selw, selh, flag;
 {
-    register byte *dst, *src;
-    register int i;
-    register int xmax, ymax;
+    byte *dst, *src;
+    int i;
+    int xmax, ymax;
     MKT *mt;
 
     printUTime ("start of MEKOmask.");
@@ -438,9 +438,9 @@ doCPmask (pic24, w, h, results, selx, sely, selw, selh, key)
      int w, h, selx, sely, selw, selh;
      char *key;
 {
-    register byte *dst, *src;
-    register int i;
-    register int xmax, ymax;
+    byte *dst, *src;
+    int i;
+    int xmax, ymax;
     CPS *cps;
 
     printUTime ("start of CPmask.");
@@ -512,9 +512,9 @@ doFLmask (pic24, w, h, results, selx, sely, selw, selh)
      byte *pic24, *results;
      int w, h, selx, sely, selw, selh;
 {
-    register byte *dst, *src;
-    register int i;
-    register int *ar, xmax, ymax;
+    byte *dst, *src;
+    int i;
+    int *ar, xmax, ymax;
 
     printUTime ("start of FLMASK.");
 
@@ -625,9 +625,9 @@ doColReverse (pic24, w, h, results, selx, sely, selw, selh, bit_flag)
      byte *pic24, *results;
      int w, h, selx, sely, selw, selh, bit_flag;
 {
-    register byte *p24;
-    register byte *rp;
-    register int x, y;
+    byte *p24;
+    byte *rp;
+    int x, y;
 
     printUTime ("start of Reverse.");
 
@@ -663,8 +663,8 @@ doQ0mask (pic24, w, h, results, selx, sely, selw, selh, pixX, pixY)
      byte *pic24, *results;
      int w, h, selx, sely, selw, selh, pixX, pixY;
 {
-    register byte *p24;
-    register int bperlin;
+    byte *p24;
+    int bperlin;
     byte *rp;
     int x, y;
     int skip, y0, x0;
@@ -701,9 +701,9 @@ doWINmask (pic24, w, h, results, selx, sely, selw, selh)
      byte *pic24, *results;
      int w, h, selx, sely, selw, selh;
 {
-    register byte *p24;
-    register byte *rp;
-    register int x, y;
+    byte *p24;
+    byte *rp;
+    int x, y;
 
     printUTime ("start of WIN mask.");
 
@@ -753,9 +753,9 @@ doRGBchange (pic24, w, h, results, selx, sely, selw, selh)
      byte *pic24, *results;
      int w, h, selx, sely, selw, selh;
 {
-    register byte *p24;
-    register byte *rp;
-    register int x, y;
+    byte *p24;
+    byte *rp;
+    int x, y;
 
     printUTime ("start of RGB change.");
 
@@ -820,8 +820,8 @@ doMaskCr (pic24, w, h, selx, sely, selw, selh)
      byte *pic24;
      int w, h, selx, sely, selw, selh;
 {
-    register byte *p24, *p24u;
-    register int x, y;
+    byte *p24, *p24u;
+    int x, y;
     double edge, *edgeX, *edgeY, maxX, maxY, tmp;
     int x1, x2, y1, y2;
     int xp1, xp2, yp1, yp2;

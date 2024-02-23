@@ -451,12 +451,12 @@ static int ppm_quant(pic24, cols, rows, pic8, rmap, gmap, bmap, newcolors)
      int  cols, rows, newcolors;
 {
   pixel**           pixels;
-  register pixel*   pP;
+  pixel*   	    pP;
   int               row;
-  register int      col, limitcol;
+  int		    col, limitcol;
   pixval            maxval, newmaxval;
   int               colors;
-  register int      index;
+  int		    index;
   chist_vec         chv, colormap;
   chash_table       cht;
   int               i;
@@ -557,8 +557,8 @@ static int ppm_quant(pic24, cols, rows, pic8, rmap, gmap, bmap, newcolors)
 	if (PPM_EQUAL(chl->ch.color, *pP)) {index = chl->ch.value; break;}
 
       if (!chl /*index = -1*/) {/* No; search colormap for closest match. */
-	register int i, r1, g1, b1, r2, g2, b2;
-	register long dist, newdist;
+	int i, r1, g1, b1, r2, g2, b2;
+	long dist, newdist;
 
 	r1 = PPM_GETR( *pP );
 	g1 = PPM_GETG( *pP );
@@ -632,7 +632,7 @@ static chist_vec mediancut( chv, colors, sum, maxval, newcolors )
 {
   chist_vec colormap;
   box_vector bv;
-  register int bi, i;
+  int bi, i;
   int boxes;
 
   bv = (box_vector) malloc(sizeof(struct box) * newcolors);
@@ -658,9 +658,9 @@ static chist_vec mediancut( chv, colors, sum, maxval, newcolors )
    */
 
   while ( boxes < newcolors ) {
-    register int indx, clrs;
+    int indx, clrs;
     int sm;
-    register int minr, maxr, ming, maxg, minb, maxb, v;
+    int minr, maxr, ming, maxg, minb, maxb, v;
     int halfsum, lowersum;
 
     /*
@@ -765,9 +765,9 @@ static chist_vec mediancut( chv, colors, sum, maxval, newcolors )
 
   for (bi=0; bi<boxes; bi++) {
     /* REP_AVERAGE_PIXELS version */
-    register int indx = bv[bi].index;
-    register int clrs = bv[bi].colors;
-    register long r = 0, g = 0, b = 0, sum = 0;
+    int indx = bv[bi].index;
+    int clrs = bv[bi].colors;
+    long r = 0, g = 0, b = 0, sum = 0;
 
     for (i=0; i<clrs; i++) {
       r += PPM_GETR( chv[indx + i].color ) * chv[indx + i].value;
@@ -848,7 +848,7 @@ static chash_table ppm_computechash(pixels, cols, rows,
      int* colorsP;
 {
   chash_table cht;
-  register pixel* pP;
+  pixel* pP;
   chist_list chl;
   int col, row, hash;
 
@@ -1086,11 +1086,11 @@ static int slow_quant(pic24, w, h, pic8, rm,gm,bm, descols)
 
 
 static void slow_fill_histogram (pic24, numpixels)
-     register byte *pic24;
-     register int   numpixels;
+     byte *pic24;
+     int   numpixels;
 {
-  register histptr histp;
-  register hist2d * histogram = sl_histogram;
+  histptr histp;
+  hist2d * histogram = sl_histogram;
 
   xvbzero((char *) histogram, sizeof(hist3d));
 
@@ -1111,9 +1111,9 @@ static boxptr find_biggest_color_pop (boxlist, numboxes)
      boxptr boxlist;
      int numboxes;
 {
-  register boxptr boxp;
-  register int i;
-  register long maxc = 0;
+  boxptr boxp;
+  int i;
+  long maxc = 0;
   boxptr which = NULL;
 
   for (i = 0, boxp = boxlist; i < numboxes; i++, boxp++) {
@@ -1130,9 +1130,9 @@ static boxptr find_biggest_volume (boxlist, numboxes)
      boxptr boxlist;
      int numboxes;
 {
-  register boxptr boxp;
-  register int i;
-  register INT32 maxv = 0;
+  boxptr boxp;
+  int i;
+  INT32 maxv = 0;
   boxptr which = NULL;
 
   for (i = 0, boxp = boxlist; i < numboxes; i++, boxp++) {
@@ -1250,7 +1250,7 @@ static int median_cut (boxlist, numboxes, desired_colors)
 {
   int n,lb;
   int c0,c1,c2,cmax;
-  register boxptr b1,b2;
+  boxptr b1,b2;
 
   while (numboxes < desired_colors) {
     /* Select box to split.
@@ -1492,12 +1492,12 @@ static void find_best_colors (minc0, minc1, minc2, numcolors,
 {
   int ic0, ic1, ic2;
   int i, icolor;
-  register INT32 * bptr;	/* pointer into bestdist[] array */
+  INT32 * bptr;			/* pointer into bestdist[] array */
   JSAMPLE * cptr;		/* pointer into bestcolor[] array */
   INT32 dist0, dist1;		/* initial distance values */
-  register INT32 dist2;		/* current distance in inner loop */
+  INT32 dist2;			/* current distance in inner loop */
   INT32 xx0, xx1;		/* distance increments */
-  register INT32 xx2;
+  INT32 xx2;
   INT32 inc0, inc1, inc2;	/* initial values for increments */
   /* This array holds the distance to the nearest-so-far color for each cell */
   INT32 bestdist[BOX_C0_ELEMS * BOX_C1_ELEMS * BOX_C2_ELEMS];
@@ -1561,8 +1561,8 @@ static void fill_inverse_cmap (c0, c1, c2)
   hist2d * histogram = sl_histogram;
   int minc0, minc1, minc2;	/* lower left corner of update box */
   int ic0, ic1, ic2;
-  register JSAMPLE * cptr;	/* pointer into bestcolor[] array */
-  register histptr cachep;	/* pointer into main cache array */
+  JSAMPLE * cptr;		/* pointer into bestcolor[] array */
+  histptr cachep;		/* pointer into main cache array */
   /* This array lists the candidate colormap indexes. */
   JSAMPLE colorlist[MAXNUMCOLORS];
   int numcolors;		/* number of candidate colors */
@@ -1603,10 +1603,10 @@ static void slow_map_pixels (pic24, width, height, pic8)
      byte *pic24, *pic8;
      int   width, height;
 {
-  register LOCFSERROR cur0, cur1, cur2;	/* current error or pixel value */
+  LOCFSERROR cur0, cur1, cur2;	/* current error or pixel value */
   LOCFSERROR belowerr0, belowerr1, belowerr2; /* error for pixel below cur */
   LOCFSERROR bpreverr0, bpreverr1, bpreverr2; /* error for below/prev col */
-  register FSERRPTR errorptr;	/* => fserrors[] at column before current */
+  FSERRPTR errorptr;		/* => fserrors[] at column before current */
   JSAMPROW inptr;		/* => current input pixel */
   JSAMPROW outptr;		/* => current output pixel */
   histptr cachep;
@@ -1667,7 +1667,7 @@ static void slow_map_pixels (pic24, width, height, pic8)
       if (*cachep == 0)
 	fill_inverse_cmap(cur0>>C0_SHIFT, cur1>>C1_SHIFT, cur2>>C2_SHIFT);
       /* Now emit the colormap index for this cell */
-      { register int pixcode = *cachep - 1;
+      { int pixcode = *cachep - 1;
 	*outptr = (JSAMPLE) pixcode;
 	/* Compute representation error for this pixel */
 	cur0 -= (int) colormap0[pixcode];
@@ -1678,7 +1678,7 @@ static void slow_map_pixels (pic24, width, height, pic8)
        * Add these into the running sums, and simultaneously shift the
        * next-line error sums left by 1 column.
        */
-      { register LOCFSERROR bnexterr, delta;
+      { LOCFSERROR bnexterr, delta;
 
 	bnexterr = cur0;	/* Process component 0 */
 	delta = cur0 * 2;

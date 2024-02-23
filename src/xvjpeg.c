@@ -324,7 +324,7 @@ static void writeJPEG()
 {
   FILE          *fp;
   int            i, nc, rv, w, h, npixels, ptype, pfree;
-  register byte *ip, *ep;
+  byte		*ip, *ep;
   byte          *inpix, *rmap, *gmap, *bmap;
   byte          *image8, *image24;
 
@@ -681,7 +681,7 @@ L2:
 
   if (cinfo.out_color_components > 3) {
     const byte *pic_end = pic + count;
-    register byte *p = pic;
+    byte *p = pic;
 
     /* According to documentation accompanying the IJG JPEG Library, it appears
      * that some versions of Adobe Systems' "Photoshop" write inverted CMYK
@@ -691,10 +691,10 @@ L2:
      * to deal with it; so we try to do that here:
      */
     if (cinfo.saw_Adobe_marker) { /* assume inverted data */
-      register byte *q = pic;
+      byte *q = pic;
 
       do {
-        register int cmy, k = 255 - q[3];
+        int cmy, k = 255 - q[3];
 
         if ((cmy = *q++ - k) < 0) cmy = 0; 
 		*p++ = cmy; /* R */
@@ -705,10 +705,10 @@ L2:
       } while (++q < pic_end);
     }
     else { /* assume normal data */
-      register byte *q = pic;
+      byte *q = pic;
 
       do {
-        register int cmy, k = 255 - q[3];
+        int cmy, k = 255 - q[3];
 
         if ((cmy = k - *q++) < 0) cmy = 0; 
 		*p++ = cmy; /* R */
@@ -750,7 +750,7 @@ L2:
 
         case 4:
           for (i = 0; i < cinfo.actual_number_of_colors; i++) {
-            register int cmy, k = cinfo.colormap[3][i];
+            int cmy, k = cinfo.colormap[3][i];
 
             if ((cmy = 255 - cinfo.colormap[0][i] - k) < 0) cmy = 0;
             pinfo->r[i] = cmy;

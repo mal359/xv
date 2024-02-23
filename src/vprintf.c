@@ -75,12 +75,12 @@ typedef int *intp;
 
 int vsprintf(dest, format, args)
 char *dest;
-register char *format;
+char *format;
 va_list args;
 {
-    register char *dp = dest;
-    register char c;
-    register char *tp;
+    char *dp = dest;
+    char c;
+    char *tp;
     char tempfmt[64];
 #ifndef LONGINT
     int longflag;
@@ -185,12 +185,12 @@ continue_format:
 
 int vfprintf(dest, format, args)
 FILE *dest;
-register char *format;
+char *format;
 va_list args;
 {
-    register char c;
-    register char *tp;
-    register int count = 0;
+    char c;
+    char *tp;
+    int count = 0;
     char tempfmt[64];
 #ifndef LONGINT
     int longflag;

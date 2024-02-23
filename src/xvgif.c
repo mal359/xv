@@ -114,11 +114,11 @@ int LoadGIF(fname, pinfo)
 {
   /* returns '1' if successful */
 
-  register byte  ch, *origptr;
-  register int   i, block;
-  int            aspect;
-  char tmpname[256];
-  byte r[256], g[256], b[256];
+  byte		ch, *origptr;
+  int		i, block;
+  int		aspect;
+  char 		tmpname[256];
+  byte 		r[256], g[256], b[256];
 
   /* initialize variables */
   BitOffset = XC = YC = OutCount = 0;
@@ -542,7 +542,7 @@ int LoadGIF(fname, pinfo)
 static int readImage(pinfo)
      PICINFO *pinfo;
 {
-  register byte ch, ch1, *ptr1, *picptr;
+  byte 		ch, ch1, *ptr1, *picptr;
   int           i, npixels, maxpixels;
   boolean       HasLocalColormap;
 
