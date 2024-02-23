@@ -919,7 +919,7 @@ static int brChkEvent(br, xev)
 
   else if (xev->type == ButtonPress) {
     XButtonEvent *e = (XButtonEvent *) xev;
-    int i,x,y;
+    int x,y;
     x = e->x;  y = e->y;
 
 #ifdef VS_RESCMAP
@@ -937,7 +937,7 @@ static int brChkEvent(br, xev)
       if      (e->window == br->win)      clickBrow(br,x,y);
       else if (e->window == br->scrl.win) SCTrack(&(br->scrl),x,y);
       else if (e->window == br->iconW) {
-        i = clickIconWin(br, x,y,(unsigned long) e->time,
+        clickIconWin(br, x,y,(unsigned long) e->time,
           (e->state&ControlMask) || (e->state&ShiftMask));
       }
       else rv = 0;
@@ -1789,7 +1789,7 @@ static void makeIconVisible(br, num)
   int sval, first, numvis;
 
   /* if we know what path we have, remember last visible icon for this path */
-  if (br->path && strlen(br->path) > 0)
+  if (strlen(br->path) > 0)
     recIconVisible(br->path, num);
 
   /* if icon #i isn't visible, adjust scrollbar so it *is* */
@@ -4503,7 +4503,8 @@ static void doRenameCmd(br)
 
 #ifdef AUTO_EXPAND
   if (Isvdir(br->path)) {
-    sprintf(buf,"Sorry, you can't rename file in the virtual directory, '%s'",
+    snprintf(buf, sizeof(buf), 
+    	    "Sorry, you can't rename file in the virtual directory, '%s'",
 	    br->path);
     ErrPopUp(buf, "\nBummer!");
     return;
@@ -4599,8 +4600,8 @@ static void doMkdirCmd(br)
 
 #ifdef AUTO_EXPAND
   if (Isvdir(br->path)) {
-    sprintf(buf,"Sorry, you can't mkdir in the virtual directory, '%s'",
-	    br->path);
+    snprintf(buf, sizeof(buf), 
+            "Sorry, you can't mkdir in the virtual directory, '%s'", br->path);
     ErrPopUp(buf, "\nBummer!");
     return;
   }
@@ -4729,7 +4730,8 @@ static void doDeleteCmd(br)
 
 #ifdef AUTO_EXPAND
   if (Isvdir(br->path)) {
-    sprintf(buf,"Sorry, you can't delete file at the virtual directory, '%s'",
+    snprintf(buf, sizeof(buf), 
+            "Sorry, you can't delete file at the virtual directory, '%s'",
 	    br->path);
     ErrPopUp(buf, "\nBummer!");
     return;
@@ -5240,8 +5242,7 @@ static void dragFiles(srcBr, dstBr, srcpath, dstpath, dstdir,
 
 #ifdef AUTO_EXPAND
   if (Isvdir(dstp)) {
-    sprintf(buf,"Sorry, you can't %s to the virtual directory, '%s'",
-	    cpymode ? "copy" : "move", dstp);
+    snprintf(buf, sizeof(buf), "Sorry, you can't %s to the virtual directory, '%s'", cpymode ? "copy" : "move", dstp);
     ErrPopUp(buf, "\nBummer!");
     SetCursors(-1);
     return;
@@ -6122,7 +6123,7 @@ static void recIconVisible(name, icon)
     }
   }
 
-  ptr = calloc(sizeof(IVIS), 1);
+  ptr = calloc(1, sizeof(IVIS));
   if (!ptr)
     return;
 
