@@ -525,7 +525,7 @@ static void addimgtag(dptr,xsize,ysize)
 
 
 /*************************************************/
-int WriteIRIS(fp, pic, ptype, w, h, rmap, gmap, bmap, numcols, colorstyle)
+int WriteIRIS(fp, pic, ptype, w, h, rmap, gmap, bmap, numcols , colorstyle)
      FILE *fp;
      byte *pic, *rmap, *gmap, *bmap;
      int   ptype, w, h, numcols, colorstyle;

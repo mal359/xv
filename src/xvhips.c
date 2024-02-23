@@ -34,14 +34,17 @@
 static int   fread_header(int fd, struct header *hd);
 static char  *xvhips_getline(int fd, char **s, int *l);
 static int   dfscanf(int fd);
-static void  make_grayscale(char *r, char *g, char *b);
+static void  make_grayscale(unsigned char *r, unsigned char *g, 
+			    unsigned char *b);
 static float hls_value (float n1, float n2, float hue);
 static void  hls_to_rgb(float h, float l, float s,
                         float *r, float *g, float *b);
-static void  make_huescale(char *r, char *g, char *b);
-static void  make_heatscale(char *r, char *g, char *b);
-static int   load_colourmap(char *filestem, int max_colours,
-                            char *r, char *g, char *b);
+static void  make_huescale(unsigned char *r, unsigned char *g, 
+                           unsigned char *b);
+static void  make_heatscale(unsigned char *r, unsigned char *g, 
+                            unsigned char *b);
+static int   load_colourmap(char *filestem, int max_colours, unsigned char *r,
+			    unsigned char *g, unsigned char *b);
 
 /************************************************************************
  *
@@ -135,10 +138,9 @@ static char *xvhips_getline(fd,s,l)
   char **s;
   int *l;
 {
-  int i,m;
+  int m;
   char c,*s1,*s2;
 
-  i = 0;
   s1 = *s;
   m = *l;
   while(read(fd,&c,1) == 1 && c != '\n') {
@@ -183,7 +185,7 @@ int LoadHIPS(fname,pinfo)
 {
   FILE  *fp;
   struct header h;
-  char * pic;
+  unsigned char * pic;
 
   /* open the stream, if necesary */
   fp=fopen(fname,"r");
@@ -196,11 +198,11 @@ int LoadHIPS(fname,pinfo)
 
   pinfo->w = h.cols;
   pinfo->h = h.rows;
-  pic = pinfo->pic = (byte *) malloc(h.rows * h.cols);
+  pic = pinfo->pic = (unsigned char *) malloc(h.rows * h.cols);
   /* GRR POSSIBLE OVERFLOW / FIXME */
   if (!pic) FatalError("couldn't malloc HIPS file");
 
-  if (!fread(pic, 1, h.cols*h.rows, fp)) {
+  if (!fread(pic, 1, h.cols * h.rows, fp)) {
     SetISTR(ISTR_WARNING,"Error reading HIPS data.\n");
     return 0;
   }
@@ -208,7 +210,7 @@ int LoadHIPS(fname,pinfo)
 
   pinfo->frmType = F_SUNRAS;
   pinfo->colType = F_FULLCOLOR;
-  sprintf(pinfo->fullInfo, "HIPS file (%d bytes)", h.cols*h.rows);
+  sprintf(pinfo->fullInfo, "HIPS file (%d bytes)", h.cols * h.rows);
   sprintf(pinfo->shrtInfo, "HIPS file.");
   pinfo->comment = (char *) NULL;
 
@@ -235,9 +237,11 @@ int LoadHIPS(fname,pinfo)
       make_heatscale(pinfo->r, pinfo->g, pinfo->b);
     else if (strcmp(cmapname, "hues") == 0)
       make_huescale(pinfo->r, pinfo->g, pinfo->b);
-    else if (!cmapname[0] || !load_colourmap(cmapname, 256, pinfo->r, pinfo->g, pinfo->b))
+    else if (!cmapname[0] || !load_colourmap((char *)cmapname, 256, pinfo->r,
+    					     pinfo->g, pinfo->b))
       make_grayscale(pinfo->r, pinfo->g, pinfo->b);
-    sprintf(pinfo->fullInfo, "HIPS file (%d x %d), Colormap = [%s]", h.cols, h.rows, cmapname);
+    snprintf(pinfo->fullInfo, sizeof(pinfo->fullInfo), 
+    	"HIPS file (%d x %d), Colormap = [%s]", h.cols, h.rows, cmapname);
   }
 
   return 1;
@@ -245,7 +249,8 @@ int LoadHIPS(fname,pinfo)
 
 
 
-static void make_grayscale(char * r, char * g, char * b)
+static void make_grayscale(unsigned char * r, unsigned char * g, 
+			   unsigned char * b)
 {
   int i;
   /* default grayscale colors */
@@ -298,7 +303,8 @@ static void hls_to_rgb(h,l,s,  r,g,b)
 
 
 
-static void make_huescale(char * r, char * g, char * b)
+static void make_huescale(unsigned char * r, unsigned char * g, 
+			  unsigned char * b)
 {
   int j;
   r[0] = g[0] = b[0] = 0;
@@ -314,7 +320,8 @@ static void make_huescale(char * r, char * g, char * b)
 
 
 
-static void make_heatscale(char * r, char * g, char * b)
+static void make_heatscale(unsigned char * r, unsigned char * g, 
+			   unsigned char * b)
 {
   int j;
   r[0] = g[0] = b[0] = 0;
@@ -339,8 +346,8 @@ static void make_heatscale(char * r, char * g, char * b)
 
 
 
-static int load_colourmap(char *filestem, int max_colours,
-                          char *r, char *g, char *b)
+static int load_colourmap(char *filestem, int max_colours, unsigned char *r,
+			  unsigned char *g, unsigned char *b)
 {
   FILE * fp;
   int numread=0;

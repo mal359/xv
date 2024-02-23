@@ -1789,7 +1789,7 @@ static void makeIconVisible(br, num)
   int sval, first, numvis;
 
   /* if we know what path we have, remember last visible icon for this path */
-  if (br->path)
+  if (br->path && strlen(br->path) > 0)
     recIconVisible(br->path, num);
 
   /* if icon #i isn't visible, adjust scrollbar so it *is* */
@@ -1798,7 +1798,10 @@ static void makeIconVisible(br, num)
   first = sval * br->numWide;
   numvis = br->visHigh * br->numWide;
 
-  while (num<first) { sval--;  first = sval * br->numWide; }
+  while (num<first) { 
+  	sval--;  
+	first = sval * br->numWide; 
+  }
   if (num>= (first+numvis)) {
     /* get #num into top row, to reduce future scrolling */
     while (num>=(first+br->numWide) && sval<br->scrl.max) {

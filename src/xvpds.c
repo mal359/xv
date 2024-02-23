@@ -1001,8 +1001,10 @@ static int Convert16BitImage(fname, pinfo, swab)
   lut[0] = 0;
   free(pShort = (unsigned short *)pinfo->pic);
   pinfo->pic = pPix8;
+  
+  unsigned short *newpShort = pShort;
   while(--n >= 0)
-    *pPix8++ = lut[*pShort++];
+    *pPix8++ = lut[*newpShort++];
   free(lut);
   return 1;
 }

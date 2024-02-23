@@ -1150,15 +1150,15 @@ skipnn(int nn)
 #define skip24()  (skipnn(24))
 
 static int
-gethuffdata(  byte *luma,
+gethuffdata(byte *luma,
     byte *chroma1,
     byte *chroma2,
     int realrowwidth,
     int maxrownumber)
 {
-static  byte  clip[3*256];
-  int  *hufftable[3], *huffstart = NULL, *huffptr = NULL;
-  int  row, col, plane, i, result = 1;
+static byte	clip[3*256];
+  int		*hufftable[3], *huffstart = NULL, *huffptr = NULL;
+  int		row, col, plane, i, result = 1;
 #if TRACE
   int  uflow = 0, oflow = 0;
 #endif
@@ -1208,8 +1208,9 @@ static  byte  clip[3*256];
   i = 0;
   while (is24() != 0xfffffe) {
     (void)get24();
-    if(++i == 1)
+    if(++i == 1) {
       trace((stderr,"gethuffdata: skipping for sync ..."));
+    }
   }
   if(i != 0)
     trace((stderr, " %d times\n", i));
@@ -1305,11 +1306,14 @@ static  byte  clip[3*256];
   }
 
 oops:
-  for(i = 0; i < 3; ++i)
+  for(i = 0; i < 3; ++i) {
     free(hufftable[i]);
+  }
+  
   trace((stderr, "gethuffdata: uflow=%d oflow=%d\n", uflow, oflow));
   trace((stderr, "gethuffdata: done @ 0x%08lx (sector %ld.%d)\n",
         ftell(fp), ftell(fp)/0x800, 0x800 - bytesleft));
+	
   return result;
 }
 
