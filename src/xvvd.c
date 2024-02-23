@@ -209,8 +209,7 @@ char *dir;
  * Mkvdir_force: (used by makeThumbDir(in xvbrowse.c) only)
  *	make virtual directory by force.
  */
-int Mkvdir(dir)
-char *dir;
+int Mkvdir(char *dir)
 {
     char dir1[MAXPATHLEN+1], dir2[MAXPATHLEN+1];
     char *d1, *d2;
@@ -220,12 +219,11 @@ char *dir;
     sighold(SIGHUP);
     sighold(SIGCHLD);
 #elif defined __linux__
-    int mask;
-    sigset_t SIGSET;
-    sigemptyset (&SIGSET);
-    sigaddset (&SIGSET, SIGHUP);
-    sigaddset (&SIGSET, SIGCHLD);
-    mask = sigprocmask(SIG_BLOCK, &SIGSET, NULL);
+    sigset_t mask, old_mask;
+    sigemptyset (&mask);
+    sigaddset (&mask, SIGHUP);
+    sigaddset (&mask, SIGCHLD);
+    sigprocmask(SIG_BLOCK, &mask, NULL);
 #else
     int mask;
     mask = sigblock(sigmask(SIGHUP)|sigmask(SIGCHLD));
@@ -260,10 +258,7 @@ MKVDIR_END:
     sigrelse(SIGHUP);
     sigrelse(SIGCHLD);
 #elif defined __linux__
-    sigset_t SIGCHLDSET;
-    sigemptyset (&SIGCHLDSET);
-    sigaddset (&SIGCHLDSET, SIGCHLD);
-    mask = sigprocmask(SIG_BLOCK, &SIGCHLDSET, NULL);
+    sigprocmask(SIG_BLOCK, &old_mask, NULL);
 #else
     sigsetmask(mask);
 #endif
@@ -1066,6 +1061,14 @@ static void vd_HUPhandler(int sig)
     XtNoticeSignal(IdHup);
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     signal(SIGHUP, (void (*)PARM((int))) vd_HUPhandler);
+#elif defined __linux__
+    struct sigaction sa;
+    sa.sa_handler = vd_HUPhandler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    
+    if (sigaction(SIGHUP, &sa, NULL) == -1)
+    	perror("sigaction");
 #endif
 }
 
@@ -1074,11 +1077,14 @@ static void HUPhandler(XtPointer dummy, XtSignalId* Id)
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sighold(SIGHUP);
 #elif defined __linux__
-    int mask;
-    sigset_t SIGSET;
-    sigemptyset (&SIGSET);
-    sigaddset (&SIGSET, SIGHUP);
-    mask = sigprocmask(SIG_BLOCK, &SIGSET, NULL);
+    sigset_t block_mask, unblock_mask;
+    sigemptyset (&block_mask);
+    sigaddset (&block_mask, SIGHUP);
+    
+    if (sigprocmask(SIG_BLOCK, &block_mask, NULL) == -1) {
+        perror("sigprocmask");
+        return;
+    }
 #else
     int mask;
     mask = sigblock(sigmask(SIGHUP));
@@ -1089,13 +1095,19 @@ static void HUPhandler(XtPointer dummy, XtSignalId* Id)
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sigrelse(SIGHUP);
 #elif defined __linux__
-    sigprocmask(SIG_BLOCK, &SIGSET, NULL);
+    sigemptyset(&unblock_mask);
+    sigaddset(&unblock_mask, SIGHUP);
+    
+    if (sigprocmask(SIG_UNBLOCK, &unblock_mask, NULL) == -1) {
+        perror("sigprocmask");
+        return;
+    }
 #else
     sigsetmask(mask);
 #endif
 }
 
-int InSignal = 0;
+volatile int InSignal = 0;
 
 static void vd_handler(int sig)
 {
@@ -1108,10 +1120,15 @@ static void INThandler(XtPointer dummy, XtSignalId* Id)
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sighold(UsedSignal);
 #elif defined __linux__
-    sigset_t SIGSET;
-    sigemptyset (&SIGSET);
-    sigaddset (&SIGSET, UsedSignal);
-    sigprocmask(SIG_BLOCK, &SIGSET, NULL);
+    struct sigaction sa;
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+
+    if (sigaction(UsedSignal, &sa, NULL) == -1) {
+        perror("sigaction");
+	return;
+    }
 #else
     sigblock(sigmask(UsedSignal));
 #endif
