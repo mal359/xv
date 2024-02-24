@@ -281,7 +281,7 @@ static void *pic2_new                  PARM((size_t,char*));
 static int WritePIC2                   PARM((FILE*,byte*,int,int,int,
 					     byte*,byte*,byte*,int,int,char*,
 					     int,int,int,int,int,char*));
-
+	        
 static char *pic2_id = "P2DT";
 
 /* Error Messages */
@@ -3352,9 +3352,7 @@ XEvent *xev;
 
 
 /***************************************************/
-int PIC2SaveParams(fname, col)
-char *fname;
-int col;
+int PIC2SaveParams(char *fname, int col)
 {
     filename = fname;
     colorType = col;

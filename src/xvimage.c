@@ -113,7 +113,7 @@ static byte screen_set[3][256];
  * to you at the moment and would appreciate any suggestions...
  */
 
-static void screen_init()
+static void screen_init(void)
 {
   static int init_flag; /* assume auto-init as 0 */
   Pixmap check_map;
@@ -236,8 +236,7 @@ typedef struct { byte    *colorset;
  * Only fs2_init() specifies the (maximum) number of components.
  */
 
-static FSBUF *fs2_init(width)
-int width;
+static FSBUF *fs2_init(int width)
 {
   FSBUF *fs;
   FSERROR *p;
@@ -272,10 +271,12 @@ int width;
  *     Adapt this if necessary.
  */
 
-static int fs2_dither(fs, ptr, nc, num_rows, num_cols)
-FSBUF *fs;
-byte *ptr;
-int nc, num_rows, num_cols;
+static int fs2_dither(
+		FSBUF *fs, 
+		byte *ptr, 
+		int nc, 
+		int num_rows, 
+		int num_cols)
 {
   int abs_nc, ci, row, col;
   LOCFSERROR delta, cur, belowerr, bpreverr;
@@ -2952,7 +2953,8 @@ static int doPadSolid(str, wide, high, opaque,omode)
 	   (r>=0 && r<=255 && g>=0 && g<=255 && b>=0 && b<=255)) {
     solidRGB = ((r&0xff)<<16) | ((g&0xff)<<8) | (b&0xff);
   }
-  else if (sscanf(str, "0x%x", &rgb) && rgb>=0 && rgb<=0xffffff) {
+  else if (sscanf(str, "0x%x", (unsigned int*)&rgb) && rgb>=0 && rgb<=0xffffff)
+  {
     solidRGB = rgb;
   }
   else {   /* assume a colorname */
@@ -3046,7 +3048,8 @@ static int doPadBggen(str, wide, high, opaque,omode)
 #endif
   if (i) {
     unlink(fname);
-    sprintf(errstr, "Error:  Running '%s' failed, for some reason.", syscmd);
+    snprintf(errstr, sizeof(errstr), 
+    	    "Error:  Running '%s' failed, for some reason.", syscmd);
     ErrPopUp(errstr, "\nDoh!");
     return 0;
   }

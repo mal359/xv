@@ -482,7 +482,7 @@ static const char *rdheader(fs)
       i = 0;
     }
 
-    sprintf(name, "NAXIS%d", j+1);
+    snprintf(name, sizeof(name), "NAXIS%d", j+1);
     error = rdcard(&block[i*80], name, T_INT, &val);
     if (error)    return error;
     if (val < 0)  return "Bad NAXISn value in FITS file";

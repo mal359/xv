@@ -481,7 +481,7 @@ int x,y;
 
       for (i=0; i<numfnames && numnames<MAXNAMES; i++) {
 	if (fnames[i][0] == C_REG || fnames[i][0] == C_EXE) {
-	  sprintf(buf,"%s%s", path, fnames[i]+1);
+	  snprintf(buf, sizeof(buf), "%s%s", path, fnames[i]+1);
 
 	  /* check for dups.  Don't add it if it is. */
 	  for (j=0; j<numnames && strcmp(buf,namelist[j]); j++);
@@ -643,7 +643,7 @@ static void changedDirMB(sel)
     if (chdir(tmppath)) {
 #endif
       char str[512];
-      sprintf(str,"Unable to cd to '%s'\n", tmppath);
+      snprintf(str, sizeof(str), "Unable to cd to '%s'\n", tmppath);
       *trunc_point = '/';  /* restore the path */
       MBRedraw(&dirMB);
       ErrPopUp(str, "\nWhatever");
@@ -1153,7 +1153,7 @@ int DoSave()
       Mkvdir(path);
       if ((i = Isvdir(fullname)) & 01) {
 	  char buf[128];
-	  sprintf(buf,
+	  snprintf(buf, sizeof(buf),
 		  "Sorry, you can't save file in the virtual directory, '%s'",
 		  path);
 	  ErrPopUp(buf, "\nBummer!");
@@ -1469,7 +1469,8 @@ char *GetDirFullName()
     strcpy(globname, filename);
     if (globname[0] == '~') Globify(globname);
 
-    if (globname[0] != '/') sprintf(fullname, "%s%s", path, globname);
+    if (globname[0] != '/') snprintf(fullname, sizeof(fullname), 
+    					"%s%s", path, globname);
     else strcpy(fullname, globname);
   }
 

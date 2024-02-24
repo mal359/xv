@@ -2230,7 +2230,7 @@ static void parseResources()
 	    sizeof(struct gamstate));   /* load 'gs' with defaults */
 
     for (j=0; j<6; j++) {                       /* xv.*.huemap resources */
-      sprintf(tmp, "%s.huemap%d", gname, j+1);
+      snprintf(tmp, sizeof(tmp), "%s.huemap%d", gname, j+1);
       if (rd_str_cl(tmp, "Setting.Huemap",0)) {   /* got one */
 	int fst, fen, tst, ten;
 	char fcw[32], tcw[32];
@@ -2255,8 +2255,8 @@ static void parseResources()
       }
     }
 
-    sprintf(tmp, "%s.whtmap", gname);           /* xv.*.whtmap resource */
-    if (rd_str_cl(tmp, "Setting.Whtmap",0)) {        /* got one */
+    snprintf(tmp, sizeof(tmp), "%s.whtmap", gname);   /* xv.*.whtmap resource */
+    if (rd_str_cl(tmp, "Setting.Whtmap",0)) {	      /* got one */
       int wst, wsat, enab;
       if (DEBUG) fprintf(stderr,"parseResource 'xv.%s: %s'\n",tmp, def_str);
       if (sscanf(def_str,"%d %d %d", &wst, &wsat, &enab) != 3) {
@@ -2271,7 +2271,7 @@ static void parseResources()
       }
     }
 
-    sprintf(tmp, "%s.satval", gname);           /* xv.*.satval resource */
+    snprintf(tmp, sizeof(tmp), "%s.satval", gname);   /* xv.*.satval resource */
     if (rd_str_cl(tmp, "Setting.Satval",0)) {         /* got one */
       int sat;
       if (DEBUG) fprintf(stderr,"parseResource 'xv.%s: %s'\n",tmp, def_str);
@@ -2288,11 +2288,16 @@ static void parseResources()
     for (j=0; j<4; j++) {                       /* xv.*.*graf resources */
       GRAF_STATE gstat, *gsgst;
       switch (j) {
-      case 0: sprintf(tmp, "%s.igraf", gname);  gsgst = &gs.istate; break;
-      case 1: sprintf(tmp, "%s.rgraf", gname);  gsgst = &gs.rstate; break;
-      case 2: sprintf(tmp, "%s.ggraf", gname);  gsgst = &gs.gstate; break;
-      case 3: sprintf(tmp, "%s.bgraf", gname);  gsgst = &gs.bstate; break;
-      default: sprintf(tmp, "%s.bgraf", gname);  gsgst = &gs.bstate; break;
+      case 0: snprintf(tmp, sizeof(tmp), "%s.igraf", gname);  
+      	gsgst = &gs.istate; break;
+      case 1: snprintf(tmp, sizeof(tmp), "%s.rgraf", gname);  
+      	gsgst = &gs.rstate; break;
+      case 2: snprintf(tmp, sizeof(tmp), "%s.ggraf", gname);  
+      	gsgst = &gs.gstate; break;
+      case 3: snprintf(tmp, sizeof(tmp), "%s.bgraf", gname);  
+      	gsgst = &gs.bstate; break;
+      default: snprintf(tmp, sizeof(tmp), "%s.bgraf", gname);  
+      	gsgst = &gs.bstate; break;
       }
 
       if (rd_str_cl(tmp, "Setting.Graf",0)) {       /* got one */
@@ -2366,7 +2371,7 @@ static void makeResources()
     }
 
     Graf2Str(gfstat, tmp1);
-    sprintf(tmp, "%s: %s\n", rname, tmp1);
+    snprintf(tmp, sizeof(tmp), "%s: %s\n", rname, tmp1);
     strcat(rsrc, tmp);
   }
 

@@ -828,8 +828,8 @@ int cmd;
   leaveitup=0;
   goforit=0;
   switch (cmd) {
-  case T_BOK:    PCDSetParams();
-                goforit=1;
+  case T_BOK:   PCDSetParams();
+                goforit=1; /* intentional */
   case T_BCANC:  PCDDialog(0);
                 break;
 
@@ -1212,8 +1212,9 @@ static byte	clip[3*256];
       trace((stderr,"gethuffdata: skipping for sync ..."));
     }
   }
-  if(i != 0)
+  if(i != 0) {
     trace((stderr, " %d times\n", i));
+  }
 
   while(result) {
     if(is24() == 0xfffffe) {

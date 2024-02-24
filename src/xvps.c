@@ -1636,7 +1636,7 @@ int LoadPS(fname, pinfo, quick)
 
     if (DEBUG) fprintf(stderr,"LoadPS:  executing command '%s'\n", cmdstr);
     SetISTR(ISTR_INFO, "Running '%s'...", GS_PATH);
-    sprintf(tmp, "Running %s", cmdstr);
+    snprintf(tmp, sizeof(tmp), "Running %s", cmdstr);
     if (doalert && epsf==0) OpenAlert(tmp);  /* open alert first time only */
 
     WaitCursor();

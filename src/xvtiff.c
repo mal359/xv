@@ -155,7 +155,7 @@ int LoadTIFF(fname, pinfo, quick)
       in = TIFFOpen(filename, "r");
       if (!in) return 0;
       for (i=1; i<=nump; i++) {
-	sprintf(tmp, "%s%d", tmpname, i);
+	snprintf(tmp, sizeof(tmp), "%s%d", tmpname, i);
 	if (!copyTiff(in, tmp)) {
 	  SetISTR(ISTR_WARNING, "LoadTIFF:  Error writing page files!");
 	  break;
@@ -168,7 +168,7 @@ int LoadTIFF(fname, pinfo, quick)
 	fprintf(stderr,"LoadTIFF: %d page%s written\n",
 		i-1, (i-1)==1 ? "" : "s");
 
-      sprintf(tmp, "%s%d", tmpname, 1);           /* start with page #1 */
+      snprintf(tmp, sizeof(tmp), "%s%d", tmpname, 1);	/* start with page #1 */
       filename = tmp;
     }
   }  /* if (!quick) ... */
@@ -1393,11 +1393,12 @@ static int makecmap()
 #define	REPEAT2(op)	op; op
 #define	CASE8(x,op)				\
 	switch (x) {				\
-	case 7: op; case 6: op; case 5: op;	\
-	case 4: op; case 3: op; case 2: op;	\
-	case 1: op;				\
+	case 7: op; break; case 6: op; break; case 5: op; break;	\
+	case 4: op; break; case 3: op; break; case 2: op; break;	\
+	case 1: op; break;				\
 	}
-#define	CASE4(x,op)	switch (x) { case 3: op; case 2: op; case 1: op; }
+#define	CASE4(x,op)	switch (x) { \
+	case 3: op; break; case 2: op; break; case 1: op; break; }
 
 #define	UNROLL8(w, op1, op2) {		\
 	uint32_t x;	                \

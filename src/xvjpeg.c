@@ -666,12 +666,12 @@ L2:
 
   jpeg_start_decompress(&cinfo);
 
-  while (cinfo.output_scanline < cinfo.output_height) {
-    if (cinfo.output_scanline < 0) {   /* should never happen, but... */
+  while (cinfo.output_scanline < cinfo.output_height) {/* impossible 
+    if (cinfo.output_scanline < 0) {   * should never happen, but... *
       SetISTR(ISTR_WARNING, "%s:  invalid negative scanline (%d)",
               fbasename, cinfo.output_scanline);
       goto L1;
-    }
+    }*/
     rowptr[0] = (JSAMPROW) &pic[cinfo.output_scanline * w * bperpix];
     (void) jpeg_read_scanlines(&cinfo, rowptr, (JDIMENSION) 1);
   }

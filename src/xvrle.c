@@ -160,8 +160,9 @@ int LoadRLE(fname, pinfo)
 
   if (ferror(fp) || feof(fp)) {
     fclose(fp);
-    if (pinfo->comment) free(pinfo->comment);  pinfo->comment = (char *) NULL;
-    return rleError(bname, "EOF reached in RLE header.\n");
+    if (pinfo->comment) free(pinfo->comment);  
+    	pinfo->comment = (char *) NULL;
+    	return rleError(bname, "EOF reached in RLE header.\n");
   }
 
 
@@ -191,8 +192,9 @@ int LoadRLE(fname, pinfo)
 
   if (errstr) {
     fclose(fp);
-    if (pinfo->comment) free(pinfo->comment);  pinfo->comment = (char *) NULL;
-    return rleError(bname, errstr);
+    if (pinfo->comment) free(pinfo->comment);  
+    	pinfo->comment = (char *) NULL;
+    	return rleError(bname, errstr);
   }
 
 
@@ -201,8 +203,9 @@ int LoadRLE(fname, pinfo)
                else img = (byte *) calloc((size_t) w * h * 3, (size_t) 1);
   if (!img) {
     fclose(fp);
-    if (pinfo->comment) free(pinfo->comment);  pinfo->comment = (char *) NULL;
-    return rleError(bname, "unable to allocate image data.\n");
+    	if (pinfo->comment) free(pinfo->comment); 
+		pinfo->comment = (char *) NULL;
+    	return rleError(bname, "unable to allocate image data.\n");
   }
 
 
