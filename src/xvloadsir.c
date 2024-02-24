@@ -796,6 +796,7 @@ void print_head(FILE *omf, int nhead, int ndes, int nhtype, int idatatype, int n
 
    case 2:
      fprintf(omf,"  Lambert form: (local radius)\n");
+     break;
    case 1:
      if (iopt==1) fprintf(omf,"  Lambert projection: (fixed radius)\n");
      fprintf(omf,"   Center point:      %f , %f\n",xdeg,ydeg);
@@ -904,6 +905,7 @@ void print_head3(FILE *omf, int nhead, int ndes, int nhtype, int idatatype, int 
 
    case 2:
      fprintf(omf,"  Lambert form: (local radius)\n");
+     break;
    case 1:
      if (iopt==1) fprintf(omf,"  Lambert projection: (fixed radius)\n");
      fprintf(omf,"   Center point:      %f , %f\n",xdeg,ydeg);

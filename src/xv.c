@@ -510,7 +510,7 @@ int main(argc, argv)
     else if (!strcmp(visualstr,"directcolor")) vclass = DirectColor;
     else if (!strcmp(visualstr,"default"))     {}   /* recognize it as valid */
     else if (!strncmp(visualstr,"0x",(size_t) 2)) {  /* specified visual id */
-      if (sscanf(visualstr, "0x%x", &vid) != 1) vid = -1;
+      if (sscanf(visualstr, "0x%i", &vid) != 1) vid = -1;
     }
     else {
       fprintf(stderr,"%s: Unrecognized visual type '%s'.  %s\n",
@@ -755,7 +755,7 @@ int main(argc, argv)
        (mfinfo = XLoadQueryFont(theDisp,FONT3))==NULL &&
        (mfinfo = XLoadQueryFont(theDisp,FONT4))==NULL &&
        (mfinfo = XLoadQueryFont(theDisp,FONT5))==NULL) {
-    sprintf(dummystr,
+    snprintf(dummystr, sizeof(dummystr),
 	    "couldn't open the following fonts:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s",
 	    FONT1, FONT2, FONT3, FONT4, FONT5);
     FatalError(dummystr);
@@ -1461,7 +1461,7 @@ static void parseCmdLine(argc, argv)
 
     else if (!argcmp(argv[i],"-windowid",3,0,&pm)) {
       if (++i<argc) {
-	if (sscanf(argv[i], "%ld", &spec_window) != 1) {
+	if (sscanf(argv[i], "%lu", (unsigned long *)&spec_window) != 1) {
 		fprintf(stderr,"%s: bad argument to -windowid '%s'\n",cmd,argv[i]);
         }
       }
@@ -3678,11 +3678,12 @@ static int readpipe(cmd, fname)
   strcat(fullcmd, tmpname);
 
   /* execute the command */
-  sprintf(str, "Doing command: '%s'", fullcmd);
+  snprintf(str, sizeof(str), "Doing command: '%s'", fullcmd);
   OpenAlert(str);
   i = system(fullcmd);
   if (i) {
-    sprintf(str, "Unable to complete command:\n  %s\n\n  exit status: %d",
+    snprintf(str, sizeof(str), 
+    	    "Unable to complete command:\n  %s\n\n  exit status: %d",
 	    fullcmd, i);
     CloseAlert();
     ErrPopUp(str, "\nThat Sucks!");

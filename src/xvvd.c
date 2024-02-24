@@ -312,7 +312,7 @@ char *dir;
 
 	    xv_getwd(origdir, MAXPATHLEN+1);
 
-	    sprintf(tmp, "%s%s", vdroot, dir2);
+	    snprintf(tmp, sizeof(tmp), "%s%s", vdroot, dir2);
 	    if (vd_recursive_mkdir(tmp) || chdir(tmp)) {
 		SetISTR(ISTR_INFO, "fail to make virtual directory.");
 		Warning();
@@ -456,9 +456,9 @@ char *src, *dst;
 
     for (i = 0; i < vdcount; i++)
 	if (!strncmp(src, vdtable[i], strlen(src))) {
-	    sprintf(tmps, "%s%s", vdroot, vdtable[i]);
-	    sprintf(tmp, "%s%s", dst, vdtable[i]+strlen(src));
-	    sprintf(tmpd, "%s%s", vdroot, tmp);
+	    snprintf(tmps, sizeof(tmps), "%s%s", vdroot, vdtable[i]);
+	    snprintf(tmp, sizeof(tmp), "%s%s", dst, vdtable[i]+strlen(src));
+	    snprintf(tmpd, sizeof(tmpd), "%s%s", vdroot, tmp);
 
 	    if (vd_Movevdir(tmps, tmpd))
 		return 1;
@@ -634,7 +634,7 @@ char *path;
 	char tmp3[MAXPATHLEN+1], tmp4[MAXPATHLEN+1];
 	int archive3, archive4;
 
-	sprintf(tmp3, "%s%s", vdroot, tmp1);
+	snprintf(tmp3, sizeof(tmp3), "%s%s", vdroot, tmp1);
 	strcpy(tmp4, tmp2+strlen(vdroot));
 
 	archive3 = Isarchive(tmp3);

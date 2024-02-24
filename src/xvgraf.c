@@ -83,7 +83,7 @@ void CreateGraf(gp, parent, x, y, fg, bg, title)
   gp->entergamma = 0;
   gp->drawobj = NULL;
 
-  sprintf(gp->gvstr, "%.5g", gp->gamma);
+  snprintf(gp->gvstr, sizeof(gp->gvstr), "%.5g", gp->gamma);
 
   gp->win = XCreateSimpleWindow(theDisp, parent, x,y, GWIDE, GHIGH, 1, fg,bg);
   if (!gp->win) FatalError("can't create graph (main) window");
@@ -720,7 +720,7 @@ char *str;
   else {
     sprintf(str, "%c %d", gp->spline ? 'S' : 'L', gp->nhands);
     for (i=0; i<gp->nhands; i++) {
-      sprintf(cstr," : %d,%d", gp->hands[i].x, gp->hands[i].y);
+      snprintf(cstr, sizeof(cstr), " : %d,%d", gp->hands[i].x, gp->hands[i].y);
       strcat(str, cstr);
     }
   }
@@ -760,7 +760,7 @@ int Str2Graf(gp, str)
     if (sscanf(tstr+1, "%lf", &(gp->gamma)) == 1 &&
 	gp->gamma >= -1000.0 && gp->gamma <= 1000.0) {
       gp->gammamode = 1;
-      sprintf(gp->gvstr, "%.5g", gp->gamma);
+      snprintf(gp->gvstr, sizeof(gp->gvstr), "%.5g", gp->gamma);
       return 0;
     }
     else return 1;

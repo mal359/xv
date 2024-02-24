@@ -1014,11 +1014,13 @@ int LoadPNG(fname, pinfo)
       break;
   }
 
-  sprintf(pinfo->fullInfo + strlen(pinfo->fullInfo),
+  snprintf(pinfo->fullInfo + strlen(pinfo->fullInfo), 
+  	  sizeof(pinfo->fullInfo + strlen(pinfo->fullInfo)),
 	  ", %sinterlaced. (%d bytes)",
 	  _interlace_type ? "" : "non-", filesize);
 
-  sprintf(pinfo->shrtInfo, "%lux%lu PNG", _width, _height);
+  snprintf(pinfo->shrtInfo, sizeof(pinfo->shrtInfo),
+           "%ux%u PNG", _width, _height);
 
   if (_bit_depth < 8)
       png_set_packing(png_ptr);
