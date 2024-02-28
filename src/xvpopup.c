@@ -631,39 +631,10 @@ void ClosePopUp()
 void OpenAlert(txt)
      const char *txt;
 {
-  /* pops up a window with txt displayed in it (*no buttons*).
-     returns immediately.  window is closed by 'CloseAlert()'.
-     No 'PopUp()' calls are allowed while an Alert is displayed. */
-
-  XEvent event;
-
-  if (firsttime) createPUD();
-
-  XStoreName(theDisp, popW, "xv notice");
-  XSetIconName(theDisp, popW, "xv notice");
-  attachPUD();
-
-  nbts = 0;
-  selected = 0;
-  text = txt;
-
-  puwide = PUWIDE;  puhigh = PUHIGH;
-  XResizeWindow(theDisp, popW, (u_int) puwide, (u_int) puhigh);
-
-  /* center last button in window around mouse position, with constraint that
-     window be fully on the screen */
-
-  CenterMapWindow(popW, puwide/2, puhigh/2, puwide, puhigh);
-  popUp = ISALERT;
-
-  /* MUST wait for VisibilityNotify event to come in, else we run the risk
-     of UnMapping the window *before* the Map request completed.  This
-     appears to be bad, (It leaves an empty window frame up.) though it
-     generally only happens on slow servers.  Better safe than screwed... */
-
-  XWindowEvent(theDisp, popW, VisibilityChangeMask, &event);
-  drawPUD(0, 0, puwide, puhigh);
-  XFlush(theDisp);
+    // JET - let's just dump these to stderr rather than slow and
+    // annoying popups
+    fprintf(stderr, "%s\n", txt);
+    return;
 }
 
 
@@ -671,7 +642,6 @@ void OpenAlert(txt)
 void CloseAlert()
 {
   popUp = 0;
-  XUnmapWindow(theDisp, popW);
 }
 
 

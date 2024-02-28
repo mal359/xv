@@ -2489,9 +2489,11 @@ ms_auto_no:
 
   if (filetype == RFT_ERROR) {
     char  foostr[256+MAXPATHLEN+1];
-    snprintf(foostr, sizeof(foostr)-1, "Can't open file '%s'\n\n  %s.",filename, ERRSTR(errno));
+    snprintf(foostr, sizeof(foostr)-1, "Can't open file '%s': %s.",filename, ERRSTR(errno));
 
-    if (!polling) ErrPopUp(foostr, "\nBummer!");
+    /* JET, no    if (!polling) ErrPopUp(foostr, "\nBummer!");
+     * just output the error */
+    fprintf(stderr, "%s\n", foostr);
 
     goto FAILED;  /* couldn't get magic#, screw it! */
   }
@@ -2504,11 +2506,17 @@ ms_auto_no:
       i = TextView(origname);
     else
 #endif
-      i = TextView(filename);
+        // JET - no, just report on stderr and move on
+#if 0
+        i = TextView(filename);
     SetISTR(ISTR_INFO,"'%s' not in a recognized format.", basefname);
     /* Warning();  */
     if (i) goto SHOWN_AS_TEXT;
     else   goto FAILED;
+#else
+    fprintf(stderr, "'%s' not in a recognized format.\n", basefname);
+    goto FAILED;
+#endif // 0
   }
 
   if (filetype < RFT_ERROR) {

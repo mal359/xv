@@ -985,13 +985,11 @@ int JP2KCheckEvent(XEvent *xev) {
 				*/
 				if ((unsigned)textval[J_TGBIT] - 1 > 7) {
 					OpenAlert("No. of guard bits must be 1-8");
-					sleep(3);
 					CloseAlert();
 					break;
 				};
 				if ((unsigned)textval[J_TRES] <= 0) {
 					OpenAlert("Maximum resolution levels must be >= 1");
-					sleep(3);
 					CloseAlert();
 					break;
 				};
