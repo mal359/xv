@@ -7,6 +7,8 @@
 
 #include "xv.h"
 
+void cpcode(char *filename, unsigned char *buff, int code_num);
+
 static unsigned char CPTbl[] = {
     0x10, 0x17, 0x13, 0x15, 0x09,
     0x08, 0x0a, 0x14, 0x06, 0x05,
@@ -87,10 +89,8 @@ static void GetCPTbl(int nTbl, char *CPcode, int *tbl, CPS *cps)
 CPS *calcCPmask(char *code, int ntbl)
 {
     int *tbl;
-    int len;
     CPS *cps;
 
-    len = strlen(code);
     tbl = (int *)malloc(sizeof(int) * ntbl);
     cps = (CPS *)malloc(sizeof(CPS) * ntbl);
     if(!tbl || !cps) {

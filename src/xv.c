@@ -2733,9 +2733,8 @@ ms_auto_no:
     SetCropString();
   }
   else {
-    int w,h,aspWIDE,aspHIGH,oldemode;
-
-    oldemode = epicMode;
+    int w,h,aspWIDE,aspHIGH;
+    
     epicMode = EM_RAW;   /* be in raw mode for all intermediate conversions */
     cpic = pic;  cWIDE = pWIDE;  cHIGH = pHIGH;  cXOFF = cYOFF = 0;
     epic = cpic; eWIDE = cWIDE;  eHIGH = cHIGH;
@@ -4438,7 +4437,6 @@ void HandleDispMode()
 
   static int haveoldinfo = 0;
   static Window            oldMainW;
-  static int               oldCmapMode;
   static XSizeHints        oldHints;
   static XWindowAttributes oldXwa;
   int i;
@@ -4569,7 +4567,6 @@ void HandleDispMode()
       /* save current window stuff */
       haveoldinfo = 1;
       oldMainW = mainW;
-      oldCmapMode = colorMapMode;
 
       GetWindowPos(&oldXwa);
       if (!XGetNormalHints(theDisp, mainW, &oldHints)) oldHints.flags = 0;
@@ -4627,11 +4624,10 @@ void HandleDispMode()
 
 
 /*******************************************************/
-static void add_filelist_to_namelist(flist, nlist, numn, maxn)
-     char  *flist;
-     char **nlist;
-     int   *numn, maxn;
+static void add_filelist_to_namelist(char *flist, char **nlist, int *numn, 
+				    int maxn)
 {
+  (void)nlist;
   /* written by Brian Gregory  (bgregory@megatest.com) */
 
   FILE *fp;

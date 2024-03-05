@@ -36,9 +36,6 @@ static void gen_bg         PARM((byte *, PICINFO *));
 void LoadDfltPic(pinfo)
      PICINFO *pinfo;
 {
-  char  str[256];
-  byte *dfltpic;
-  int   i, j, k, xdpline, nbytes;
 
 #ifdef USEOLDPIC
 
@@ -50,10 +47,6 @@ void LoadDfltPic(pinfo)
     loadOldDfltPic(pinfo);
     return;
   }
-
-  dfltpic = (byte *) calloc((size_t) XVDFLT_WIDE * XVDFLT_HIGH, (size_t) 1);
-  if (!dfltpic) FatalError("couldn't malloc 'dfltpic' in LoadDfltPic()");
-
 
   /* copy image from xvdflt_pic[] array */
   xdpline = 0;

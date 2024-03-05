@@ -543,6 +543,7 @@ magnify(int mag,  /* power of 2 by which to magnify in place */
   int mh, int mw,  /* the real (maximum) dimensions of the array */
   byte *p)  /* pointer to the data */
 {
+  (void)mh;
   int x,y,yi;
   byte *optr,*nptr,*uptr;  /* MUST be unsigned, else averaging fails */
 
@@ -751,9 +752,7 @@ XEvent *xev;
 void
 PCDSetParamOptions(const char *fname)
 {
-  int cur;
-  cur = RBWhich(resnRB);
-
+  (void)*fname;
   RBSetActive(resnRB,0,1);
   RBSetActive(resnRB,1,1);
   RBSetActive(resnRB,2,1);
@@ -1158,7 +1157,7 @@ gethuffdata(byte *luma,
 {
 static byte	clip[3*256];
   int		*hufftable[3], *huffstart = NULL, *huffptr = NULL;
-  int		row, col, plane, i, result = 1;
+  int		row, plane, i, result = 1;
 #if TRACE
   int  uflow = 0, oflow = 0;
 #endif
@@ -1173,7 +1172,7 @@ static byte	clip[3*256];
   if(clip[256+255] == 0) {
     for(i = 0; i < 256; ++i)
       clip[i +   0] = 0x00,
-      clip[i + 256] = (byte) i,
+      clip[i + 256] = (byte)i,
       clip[i + 512] = 0xff;
   }
 
@@ -1220,7 +1219,7 @@ static byte	clip[3*256];
     if(is24() == 0xfffffe) {
       skip24();
       plane = get2();
-      row = get13(); col = 0;
+      row = get13();
       skip1();
       if(row >= maxrownumber) {
         trace((stderr,
@@ -1301,7 +1300,6 @@ static byte	clip[3*256];
       ++uflow;
 /*      trace((stderr,
         "gethuffdata: uflow %d %d %d\n", row, col, i));*/
-    ++col;
 #endif
     *pixelptr++ = clip[i + 256];
   }

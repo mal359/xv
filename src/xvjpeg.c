@@ -459,10 +459,8 @@ METHODDEF void  xv_error_output(cinfo)
 #endif
      j_common_ptr cinfo;
 {
-  my_error_ptr myerr;
   char         buffer[JMSG_LENGTH_MAX];
 
-  myerr = (my_error_ptr) cinfo->err;
   (*cinfo->err->format_message)(cinfo, buffer);
 
   SetISTR(ISTR_WARNING, "%s: %s", fbasename, buffer);   /* send it to XV */

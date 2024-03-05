@@ -265,10 +265,9 @@ static void Quit()
 
 
 /***********************************/
-static void CreateMainWindow(name,geom,argc,argv)
-     char *name,*geom,**argv;
-     int   argc;
+static void CreateMainWindow(char *name, char *geom, int argc, char **argv)
 {
+  (void)*name;
   XSetWindowAttributes xswa;
   unsigned long xswamask;
   XSizeHints hints;

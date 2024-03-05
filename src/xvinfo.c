@@ -70,10 +70,10 @@ void InfoBox(vis)
 
 
 /***************************************************/
-void RedrawInfo(x,y,w,h)
-     int x,y,w,h;
+void RedrawInfo(int x, int y, int w, int h)
 {
-  int  i;
+  (void)x, (void)y, (void)w, (void)h;
+  int i;
 
   XSetForeground(theDisp, theGC, infofg);
   XSetBackground(theDisp, theGC, infobg);

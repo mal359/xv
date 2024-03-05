@@ -174,7 +174,7 @@ static void ls3d         PARM((LIST *));
 void CreateCtrl(geom)
      const char *geom;
 {
-  int listh, topskip;
+  int topskip;
   double skip;
   XSetWindowAttributes xswa;
   Pixmap oicon1Pix, oicon2Pix;
@@ -245,8 +245,6 @@ void CreateCtrl(geom)
 
   if (ctrlColor) XSetWindowBackground(theDisp, ctrlW, locol);
             else XSetWindowBackgroundPixmap(theDisp, ctrlW, grayTile);
-
-  listh = LINEHIGH * NLINES;
 
   LSCreate(&nList, ctrlW, 5, 52, (CTRLWIDE-BUTTW-18),
 	   LINEHIGH*NLINES, NLINES, dispnames, numnames,
@@ -431,9 +429,9 @@ int vis;
 
 
 /***************************************************/
-void RedrawCtrl(x,y,w,h)
-int x,y,w,h;
+void RedrawCtrl(int x, int y, int w, int h)
 {
+  (void)x, (void)y;
   int i;
 
   RANGE(w, 0, CTRLWIDE);
@@ -580,10 +578,10 @@ LIST *lst;
 
 
 /***************************************************/
-static void RedrawNList(delta, sptr)
-     int delta;
-     SCRL *sptr;
+static void RedrawNList(int delta, SCRL *sptr)
 {
+  (void)*sptr;
+     
   LSRedraw(&nList, delta);
 }
 
@@ -748,10 +746,10 @@ int j;
 
 
 /***************************************************/
-void LSRedraw(lp, delta)
-LIST *lp;
-int   delta;
+void LSRedraw(LIST *lp, int delta)
 {
+  (void)delta;
+  
   int  i;
 
   for (i = lp->scrl.val; i < lp->scrl.val + lp->nlines; i++)

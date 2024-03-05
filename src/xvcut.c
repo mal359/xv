@@ -984,10 +984,10 @@ static void makeClipFName()
 
 
 /********************************************/
-static int countcols24(pic, pwide, phigh, x, y, w, h)
-     byte *pic;
-     int   pwide, phigh, x,y,w,h;
+static int countcols24(byte *pic, int pwide,  int phigh, int x, int y, int w, 
+		      int h)
 {
+  (void)phigh;
   /* counts the # of unique colors in a selected rect of a 24-bit image
      returns '0-256' or >256 */
 
@@ -1012,10 +1012,10 @@ static int countcols24(pic, pwide, phigh, x, y, w, h)
 
 
 /********************************************/
-static int countNewCols(newpic, w,h, newcmap, is24, cx,cy,cw,ch)
-     byte *newpic, *newcmap;
-     int   w,h, is24, cx,cy,cw,ch;
+static int countNewCols(byte *newpic, int w, int h, byte *newcmap, int is24, 
+		       int cx, int cy, int cw, int ch)
 {
+  (void)h;
   /* computes the number of NEW colors in the specified region of the
    * new pic, with respect to 'pic'.  returns 0-257 (where 257 means
    * 'some unknown # greater than 256')
@@ -1358,10 +1358,8 @@ static int dragHandle(ev)
 	             else { chwide=1;  newwide = seh; }
       }
       else {         /* constrain to same aspect ratio */
-	double asp;
 	if (seh==0) { chwide=1; newwide=0; }
 	else {
-	  asp = (double) sew / (double) seh;
 	  if (islf || isrt) { chhigh=1;  newhigh = (int) (sew/orgaspect); }
                        else { chwide=1;  newwide = (int) (seh*orgaspect); }
 	}

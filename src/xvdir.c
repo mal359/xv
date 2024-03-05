@@ -351,9 +351,9 @@ static void arrangeButts(mode)
 
 
 /***************************************************/
-void RedrawDirW(x,y,w,h)
-     int x,y,w,h;
+void RedrawDirW(int x, int y, int w, int h)
 {
+  (void)x, (void)y, (void)w, (void)h;
   int        i, ypos, txtw;
   char       foo[30];
   const char *str;
@@ -656,10 +656,9 @@ static void changedDirMB(sel)
 
 
 /***************************************************/
-static void RedrawDList(delta, sptr)
-     int   delta;
-     SCRL *sptr;
+static void RedrawDList(int delta, SCRL *sptr)
 {
+  (void)*sptr;
   LSRedraw(&dList,delta);
 }
 

@@ -161,14 +161,10 @@ int LoadFITS(fname, pinfo, quick)
 
 
 /*******************************************/
-int WriteFITS(fp,pic,ptype,w,h,rmap,gmap,bmap,numcols,colorstyle,comment)
-     FILE *fp;
-     byte *pic;
-     int   ptype, w,h;
-     byte *rmap, *gmap, *bmap;
-     int   numcols, colorstyle;
-     char *comment;
+int WriteFITS(FILE* fp, byte *pic, int ptype, int w, int h, byte *rmap, 
+	     byte *gmap, byte *bmap, int numcols, int colorstyle, char *comment)
 {
+  (void)colorstyle;
   int   i, j, npixels, nend;
   byte *ptr;
   const char *error;

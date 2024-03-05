@@ -434,7 +434,7 @@ int   is24, swide, shigh, dwide, dhigh;
   byte *cptr;
   int  i,j;
   int  *lbufR, *lbufG, *lbufB;
-  int  pixR, pixG, pixB, bperpix;
+  int  pixR, pixG, pixB;
   int  lastline, thisline, lastpix, linecnt, pixcnt;
   int  *pixarr, *paptr;
 
@@ -458,8 +458,6 @@ int   is24, swide, shigh, dwide, dhigh;
     if (pixarr) free(pixarr);
     return 1;
   }
-
-  bperpix = (is24) ? 3 : 1;
 
   for (j=0; j<=swide; j++)
     pixarr[j] = ((2 * j + 1) * dwide) / (2 * swide);
@@ -734,11 +732,11 @@ byte *DoColorDither(pic24, pic8, w, h, rmap, gmap, bmap,
 
 
 /********************************************/
-byte *Do332ColorDither(pic24, pic8, w, h, rmap, gmap, bmap,
-		    rdisp, gdisp, bdisp, maplen)
-     byte *pic24, *pic8, *rmap, *gmap, *bmap, *rdisp, *gdisp, *bdisp;
-     int   w, h, maplen;
+byte *Do332ColorDither(byte *pic24, byte *pic8, int w, int h, byte *rmap, 
+		      byte *gmap, byte *bmap, byte *rdisp, byte *gdisp, 
+		      byte *bdisp, int maplen)
 {
+  (void)maplen;
   /* some sort of color dither optimized for the 332 std cmap */
 
   /* takes a 24 bit picture, of size w*h, dithers with the colors in
@@ -758,7 +756,6 @@ byte *Do332ColorDither(pic24, pic8, w, h, rmap, gmap, bmap,
   int *thisline, *nextline, *thisptr, *nextptr, *tmpptr;
   int  i, j, rerr, gerr, berr, pwide3;
   int  imax, jmax;
-  long cnt1, cnt2;
   int  fserrmap[512];   /* -255 .. 0 .. +255 */
 
   /* compute somewhat non-linear floyd-steinberg error mapping table */
@@ -770,7 +767,6 @@ byte *Do332ColorDither(pic24, pic8, w, h, rmap, gmap, bmap,
     { fserrmap[256+i] = j;  fserrmap[256-i] = -j; }
 
 
-  cnt1 = cnt2 = 0;
   pwide3 = w*3;  imax = h-1;  jmax = w-1;
 
   /* attempt to malloc things */

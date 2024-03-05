@@ -275,8 +275,8 @@ int LoadGIF(fname, pinfo)
 
 
       else if (fn == 0xFE) {  /* Comment Extension */
-	int   ch, j, sbsize, cmtlen;
-	byte *ptr1, *cmt, *cmt1, *sp;
+	int	j, sbsize, cmtlen;
+	byte	*ptr1, *cmt, *cmt1, *sp;
 
 	cmtlen = 0;
 	ptr1 = dataptr;      /* remember start of comments */
@@ -324,7 +324,7 @@ int LoadGIF(fname, pinfo)
 
 
       else if (fn == 0x01) {  /* PlainText Extension */
-	int j,sbsize,ch;
+	int j,sbsize;
 	int tgLeft, tgTop, tgWidth, tgHeight, cWidth, cHeight, fg, bg;
 
 	SetISTR(ISTR_INFO, "%s:  %s", bname,
@@ -351,8 +351,8 @@ int LoadGIF(fname, pinfo)
 	  j = 0;
 	  sbsize = NEXTBYTE;
 	  while (j<sbsize) {
-	    ch = NEXTBYTE;  j++;
-	    if (DEBUG) fprintf(stderr,"%c", ch);
+	    j++;
+	    if (DEBUG) fprintf(stderr,"%c", NEXTBYTE);
 	  }
 	} while (sbsize);
 	if (DEBUG) fprintf(stderr,"\n\n");

@@ -190,9 +190,9 @@ static void build_hremap     PARM((void));
 
 
 /***************************/
-static void printUTime(str)
-     const char *str;
+static void printUTime(const char *str)
 {
+  (void)*str;
 #ifdef TIMING_TEST
   int i;
   struct rusage ru;
@@ -1055,7 +1055,7 @@ int x,y,but;
 
 
     else if (but==3) { /* add/delete cell(s) from current group */
-      int lastcell,j,resetdel,curcell;
+      int lastcell, resetdel, curcell;
 
       /* better save the current cmap state, as it might change */
       saveCMap(&tmpcmap);
@@ -1067,9 +1067,7 @@ int x,y,but;
 	if (deladdCell(curcell, 1)) recolor=1;
 
 	lastcell = curcell;
-
-	j = XGrabPointer(theDisp, cmapF, False, 0, GrabModeAsync,
-			 GrabModeAsync, None, None, (Time) CurrentTime);
+	
 	while (1) {
 	  Window       rW,cW;
 	  int          rx,ry,x,y;

@@ -99,6 +99,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#if defined(__LP64__) || defined(__LP64)
+#include <stdint.h>
+#endif
+#include <fcntl.h>
+#include <sys/types.h>
+
 
 #include <X11/Xos.h>
 
@@ -163,7 +169,11 @@ char               inname[NAMELEN], outname[NAMELEN];
 int                output_format;
 int                record_bytes, max_lines;
 int                line_samples, fits_pad;
-int               label_checksum = 0L, checksum = 0L;
+#if defined(__LP64__) || defined(_LP64)
+int64_t            label_checksum = 0L, checksum = 0L;
+#else
+int                label_checksum = 0L, checksum = 0L;
+#endif
 
 
 /*************************************************/
@@ -388,9 +398,13 @@ int main(argc,argv)
 
   if (record_bytes == 1204  && (outfile  != stdout))
     /* print checksum for viking */
+#if defined(__LP64__) || defined(__LP64)
+    fprintf(stderr,"\n Image label checksum = %ld computed checksum = %ld\n",
+	    label_checksum,checksum);
+#else
     fprintf(stderr,"\n Image label checksum = %d computed checksum = %d\n",
 	    label_checksum,checksum);
-
+#endif
   /*  pad out FITS file to a multiple of 2880 */
   if (output_format == 2)
     for (i=0;i<fits_pad;i++) fputc(blank,outfile);
@@ -414,7 +428,6 @@ int main(argc,argv)
 int get_files(host)
   int host;
 {
-  typedef long    off_t;
   short   shortint;
   char    *s;
 
@@ -947,17 +960,21 @@ void no_labels(host)
   int host;
 {
   char          ibuf[2048];
-  short         length,i;
+  short         length, i;
 
   do {
-    length = read_var(ibuf,host);
+    length = read_var(ibuf, host);
 
     /*****************************************************************/
     /* find the checksum and store in label_checksum                 */
     /*****************************************************************/
     if ((i = strncmp(ibuf," CHECKSUM",(size_t) 9)) == 0) {
       ibuf[length]   = '\0';
+#if defined(__LP64__) || defined(_LP64)
+      label_checksum = strtoll(ibuf + 35, NULL, 10);
+#else
       label_checksum = atol(ibuf+35);
+#endif
     }
 
     else if ((i = strncmp(ibuf,"RECORD_BYTES",(size_t) 12)) == 0) {
@@ -985,16 +1002,18 @@ void no_labels(host)
 /*                                                                   */
 /*********************************************************************/
 
-int read_var(ibuf,host)
-  char  *ibuf;
-  int   host;
+int read_var(char *ibuf, int host)
 {
-  int   length,result,nlen;
+  int   length, nlen;
   char  temp;
   union /* this union is used to swap 16 and 32 bit integers          */
     {
       char  ichar[4];
+#if defined(__LP64__) || defined(_LP64)
+      int16_t slen;
+#else
       short slen;
+#endif
       int  llen;
     } onion;
 
@@ -1003,7 +1022,7 @@ int read_var(ibuf,host)
           /* IBM PC host                                         */
           /*******************************************************/
     length = 0;
-    result = read(infile,&length,(size_t) 2);
+    read(infile,&length,(size_t) 2);
     nlen =   read(infile,ibuf,(size_t) (length+(length%2)));
     return (length);
 
@@ -1012,7 +1031,7 @@ int read_var(ibuf,host)
           /*******************************************************/
 
     length = 0;
-    result = read(infile,onion.ichar,(size_t) 2);
+    read(infile,onion.ichar,(size_t) 2);
     /*     byte swap the length field                            */
     temp   = onion.ichar[0];
     onion.ichar[0]=onion.ichar[1];
@@ -1024,14 +1043,14 @@ int read_var(ibuf,host)
   case 3: /*******************************************************/
           /* VAX host with variable-length support               */
           /*******************************************************/
-    length = read(infile,ibuf,(size_t) 2048/* upper bound */);
+    length = read(infile,ibuf,(size_t) 2048 /* upper bound */);
     return (length);
 
   case 4: /*******************************************************/
           /* VAX host, but not a variable-length file            */
           /*******************************************************/
     length = 0;
-    result = read(infile,&length,(size_t) 2);
+    read(infile, &length, (size_t)2);
     nlen =   read(infile,ibuf,(size_t) length+(length%2));
 
     /* check to see if we crossed a VAX record boundary          */
@@ -1040,10 +1059,10 @@ int read_var(ibuf,host)
     return (length);
 
   case 5: /*******************************************************/
-          /* Unix workstation host (non-byte-swapped 32 bit host)*/
+          /* Unix workstation host (non-byte-swapped)            */
           /*******************************************************/
     length = 0;
-    result = read(infile,onion.ichar,(size_t) 2);
+    read(infile,onion.ichar,(size_t) 2);
     /*     byte swap the length field                            */
     temp   = onion.ichar[0];
     onion.ichar[0]=onion.ichar[1];
@@ -1103,12 +1122,24 @@ int check_host()
   if (bits == 32 && swap == TRUE ) {
     host = 3; /* VAX host with var length support */
     strcpy(hostname,"Host 3,4 - 32 bit integers with swapping.");
- }
+  }
 
   if (bits == 32 && swap == FALSE  ) {
     host = 5; /* OTHER 32-bit host  */
     strcpy(hostname,
 	   "Host 5 - 32 bit integers without swapping, no var len support.");
+  }
+  
+  if (bits == 64 && swap == FALSE  ) {
+    host = 6; /* 64-bit host  */
+    strcpy(hostname,
+	   "Host 6 - 64 bit integers without swapping.");
+  }
+  
+  if (bits == 32 && swap == TRUE  ) {
+    host = 7; /* OTHER 64-bit host  */
+    strcpy(hostname,
+	   "Host 7 - 64 bit integers with swapping.");
   }
 
   if ((*outname) != '-') fprintf(stderr, "%s\n", hostname);
@@ -1122,7 +1153,11 @@ int swap_int(inval)  /* swap 4 byte integer */
   union /* this union is used to swap 16 and 32 bit integers */
     {
       char  ichar[4];
+#if defined(__LP64__) || defined(_LP64)
+      int16_t slen;
+#else
       short slen;
+#endif
       int   llen;
     } onion;
   char   temp;

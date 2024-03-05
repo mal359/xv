@@ -2478,9 +2478,9 @@ static void CropKey(dx,dy,grow,crop)
 
 
 /***********************************/
-static void TrackPicValues(mx,my)
-     int mx,my;
+static void TrackPicValues(int mx, int my)
 {
+  (void)mx, (void)my;
   Window       rW,cW;
   int          rx,ry,ox,oy,x,y, orgx,orgy;
   u_int        mask;
@@ -2611,11 +2611,9 @@ static void TrackPicValues(mx,my)
 
 
 /***********************************/
-static Bool IsConfig(dpy, ev, arg)
-     Display *dpy;
-     XEvent  *ev;
-     char    *arg;
+static Bool IsConfig(Display *dpy, XEvent *ev, char *arg)
 {
+  (void)dpy;
   XConfigureEvent *cev;
 
   if (ev->type == ConfigureNotify) {
@@ -2719,6 +2717,7 @@ int xvErrorHandler(disp, err)
 /************************************************************************/
 static void QuitOnInterrupt(XtPointer dummy, XtSignalId* Id)
 {
+  (void)dummy, (void)Id;
   /* but first, if any input-grabbing popups are active, we have to 'cancel'
      them. */
 
@@ -2764,6 +2763,7 @@ static void QuitOnInterrupt(XtPointer dummy, XtSignalId* Id)
 
 static void onInterrupt(int i)
 {
+  (void)i;
   XtNoticeSignal(IdQuit);
 }
 

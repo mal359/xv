@@ -525,11 +525,10 @@ static void addimgtag(dptr,xsize,ysize)
 
 
 /*************************************************/
-int WriteIRIS(fp, pic, ptype, w, h, rmap, gmap, bmap, numcols , colorstyle)
-     FILE *fp;
-     byte *pic, *rmap, *gmap, *bmap;
-     int   ptype, w, h, numcols, colorstyle;
+int WriteIRIS(FILE *fp, byte *pic, int ptype, int w, int h, byte *rmap, 
+             byte *gmap, byte *bmap, int numcols , int  colorstyle)
 {
+  (void)numcols;
   /* writes a greyscale or 24-bit RGB IRIS file to the already open
      stream, RLE-compressed; returns 0 on success, -1 on minor error */
 

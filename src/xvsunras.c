@@ -370,13 +370,10 @@ int len, flip;
 
 
 /*******************************************/
-int WriteSunRas(fp,pic,ptype,w,h,rmap,gmap,bmap,numcols,colorstyle,userle)
-     FILE *fp;
-     byte *pic;
-     int   ptype,w,h;
-     byte *rmap, *gmap, *bmap;
-     int   numcols, colorstyle, userle;
+int WriteSunRas(FILE *fp, byte *pic, int ptype, int w, int h, byte* rmap, 
+               byte *gmap, byte *bmap,int numcols, int colorstyle, int userle)
 {
+  (void)userle;
   /* writes a sun rasterfile to the already open stream
      writes either 24-bit, 8-bit or 1-bit
      currently will not write rle files
