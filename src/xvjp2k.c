@@ -64,12 +64,10 @@
 static const char *fbasename, /* File's base name, for error/warning msgs */
 	bad_samp[] = "%s:  can't read %d-plane %s file!", fmode[] = "rb",
 	full_msg[] = "%s %s. (%ld bytes)", jp2_kind[] = "JP2",
-	jpc_kind[] = "JPEG 2000", load_msg[] = "Loading %dx%d %s %s (%ld bytes)...",
+	load_msg[] = "Loading %dx%d %s %s (%ld bytes)...",
 	no_mem[] = "%s:  can't read %s file - out of memory",
 	pixel_size[] = "%s:  can't display %d-bit pixels!",
 	shrt_msg[] = "%dx%d %s %s. ",
-	truncated[] = "%s:  Unexpected end of %s file",
-	read_err[] = "%s:  I/O error reading %s file",
 	bad_dims[] = "%s:  error in JPEG-2000 header (bad image size)";
 
 static int get_debug_level(void)
@@ -123,8 +121,9 @@ static int print_log(jas_logtype_t type, const char *format, va_list ap) {
 }
 #endif
 
-static int LoadJP2K(char *fname, PICINFO *pinfo, int quick,
-  bool jpc_format) {
+static int LoadJP2K(char *fname, PICINFO *pinfo, int quick, bool jpc_format) 
+{
+	(void)quick;
 	jas_image_t *img = 0;
 	jas_stream_t *str = 0;
 	FILE *fp;
@@ -352,7 +351,6 @@ static int LoadJP2K(char *fname, PICINFO *pinfo, int quick,
 				ret = 0;
 				goto done;
 			}
-			unsigned char *buffer;
 			jas_seqent_t *src;
 			unsigned char *dst;
 			int xx, yy;
@@ -610,7 +608,7 @@ static void StoreJP2K(char *options) {
 		{{0, 0, 1, 1, 0, 0, 8, 0},
 		 {0, 0, 1, 1, 0, 0, 8, 0},
 		 {0, 0, 1, 1, 0, 0, 8, 0}};
-	static char nomem[] = {"StoreJP2K: out of memory\n"}, write[] = {"w"};
+	static char write[] = {"w"};
 	jas_image_t *img = 0;
 	jas_stream_t *str = 0;
 	FILE *fp = 0;
@@ -762,7 +760,6 @@ static void StoreJP2K(char *options) {
 					break;
 				}
 				jas_image_setcmpttype(img, comp_ind, comp_type);
-				unsigned char *buffer;
 				unsigned char *src;
 				jas_seqent_t *dst;
 				int x, y;
@@ -783,7 +780,6 @@ static void StoreJP2K(char *options) {
 			int mode = (ptype == PIC8) ? 0 : 1;
 			assert(num_comps == 1);
 			jas_image_setcmpttype(img, 0, JAS_IMAGE_CT_GRAY_Y);
-			unsigned char *buffer;
 			unsigned char *src;
 			jas_seqent_t *dst;
 			int x, y;

@@ -287,11 +287,8 @@ int Grab()
   }
 
   else {  /* TRACK A RECTANGLE */
-    int    origrx, origry;
 
     clickWin = rootW;
-    origrx = ix = x2 = rx;
-    origry = iy = y2 = ry;
     iw = ih = 0;
 
     XGrabServer(theDisp);
@@ -894,7 +891,7 @@ static int convertImageAndStuff(image, colors, ncolors, xwap, gx,gy,gw,gh)
 
   /* this code owes a lot to 'xwdtopnm.c', part of the pbmplus package,
      written by Jef Poskanzer */
-
+  (void)gw, (void)gh;
   int             i, j;
   CARD8          *bptr, tmpbyte;
   CARD16         *sptr, sval;
@@ -1168,6 +1165,7 @@ static int CountColors24(pic, pwide, phigh, x, y, w, h)
      byte *pic;
      int   pwide, phigh, x,y,w,h;
 {
+  (void)phigh;
   /* counts the # of unique colors in a selected rect of a PIC24
      returns '0-256' or >256 */
 

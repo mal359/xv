@@ -246,41 +246,43 @@ static void pic2_read_palette          PARM((struct pic2_info*,
 static void pic2_write_palette         PARM((struct pic2_info*,int,int,
 					     byte*,byte*,byte*));
 #endif /* !PIC2_IGNORE_UNUSED_FUNCTIONS */
-static byte pic2_convert_color_bits    PARM((int,int,int));
-static byte pic2_pad_color_bits        PARM((int,int,int));
-static byte pic2_reduce_color_bits     PARM((int,int,int));
-static pixel pic2_exchange_rg          PARM((pixel,int));
-static void pic2_handle_para           PARM((struct pic2_info*,int));
-static int pic2_alloc_buffer           PARM((struct pic2_info*));
-static void pic2_free_buffer           PARM((struct pic2_info*));
-static long pic2_seek_file             PARM((struct pic2_info*,long,int));
-static long pic2_tell_file             PARM((struct pic2_info*));
-static int pic2_read_file              PARM((struct pic2_info*,void*,size_t));
-static long pic2_read_long             PARM((struct pic2_info*));
-static short pic2_read_short           PARM((struct pic2_info*));
-static char pic2_read_char             PARM((struct pic2_info*));
-static int pic2_write_file             PARM((struct pic2_info*,void*,size_t));
-static int pic2_write_long             PARM((struct pic2_info*,long));
-static int pic2_write_short            PARM((struct pic2_info*,int));
-static int pic2_write_char             PARM((struct pic2_info*,int));
-static unsigned long pic2_read_bits    PARM((struct pic2_info*,int));
-static void pic2_write_bits            PARM((struct pic2_info*,
+static byte pic2_convert_color_bits	PARM((int,int,int));
+static byte pic2_pad_color_bits		PARM((int,int,int));
+static byte pic2_reduce_color_bits	PARM((int,int,int));
+static pixel pic2_exchange_rg		PARM((pixel,int));
+static void pic2_handle_para		PARM((struct pic2_info*,int));
+static int pic2_alloc_buffer		PARM((struct pic2_info*));
+static void pic2_free_buffer		PARM((struct pic2_info*));
+static long pic2_seek_file		PARM((struct pic2_info*,long,int));
+static long pic2_tell_file		PARM((struct pic2_info*));
+static int pic2_read_file		PARM((struct pic2_info*,void*,size_t));
+static long pic2_read_long		PARM((struct pic2_info*));
+static short pic2_read_short		PARM((struct pic2_info*));
+static char pic2_read_char		PARM((struct pic2_info*));
+static int pic2_write_file		PARM((struct pic2_info*,void*,size_t));
+static int pic2_write_long		PARM((struct pic2_info*,long));
+static int pic2_write_short		PARM((struct pic2_info*,int));
+static int pic2_write_char		PARM((struct pic2_info*,int));
+static unsigned long pic2_read_bits	PARM((struct pic2_info*,int));
+static void pic2_write_bits		PARM((struct pic2_info*,
 					     unsigned long,int));
-static void pic2_flush_bits            PARM((struct pic2_info*));
-static void pic2_memory_error          PARM((char*,char*));
-static void pic2_error                 PARM((struct pic2_info*,int));
-static void pic2_file_error            PARM((struct pic2_info*,int));
-static void pic2_init_info             PARM((struct pic2_info*));
-static void pic2_cleanup_pic2_info     PARM((struct pic2_info*,int));
-static void pic2_cleanup_pinfo         PARM((PICINFO*));
-static void pic2_show_pic2_info        PARM((struct pic2_info*));
-static char *pic2_strncpy              PARM((char*,char*,size_t));
-static void *pic2_malloc               PARM((size_t,char*));
-static void *pic2_new                  PARM((size_t,char*));
+static void pic2_flush_bits		PARM((struct pic2_info*));
+static void pic2_memory_error		PARM((char*,char*));
+static void pic2_error			PARM((struct pic2_info*,int));
+static void pic2_file_error		PARM((struct pic2_info*,int));
+static void pic2_init_info		PARM((struct pic2_info*));
+static void pic2_cleanup_pic2_info	PARM((struct pic2_info*,int));
+static void pic2_cleanup_pinfo		PARM((PICINFO*));
+static void pic2_show_pic2_info		PARM((struct pic2_info*));
+static char *pic2_strncpy		PARM((char*,char*,size_t));
+static void *pic2_malloc		PARM((size_t,char*));
+static void *pic2_new			PARM((size_t,char*));
 
-static int WritePIC2                   PARM((FILE*,byte*,int,int,int,
+static int WritePIC2			PARM((FILE*,byte*,int,int,int,
 					     byte*,byte*,byte*,int,int,char*,
 					     int,int,int,int,int,char*));
+static int PIC2SaveParams		PARM((char*, int));
+
 	        
 static char *pic2_id = "P2DT";
 
@@ -686,11 +688,10 @@ int c;
     return (n);
 }
 
-static void pic2_arith_expand_chain(pi, x, y, cc)
-struct pic2_info *pi;
-int x, y;
-pixel cc;
+static void pic2_arith_expand_chain(struct pic2_info *pi, int x, int y, 
+				   pixel cc)
 {
+    (void)y;
     static const unsigned short c_tab[] = {
 	80 + 6 * 5,	/* -5 */
 	80 + 6 * 4,
@@ -1187,10 +1188,10 @@ struct pic2_info *pi;
 /*
  * Make a picture from the expanded data.
  */
-static void pic2_make_xvpic(pi, xp, rp, gp, bp)
-struct pic2_info *pi;
-byte **xp, *rp, *gp, *bp;
+static void pic2_make_xvpic(struct pic2_info *pi, byte **xp, byte *rp, byte *gp,
+			   byte* bp)
 {
+    (void)*rp, (void)*gp, (void)*bp;
     int line, i;
     pixel *linep, opaque;
     short colbits;
@@ -1298,6 +1299,7 @@ int x_offset, y_offset;
 int append;
 char *comment;
 {
+    (void)numcols;
     struct pic2_info pic2;
     char creator[256], title[256], saver[256];
     int e;
@@ -2426,10 +2428,11 @@ int w, h;
 byte *rmap, *gmap, *bmap;
 int type, depth;
 {
+    (void)depth;
     int i, line;
     pixel *linep;
     short colbits;
-
+    
     colbits = pi->header->depth / 3;
 
     line = pic2_save_block(pi, &linep, x_offset, y_offset, w, h,
