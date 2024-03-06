@@ -182,6 +182,7 @@ int WriteTarga(fp,pic,ptype,w,h,rmap,gmap,bmap,numcols,colorstyle)
      int   numcols, colorstyle;
 /*******************************************/
 {
+  (void)numcols, (void)colorstyle;
   int i, j;
   byte *xpic;
 

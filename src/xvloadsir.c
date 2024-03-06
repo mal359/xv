@@ -63,10 +63,23 @@ void print_head(FILE *omf, int nhead, int ndes, int nhtype, int idatatype,
                 char *crproc, char *crtime, 
                 char *descrip, int ldes, short *iaopt, int nia);
 
+void print_head3(FILE *omf, int nhead, int ndes, int nhtype, int idatatype, int nsx,
+		int nsy, float xdeg, float ydeg, float ascale,
+		float bscale, float a0, float b0, 
+		int ixdeg_off, int iydeg_off, int ideg_sc,
+		int iscale_sc, int ia0_off, int ib0_off, int i0_sc,
+		int ioff, int iscale, int iyear, int isday, int ismin,
+		int ieday, int iemin, int iregion, int itype, int iopt,
+		int ipol, int ifreqhm, int ispare1,
+		float anodata, float v_min, float v_max,
+		char *sensor, char *title, char *type, char *tag,
+		char *crproc, char *crtime, 
+		char *descrip, int ldes, short *iaopt, int nia);
+
 char *strclip(char *str);
 
 
-static int   bmpError   PARM((char *, char *));
+static int   bmpError   PARM((const char *, char *));
 
 
 #define FERROR(fp) (ferror(fp) || feof(fp))
@@ -77,10 +90,10 @@ int LoadSIR(fname, pinfo)
      PICINFO *pinfo;
 /*******************************************/
 {
-  FILE         *fp;
-  int          i;
-  byte         *pic8;
-  char         *bname;
+  FILE		*fp;
+  int		i;
+  byte		*pic8;
+  const char	*bname;
 
   float smin, smax;
   float s, soff;
@@ -285,7 +298,6 @@ int LoadSIR(fname, pinfo)
 
   return 1;
 
- ERROR:
   fclose(fp);
   return 0;
 }  
@@ -746,6 +758,7 @@ void print_head(FILE *omf, int nhead, int ndes, int nhtype, int idatatype, int n
 		char *crproc, char *crtime, 
 		char *descrip, int ldes, short *iaopt, int nia)
 {
+  (void)ndes, (void)ismin, (void)iemin, (void)ispare1;
   int i;
   char stmp[150];
 
@@ -855,6 +868,7 @@ void print_head3(FILE *omf, int nhead, int ndes, int nhtype, int idatatype, int 
 		char *crproc, char *crtime, 
 		char *descrip, int ldes, short *iaopt, int nia)
 {
+  (void)ndes, (void)ismin, (void)iemin, (void)ispare1;
   int i;
   char stmp[150];
 

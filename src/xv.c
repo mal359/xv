@@ -79,12 +79,6 @@ static int    mfontsize[] = { TV_FONTSIZE, 0 };
 static char   mfontset[256];
 #endif
 
-#ifdef HAVE_JP2K
-static byte jp2k_magic[12] =
-  { 0, 0, 0, 0x0c, 'j', 'P', ' ', ' ', 0x0d, 0x0a, 0x87, 0x0a };
-#endif
-
-
 /* things to do upon successfully loading an image */
 static int    autoraw    = 0;   /* force raw if using stdcmap */
 static int    autodither = 0;   /* dither */

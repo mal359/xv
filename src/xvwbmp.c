@@ -149,6 +149,7 @@ int WriteWBMP(fp, pic, ptype, w, h, rmap, gmap, bmap, numcols, colorstyle)
      byte *rmap, *gmap, *bmap;
      int numcols, colorstyle;
 {
+    (void)ptype, (void)rmap, (void)gmap, (void)bmap, (void)numcols, (void)colorstyle;
     int count = 0;
     uint8 bit = 0;
     int i;
@@ -249,6 +250,7 @@ static int read_ext(fd, fixed)
      int fd;
      uint8 fixed;
 {
+    (void)fd;
     if (!(fixed&0x7f)) {    /* no extensions */
 	return 1;
     }
@@ -316,6 +318,7 @@ static uint8 *render1(data, size, npixels)
      uint8 *data;
      int size, npixels;
 {
+    (void)size; 
     byte * pic;
     int i;
     int cnt = 0;

@@ -386,17 +386,15 @@ int TextView(fname)
   int   filetype;
   long  textlen;
   char *text, buf[512], title[TITLELEN-1], rfname[MAXPATHLEN+1];
-  char *basefname[128];  /* just current fname, no path */
   FILE *fp;
   char filename[MAXPATHLEN+1];
 
   strncpy(filename, fname, sizeof(filename) - 1);
 #ifdef AUTO_EXPAND
-  Mkvdir(filename);
-  Dirtovd(filename);
+  Mkvdir(rfname);
+  Dirtovd(rfname);
 #endif
 
-  basefname[0] = '\0';
   strncpy(rfname, filename, sizeof(rfname) - 1);
 
   /* see if this file is compressed.  if it is, uncompress it, and view
@@ -408,9 +406,9 @@ int TextView(fname)
     if (!UncompressFile(filename, rfname, filetype)) return FALSE;
 #else
     /* chop off trailing '.Z' from friendly displayed basefname, if any */
-    strncpy (basefname, filename, 128 - 1);
-    *rindex (basefname, '.') = '\0';
-    if (!UncompressFile(basefname, rfname, filetype)) return FALSE;
+    strncpy ('\0', filename, 128 - 1);
+    *rindex ('\0', '.') = '\0';
+    if (!UncompressFile('\0', rfname, filetype)) return FALSE;
 #endif
   }
 
@@ -725,9 +723,7 @@ static int tvChkEvent(tv, xev)
   if (!hasBeenSized) return 0;  /* ignore evrythng until we get 1st Resize */
 
   if (xev->type == Expose) {
-    int x,y,w,h;
     XExposeEvent *e = (XExposeEvent *) xev;
-    x = e->x;  y = e->y;  w = e->width;  h = e->height;
 
     /* throw away excess redraws for 'dumb' windows */
     if (e->count > 0 && (e->window == tv->vscrl.win ||
@@ -1093,6 +1089,7 @@ static void drawTextW(delta, sptr)
      int   delta;
      SCRL *sptr;
 {
+  (void)delta;
   int     i, j, lnum, hpos, vpos, cpos, lwide;
 #ifndef TV_MULTILINGUAL
   int     extrach;

@@ -28,6 +28,8 @@ static int   vd_compp			PARM((char *, char *));
 static int   vd_UncompressFile		PARM((char *, char *));
 static int   vd_tarc			PARM((char *));
 static u_int vd_tar_sumchk		PARM((char *));
+int	     vd_Xhandler		PARM((Display *, XErrorEvent *));
+int          vd_XIOhandler              PARM((Display *));
 
 static XtSignalId IdHup = 0;
 static XtSignalId IdInt = 0;
@@ -632,12 +634,11 @@ char *path;
 
     if (strcmp(tmp1, tmp2)) {
 	char tmp3[MAXPATHLEN+1], tmp4[MAXPATHLEN+1];
-	int archive3, archive4;
+	int archive4;
 
 	snprintf(tmp3, sizeof(tmp3), "%s%s", vdroot, tmp1);
 	strcpy(tmp4, tmp2+strlen(vdroot));
 
-	archive3 = Isarchive(tmp3);
 	archive4 = Isarchive(tmp4);
 
 	if (archive4 && !strcmp(tmp1, tmp4)) {
@@ -1058,9 +1059,10 @@ char *prog, *mode;
  */
 static void vd_HUPhandler(int sig)
 {
+    (void)sig;
     XtNoticeSignal(IdHup);
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
-    signal(SIGHUP, (void (*)PARM((int))) vd_HUPhandler);
+    signal(SIGHUP, vd_HUPhandler);
 #elif defined __linux__
     struct sigaction sa;
     sa.sa_handler = vd_HUPhandler;
@@ -1074,6 +1076,7 @@ static void vd_HUPhandler(int sig)
 
 static void HUPhandler(XtPointer dummy, XtSignalId* Id)
 {
+    (void)dummy, (void)Id;
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sighold(SIGHUP);
 #elif defined __linux__
@@ -1117,6 +1120,7 @@ static void vd_handler(int sig)
 
 static void INThandler(XtPointer dummy, XtSignalId* Id)
 {
+    (void)dummy, (void)Id;
 #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
     sighold(UsedSignal);
 #elif defined __linux__
@@ -1136,17 +1140,16 @@ static void INThandler(XtPointer dummy, XtSignalId* Id)
     Quit(1); /*exit(1);*/
 }
 
-int vd_Xhandler(disp,event)
-Display *disp;
-XErrorEvent *event;
+int vd_Xhandler(Display *disp, XErrorEvent *event)
 {
+    (void)disp, (void)event;
     Quit(1); /*exit(1);*/
     return (1); /* Not reached */
 }
 
-int vd_XIOhandler(disp)
-Display *disp;
+int vd_XIOhandler(Display *disp)
 {
+    (void)disp;
     fprintf(stderr, "XIO  fatal IO error ? (?) on X server\n");
     fprintf(stderr, "You must exit normally in xv usage.\n");
     Quit(1); /*exit(1);*/

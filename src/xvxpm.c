@@ -424,9 +424,9 @@ static int hash(token)
 
 
 /***************************************/
-static int hash_init(hsize)
-     int hsize;
+static int hash_init(int hsize)
 {
+  (void)hsize;
   /*
    * hash_init() - This function takes an arg, but doesn't do anything with
    * it.  It could easily be expanded to figure out the "optimal" number of
@@ -526,6 +526,7 @@ int WriteXPM(fp, pic, ptype, w, h, rp, gp, bp, nc, col, name, comments)
      char *name;		/* name of file (/image) */
      char *comments;		/* image comments (not currently used */
 {
+  (void)comments;
   /* Note here, that tokenchars is assumed to contain 64 valid token */
   /* characters.  It's hardcoded to assume this for benefit of generating */
   /* tokens, when there are more than 64^2 colors. */

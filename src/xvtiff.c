@@ -1451,6 +1451,7 @@ static void put8bitcmaptile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
+  (void)*Map;
   while (h-- > 0) {
     UNROLL8(w, , *cp++ = PALmap[*pp++][0]);
     cp += toskew;
@@ -1468,6 +1469,7 @@ static void put4bitcmaptile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t    w, h;
      int       fromskew, toskew;
 {
+  (void)*Map;
   byte *bw;
 
   fromskew /= 2;
@@ -1489,6 +1491,7 @@ static void put2bitcmaptile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t    w, h;
      int       fromskew, toskew;
 {
+  (void)*Map;
   byte *bw;
 
   fromskew /= 4;
@@ -1509,6 +1512,7 @@ static void put1bitcmaptile(cp, pp, Map, w, h, fromskew, toskew)
 	uint32_t    w, h;
 	int       fromskew, toskew;
 {
+  (void)*Map;
   byte *bw;
 
   fromskew /= 8;
@@ -1530,6 +1534,7 @@ static void putgreytile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
+  (void)*Map;
   while (h-- > 0) {
     uint32_t x;
     for (x = w; x-- > 0;)
@@ -1550,6 +1555,7 @@ static void put1bitbwtile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
+  (void)*Map;
   byte *bw;
 
   fromskew /= 8;
@@ -1570,6 +1576,7 @@ static void put2bitbwtile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
+  (void)*Map;
   byte *bw;
 
   fromskew /= 4;
@@ -1590,6 +1597,7 @@ static void put4bitbwtile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
+  (void)*Map;
   byte *bw;
 
   fromskew /= 2;
@@ -1856,6 +1864,7 @@ static void putRGBSeparateYCbCrClump(cp, y, cb, cr, cw, ch, w, n, fromskew, tosk
      uint32_t w;
      int n, fromskew, toskew;
 {
+  (void)n;
   float Cb, Cr;
   int j, k;
   
@@ -1884,6 +1893,7 @@ static void putRGBSeparate16bitYCbCrClump(cp, y, cb, cr, cw, ch, w, n, fromskew,
      uint32_t w;
      int n, fromskew, toskew;
 {
+  (void)n;
   float Cb, Cr;
   int j, k;
   
@@ -1922,6 +1932,7 @@ static void putcontig8bitYCbCrtile(cp, pp, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
+  (void)*Map;
   u_int Coff = YCbCrVertSampling * YCbCrHorizSampling;
   byte *tp;
   uint32_t x;
@@ -1969,6 +1980,7 @@ static void putYCbCrseparate8bittile(cp, y, cb, cr, Map, w, h, fromskew, toskew)
      uint32_t w, h;
      int fromskew, toskew;
 {
+  (void)*Map;
   uint32_t x;
   int fromskew2 = fromskew/YCbCrHorizSampling;
   
@@ -2020,6 +2032,7 @@ static void putYCbCrseparate16bittile(cp, y, cb, cr, Map, w, h, fromskew, toskew
      uint32_t w, h;
      int fromskew, toskew;
 {
+  (void)*Map;
   uint32_t x;
   int fromskew2 = fromskew/YCbCrHorizSampling;
   
@@ -2068,6 +2081,7 @@ static void putYCbCrseparate16bittile(cp, y, cb, cr, Map, w, h, fromskew, toskew
 static tileContigRoutine pickTileContigCase(Map)
      RGBvalue* Map;
 {
+  (void)*Map;
   tileContigRoutine put = 0;
 
   switch (photometric) {
@@ -2119,6 +2133,7 @@ static tileContigRoutine pickTileContigCase(Map)
 static tileSeparateRoutine pickTileSeparateCase(Map)
      RGBvalue* Map;
 {
+  (void)*Map;
   tileSeparateRoutine put = 0;
 
   switch (photometric) {

@@ -1,4 +1,4 @@
-/*
+ /*
  * xvtiffwr.c - write routine for TIFF pictures
  *
  * WriteTIFF(fp,pic,w,h,r,g,b,numcols,style,raw,fname,comment)
@@ -53,6 +53,7 @@ static int WriteTIFF(fp,pic,ptype,w,h,rmap,gmap,bmap,numcols,colorstyle,
      int   numcols, colorstyle;
      char *fname, *comment;
 {
+  (void)fp;
   TIFF *tif;
   byte *pix;
   int   i,j;

@@ -2170,6 +2170,7 @@ void  CreatePIC2W          PARM((void));
 void  PIC2Dialog           PARM((int));
 int   PIC2CheckEvent       PARM((XEvent *));
 int   PIC2SetParamOptions  PARM((char *));
+int   PIC2SaveParams	   PARM((char *, int));
 
 /**************************** XVPM.C *****************************/
 int LoadPM                 PARM((char *, PICINFO *));

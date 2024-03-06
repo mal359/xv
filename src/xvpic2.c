@@ -281,7 +281,6 @@ static void *pic2_new			PARM((size_t,char*));
 static int WritePIC2			PARM((FILE*,byte*,int,int,int,
 					     byte*,byte*,byte*,int,int,char*,
 					     int,int,int,int,int,char*));
-static int PIC2SaveParams		PARM((char*, int));
 
 	        
 static char *pic2_id = "P2DT";
