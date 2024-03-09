@@ -393,7 +393,10 @@
 
 #ifndef VMS       /* VMS hates multi-line definitions */
 #  if defined(SVR4)  || defined(SYSV) || defined(sco) || \
-      defined(XENIX) || defined(__osf__) || defined(__linux__)
+      defined(XENIX) || defined(__osf__) || defined(__linux__) || \
+      defined(BSD) || defined(__illumos__) || defined(__GNU__) || \
+      defined(__CYGWIN__)
+      
 #    undef  USE_GETCWD
 #    define USE_GETCWD          /* use 'getcwd()' instead of 'getwd()' */
 #  endif                        /* >> SECURITY ISSUE << */
@@ -404,9 +407,7 @@
  *                are other systems that have mkstemp() (SUSv3); we can add
  *                them later. */
 #ifndef VMS       /* VMS hates multi-line definitions */
-#  if defined(__linux__) || defined(__OpenBSD__) || defined(__NetBSD__) || \
-      defined(__bsdi__) || defined(__FreeBSD__) || defined(__APPLE__) || \
-      defined(__illumos__)
+#  if defined(__linux__) || defined(BSD) || defined(__illumos__) || defined(_AIX) || defined(_sun) || defined(sco) || defined(_hpux) || defined(_sgi)
 #    ifndef USE_MKSTEMP
 #      define USE_MKSTEMP       /* use 'mkstemp()' instead of 'mktemp()' */
 #    endif                      /* >> SECURITY ISSUE << */
@@ -428,7 +429,7 @@
 #  endif
 #endif
 
-#if (defined(SYSV) || defined(SVR4) || defined(__linux__) || defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)) || defined (__illumos__) && !defined(USE_GETCWD)
+#if (defined(SYSV) || defined(SVR4) || defined(__linux__) || defined(BSD) || defined (__illumos__) || defined(__GNU__) || defined(__CYGWIN__)) && !defined(USE_GETCWD) 
 #  define USE_GETCWD
 #endif
 
@@ -1532,7 +1533,7 @@ WHERE int           mgcsfxUp;      /* is mgcsfxW mapped, or what? */
 #      ifndef X_LOCALE
 #        if defined(__FreeBSD__)
 	   char *localeList[] = {"", "ja_JP.EUC", "none", "none"};
-#        elif defined(__linux__)
+#        elif defined(__linux__) || defined(__CYGWIN__)
 	   char *localeList[] = {"", "ja_JP.eucJP", "none", "ja_JP.SJIS"};
 #        elif defined(__sun) || defined(sun) || defined(__illumos__)
 	   char *localeList[] = {"", "ja", "none", "none"};
