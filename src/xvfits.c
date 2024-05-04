@@ -326,7 +326,7 @@ static const char *wrheader(fp, nx, ny, comment)
        * Check to see if it is an xv history record; if so, then avoid
        * duplicating it.
        */
-      if (j != lenhist || xvbcmp(comment, history, (size_t) j) != 0)
+      if (j != lenhist || memcmp(comment, history, (size_t) j) != 0)
 	wrcard(&block[80*i++], "COMMENT", T_STR, j, comment);
 
       if (i == NCARDS)  {  /* Filled up a block */

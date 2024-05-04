@@ -1473,7 +1473,7 @@ int cmd;
       saveCMap(&tmp1cmap);        /* buffer current cmapstate */
 
       /* prevent multiple 'Undo All's from filling Undo buffer */
-      if (xvbcmp((char *) &tmpcmap, (char *) &tmp1cmap,
+      if (memcmp((char *) &tmpcmap, (char *) &tmp1cmap,
 		 sizeof(struct cmapstate))) {
 	/* the reversion changed the cmapstate */
 	memmove((char *) &prevcmap, (char *) &tmpcmap, 
@@ -1613,9 +1613,9 @@ static void applyGamma(cmapchange)
     GammifyColors();
 
     /* if current 'desired' colormap hasn't changed, don't DO anything */
-    if (!xvbcmp((char *) rMap, (char *) oldr, (size_t) numcols) &&
-	!xvbcmp((char *) gMap, (char *) oldg, (size_t) numcols) &&
-	!xvbcmp((char *) bMap, (char *) oldb, (size_t) numcols)) return;
+    if (!memcmp((char *) rMap, (char *) oldr, (size_t) numcols) &&
+	!memcmp((char *) gMap, (char *) oldg, (size_t) numcols) &&
+	!memcmp((char *) bMap, (char *) oldb, (size_t) numcols)) return;
 
     /* special case: if using R/W color, just modify the colors and leave */
     if (allocMode==AM_READWRITE && rwthistime &&
@@ -2025,7 +2025,7 @@ struct gamstate *gs;
     changed++;
   }
 
-  if (xvbcmp((char *) hmap, (char *) gs->hmap, sizeof(hmap))) { /*hmap chngd*/
+  if (memcmp((char *) hmap, (char *) gs->hmap, sizeof(hmap))) { /*hmap chngd*/
     memmove((char *) hmap, (char *) gs->hmap, sizeof(hmap));
     build_hremap();
     changed++;

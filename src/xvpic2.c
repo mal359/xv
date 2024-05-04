@@ -406,7 +406,7 @@ int quick;
 	pinfo->normh = pinfo->h;
 	pinfo->type = PIC24;
 	for (j = 0; j < n_form_tab; j++) {
-	    if (xvbcmp(pic2.block->id, form_tab[j].id, (size_t) 4) == 0)
+	    if (memcmp(pic2.block->id, form_tab[j].id, (size_t) 4) == 0)
 		break;
 	}
 	pinfo->frmType = F_PIC2;
@@ -2517,7 +2517,7 @@ struct pic2_info *pi;
 
    /* check block id */
     for (i = 0; i < n_form_tab; i++) {
-	if (xvbcmp(pi->block->id, form_tab[i].id, (size_t) 4) == 0)
+	if (memcmp(pi->block->id, form_tab[i].id, (size_t) 4) == 0)
 	    break;
     }
     if (i == n_form_tab)
@@ -2560,7 +2560,7 @@ struct pic2_info *pi;
     int i;
 
     for (i = 0; i < n_form_tab; i++) {
-	if (xvbcmp(pi->block->id, form_tab[i].id, (size_t) 4) == 0)
+	if (memcmp(pi->block->id, form_tab[i].id, (size_t) 4) == 0)
 	    break;
     }
     if (i == n_form_tab)
@@ -2580,7 +2580,7 @@ pixel opaque;
     int i;
 
     for (i = 0; i < n_form_tab; i++) {
-	if (xvbcmp(id, form_tab[i].id, (size_t) 4) == 0)
+	if (memcmp(id, form_tab[i].id, (size_t) 4) == 0)
 	    break;
     }
     if (i == n_form_tab)

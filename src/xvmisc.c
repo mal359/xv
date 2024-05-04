@@ -1029,7 +1029,38 @@ void xvbcopy(src, dst, len)
 */
 
 /***************************************************/
-int xvbcmp (s1, s2, len)
+  /**************************************************************************
+   * 									    *
+   * This is a local reimplementation of Berkeley's bcmp() function.	    *
+   * 									    *
+   * Here's what Single UNIX Specification v2 (published 1997) has to say:  *
+   *									    *
+   * ``For portability to implementations conforming to earlier versions of *
+   * this specification, memcmp() is preferred over this function.''	    *
+   *									    *
+   * Diplomatic.							    *
+   *									    *
+   * 									    *
+   * NetBSD's manual entry gives more historial/political context:          *
+   *									    *
+   * ``The bcmp() function conforms to IEEE Std	1003.1-2001 (`POSIX.1').    *
+   * The IEEE Std 1003.1-2004 ("POSIX.1") revision marked it as legacy and  *
+   * recommended the use of memcmp(3) instead. The IEEE Std 1003.1-2008     *
+   * ("POSIX.1") revision removed bcmp() from the specification.''	    *
+   *									    *
+   * ...so this is, in the contemporary era, a non-standard function.	    *
+   *									    *
+   *									    *
+   * And finally, Linux's manual entry:					    *
+   *									    *
+   * ``bcmp() is identical to memcmp(3); use it instead.''		    *
+   *									    *
+   * Pithy. 								    *
+   * Frozen in carbonite.					 	    * 
+   * 								   MAL 2024 *
+   **************************************************************************/
+
+/*int xvbcmp (s1, s2, len)
      const char   *s1, *s2;
      size_t  len;
 {
@@ -1038,7 +1069,7 @@ int xvbcmp (s1, s2, len)
     else if (*s1 > *s2) return 1;
   }
   return 0;
-}
+}*/
 
 /***************************************************/
 void xvbzero(s, len)

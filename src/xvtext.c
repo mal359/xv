@@ -1757,7 +1757,7 @@ static void setCodingSpec(tv, cs)
     TVINFO *tv;
     struct coding_spec *cs;
 {
-  if (xvbcmp((char *) &tv->ccs, (char *) cs, sizeof *cs) == 0)
+  if (memcmp((char *) &tv->ccs, (char *) cs, sizeof *cs) == 0)
     return;
 
   tv->ccs = *cs;
