@@ -8,6 +8,14 @@
 #  include "conf.h"
 #endif
 
+/*******************************************************************************
+ *									       *
+ * This program is showing its age. At the very least, let's ban some old,     *
+ * poorly-designed C functions. This ban header is from Git.                   *
+ *                                                                   MAL 2024  *
+ *******************************************************************************
+#include <banned.h>
+
 #include "copyright.h"
 #include "config.h"
 
