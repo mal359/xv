@@ -255,9 +255,6 @@ int LoadPDS(fname, pinfo)
   /* returns '1' on success, '0' on failure */
 
   int tempnum, bytewidth, bufsize;
-#ifndef USE_MKSTEMP
-  int tmpfd;
-#endif
   FILE	*zf;
   static int isfixed,teco,i,j,itype,vaxbyte,
              recsize,hrecsize,irecsize,isimage,labelrecs,labelsofar,
@@ -701,44 +698,19 @@ int LoadPDS(fname, pinfo)
     ftypstr = "PDS (Huffman)";
     fclose(zf);
 
-#ifndef VMS
     snprintf(pdsuncompfname, sizeof(pdsuncompfname) - 1, "%s/xvhuffXXXXXX", tmpdir);
-#else
-    strcpy(pdsuncompfname,"sys$disk:[]xvhuffXXXXXX");
-#endif
 
-#ifdef USE_MKSTEMP
     close(mkstemp(pdsuncompfname));
-#else
-    mktemp(pdsuncompfname);
-    tmpfd = open(pdsuncompfname,O_WRONLY|O_CREAT|O_EXCL,S_IRWUSR);
-    if (tmpfd < 0) {
-      SetISTR(ISTR_WARNING,"Unable to create temporary file.");
-      return 0;
-    }
-    close(tmpfd);
-#endif
 
-#ifndef VMS
     sprintf(scanbuff,"%s '%s' - 4 > %s", PDSUNCOMP, fname, pdsuncompfname);
-#else
-    sprintf(scanbuff,"%s %s %s 4",PDSUNCOMP,fname,pdsuncompfname);
-#endif
 
     SetISTR(ISTR_INFO,"De-Huffmanizing '%s'...",fname);
 
     /* pdsuncomp filters to a raw file */
-#ifndef VMS
     if ( (tempnum=system(scanbuff)) ) {
       SetISTR(ISTR_WARNING,"Unable to de-Huffmanize '%s'.",fname);
       return 0;
     }
-#else
-    if ( (tempnum = !system(scanbuff)) ) {
-      SetISTR(ISTR_WARNING,"Unable to de-Huffmanize '%s'.",fname);
-      return 0;
-    }
-#endif
 
 
     zf = xv_fopen(pdsuncompfname,"r");
@@ -917,13 +889,7 @@ static int Convert16BitImage(fname, pinfo, swab)
   }
 
   /* check whether histogram file exists */
-#ifdef VMS
-  c = (char *) rindex(strcpy(name,
-			     (c = (char *) rindex(fname, ':')) ? c+1 : fname),
-		      ']');
-#else
   c = (char *) rindex(strcpy(name, fname), '/');
-#endif /* VMS */
   (void)strcpy(c ? c+1 : name, "hist.tab");
 
   /* read the histogram file which is always LSB_INTEGER */
@@ -1020,13 +986,7 @@ static int LoadPDSPalette(fname, pinfo)
   char    name[1024], buf[256], *c;
   int     i, n, r, g, b;
 
-#ifdef VMS
-  c = (char *) rindex(strcpy(name,
-			     (c = (char *) rindex(fname, ':')) ? c+1 : fname),
-		      ']');
-#else
   c = (char *) rindex(strcpy(name, fname), '/');
-#endif /* VMS */
   (void)strcpy(c ? c+1 : name, "palette.tab");
 
   if ((fp = xv_fopen(name, "r")) == NULL)

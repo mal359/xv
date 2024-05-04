@@ -20,10 +20,8 @@
 #include <stdio.h>
 #include <math.h>
 
-#ifdef __STDC__
-#  include <stdlib.h>	/* atoi() */
-#  include <ctype.h>	/* isdigit() */
-#endif
+#include <stdlib.h>	/* atoi() */
+#include <ctype.h>	/* isdigit() */
 
 #ifndef M_PI
 #  define M_PI       3.1415926535897932385
@@ -35,18 +33,9 @@
 #define DEFSIZE 1024
 #define MAXCOLS  128
 
-/* some VMS thing... */
-#ifdef vax11c
-#include <ctype.h>
-#endif
-
 
 #undef PARM
-#ifdef __STDC__
-#  define PARM(a) a
-#else
-#  define PARM(a) ()
-#endif
+#define PARM(a) a
 
 #define RANGE(a,b,c) { if (a < b) a = b;  if (a > c) a = c; }
 
@@ -87,10 +76,6 @@ int main(argc,argv)
   char *geom    = NULL;
   char *rptgeom = NULL;
 
-
-#ifdef VMS
-  getredirection(&argc, &argv);
-#endif
 
 
   for (i=1; i<argc; i++) {

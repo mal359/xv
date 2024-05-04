@@ -136,11 +136,7 @@ static NODE *tree;
 /* subroutine definitions */
 
 #undef PARM
-#ifdef __STDC__
-#  define PARM(a) a
-#else
-#  define PARM(a) ()
-#endif
+#define PARM(a) a
 
 int  main         PARM((int, char **));
 void pds_labels   PARM((int));
@@ -515,32 +511,20 @@ void open_files(host)
   else if (*host == 3 || *host == 4) {
     if (output_format == 1) {     /* write PDS format blocks */
       if (record_bytes == 836) {
-	if ((outfile=fopen(outname, "w"
-#ifdef VMS
-			   ,"mrs=836",FOP,CTX,RECORD_TYPE
-#endif
-			   ))==NULL) {
+	if ((outfile=fopen(outname, "w"))==NULL) {
 	  fprintf(stderr,"\ncan't open output file: %s\n", outname);
 	  exit(1);
 	}
       }
       else {
-	if ((outfile=fopen(outname, "w"
-#ifdef VMS
-			   ,"mrs=1204",FOP,CTX,RECORD_TYPE
-#endif
-			   ))==NULL) {
+	if ((outfile=fopen(outname, "w"))==NULL) {
 	  fprintf(stderr,"\ncan't open output file: %s\n", outname);
 	  exit(1);
 	}
       }
     }
     else if (output_format == 2) {  /* write FITS format blocks */
-      if ((outfile=fopen(outname, "w"
-#ifdef VMS
-			 ,"mrs=2880",FOP,CTX,RECORD_TYPE
-#endif
-			 ))==NULL) {
+      if ((outfile=fopen(outname, "w"))==NULL) {
 	fprintf(stderr,"\ncan't open output file: %s\n", outname);
 	exit(1);
       }
@@ -548,21 +532,13 @@ void open_files(host)
 
     else {                       /* write fixed-length records */
       if (record_bytes == 836) {
-	if ((outfile=fopen(outname, "w"
-#ifdef VMS
-			   ,"mrs=800",FOP,CTX,RECORD_TYPE
-#endif
-			   ))==NULL) {
+	if ((outfile=fopen(outname, "w"))==NULL) {
 	  fprintf(stderr,"\ncan't open output file: %s\n", outname);
 	  exit(1);
 	}
       }
       else {
-	if ((outfile=fopen(outname, "w"
-#ifdef VMS
-			   ,"mrs=1204",FOP,CTX,RECORD_TYPE
-#endif
-			   ))==NULL) {
+	if ((outfile=fopen(outname, "w"))==NULL) {
 	  fprintf(stderr,"\ncan't open output file: %s\n", outname);
 	  exit(1);
 	}

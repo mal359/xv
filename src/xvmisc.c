@@ -38,9 +38,9 @@
 #define NEEDSTIME
 #include "xv.h"
 
-#ifdef __linux__	/* probably others, too, but being conservative */
-#  include <unistd.h>	/* getwd() */
-#endif
+/*#ifdef __linux__	 * probably others, too, but being conservative  */
+			/* Uhm. Yes. Pretty much everyone else. MAL 2024 */
+#include <unistd.h>	/* get(c)wd() */
 
 #include "bits/fc_left"
 #include "bits/fc_leftm"
@@ -1122,11 +1122,7 @@ FILE *xv_fopen(fname, mode)
 {
   FILE *fp;
 
-#ifndef VMS
   fp = fopen(fname, mode);
-#else
-  fp = fopen(fname, mode, "ctx=stm");
-#endif
 
   return fp;
 }
@@ -1138,16 +1134,8 @@ void xv_mktemp(buf, fname)
      char       *buf;
      const char *fname;
 {
-#ifndef VMS
   sprintf(buf, "%s/%s", tmpdir, fname);
-#else
-  sprintf(buf, "Sys$Disk:[]%s", fname);
-#endif
-#ifdef USE_MKSTEMP
   close(mkstemp(buf));
-#else
-  mktemp(buf);
-#endif
 }
 
 
@@ -1161,59 +1149,8 @@ void Timer(msec)   /* waits for 'n' milliseconds */
 
   usec = (long) msec * 1000;
 
-
-#ifdef USLEEP
   usleep(usec);
   /* return */
-#endif
-
-
-#if defined(VMS) && !defined(USLEEP)
-  {
-    float ftime;
-    ftime = msec / 1000.0;
-    lib$wait(&ftime);
-    /* return */
-  }
-#endif
-
-
-#if defined(sgi) && !defined(USLEEP)
-  {
-    float ticks_per_msec;
-    long ticks;
-    ticks_per_msec = (float) CLK_TCK / 1000.0;
-    ticks = (long) ((float) msec * ticks_per_msec);
-    sginap(ticks);
-    /* return */
-  }
-#endif
-
-
-/* does SGI define SVR4?  not sure... */
-#if (defined(SVR4) || defined(sco)) && !defined(sgi) && !defined(USLEEP)
-  {
-    struct pollfd dummy;
-    poll(&dummy, 0, msec);
-    /* return */
-  }
-#endif
-
-
-#if !defined(USLEEP) && !defined(VMS) && !defined(sgi) && !defined(SVR4) && !defined(sco) && !defined(NOTIMER)
-  {
-    /* default/fall-through Timer() method now uses 'select()', which
-     * probably works on all systems *anyhow* (except for VMS...) */
-
-    struct timeval time;
-
-    time.tv_sec = usec / 1000000L;
-    time.tv_usec = usec % 1000000L;
-    select(0, XV_FDTYPE NULL, XV_FDTYPE NULL, XV_FDTYPE NULL, &time);
-    /* return */
-  }
-#endif
-
 
   /* NOTIMER case, fallthroughs, etc. ... but we return void, so who cares */
   /* return */

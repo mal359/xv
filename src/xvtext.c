@@ -402,14 +402,7 @@ int TextView(fname)
 
   filetype = ReadFileType(filename);
   if ((filetype == RFT_COMPRESS) || (filetype == RFT_BZIP2)) {
-#ifndef VMS
     if (!UncompressFile(filename, rfname, filetype)) return FALSE;
-#else
-    /* chop off trailing '.Z' from friendly displayed basefname, if any */
-    strncpy ('\0', filename, 128 - 1);
-    *rindex ('\0', '.') = '\0';
-    if (!UncompressFile('\0', rfname, filetype)) return FALSE;
-#endif
   }
 
   fp = fopen(rfname, "r");

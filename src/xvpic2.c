@@ -368,23 +368,11 @@ int quick;
     if (pic2split && !quick) {
 	char firstpage[512];
 	struct stat st;
-#ifndef USE_MKSTEMP
-	int tmpfd;
-#endif
 
-#ifndef VMS
 	sprintf(pic2.pagebname, "%s/xvpic2XXXXXX", tmpdir);
-#else
-	sprintf(pic2.pagebname, "Sys$Scratch:xvpic2XXXXXX");
-#endif
-#ifdef USE_MKSTEMP
+
 	close(mkstemp(pic2.pagebname));
-#else
-	mktemp(pic2.pagebname);
-	tmpfd = open(pic2.pagebname, O_WRONLY|O_CREAT|O_EXCL, S_IRWUSR);
-	if (tmpfd < 0) FatalError("LoadPIC2(): can't create temporary file");
-	close(tmpfd);
-#endif
+
 	if (pic2.pagebname[0] == '\0')
 	    pic2_error(&pic2, PIC2_TMPFILE);
 	strcat(pic2.pagebname, ".");

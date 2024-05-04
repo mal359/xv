@@ -13,9 +13,7 @@
 
 /* include files */
 #include <stdio.h>
-#ifdef __STDC__
-#  include <stdlib.h>   /* exit(), abs() */
-#endif
+#include <stdlib.h>   /* exit(), abs() */
 #include <sys/types.h>
 #include <ctype.h>
 
@@ -24,10 +22,6 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 
-#ifdef VMS
-#  define index strchr
-#endif
-
 typedef unsigned char byte;
 
 /* text centering macros for X11 */
@@ -35,11 +29,7 @@ typedef unsigned char byte;
 #define CENTERY(f,y) ((y)-((f->ascent+f->descent)/2)+f->ascent)
 
 #undef PARM
-#ifdef __STDC__
-#  define PARM(a) a
-#else
-#  define PARM(a) ()
-#endif
+#define PARM(a) a
 
 #define FONT "8x13"
 

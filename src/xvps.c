@@ -1576,18 +1576,11 @@ int LoadPS(fname, pinfo, quick)
   doalert = (!quick && !ctrlUp && !infoUp);  /* open alert if no info wins */
   epsf    = 0;
 
-#ifndef VMS
   sprintf(tmpname, "%s/xvpgXXXXXX", tmpdir);
-#else
-  sprintf(tmpname, "Sys$Scratch:xvpgXXXXXX");
-#endif
 
-#ifdef USE_MKSTEMP
   close(mkstemp(tmpname));
-#else
-  mktemp(tmpname);
-#endif
-  if (tmpname[0] == '\0') {   /* mktemp() or mkstemp() blew up */
+
+  if (tmpname[0] == '\0') {   /* mkstemp() blew up */
     sprintf(dummystr,"LoadPS: Unable to create temporary filename???");
     ErrPopUp(dummystr, "\nHow unlikely!");
     return 0;
@@ -1597,33 +1590,17 @@ int LoadPS(fname, pinfo, quick)
 
   /* build 'gscmd' string */
 
-#ifndef VMS  /* VMS needs quotes around mixed case command lines */
   sprintf(gscmd, "%s -sDEVICE=%s -r%d -q -dSAFER -dNOPAUSE -sOutputFile=%s%%d ",
 	  GS_PATH, gsDev, gsRes, tmpname);
-#else
-  sprintf(gscmd,
-	  "%s \"-sDEVICE=%s\" -r%d -q \"-dNOPAUSE\" \"-sOutputFile=%s%%d\" ",
-	  GS_PATH, gsDev, gsRes, tmpname);
-#endif
 
 
 #ifdef GS_LIB
-#  ifndef VMS
-     sprintf(tmp, "-I%s ", GS_LIB);
-#  else
-     sprintf(tmp, "\"-I%s\" ", GS_LIB);
-#  endif
-   strcat(gscmd, tmp);
+#sprintf(tmp, "-I%s ", GS_LIB);
 #endif
 
 
    /* prevent some potential naughtiness... */
-#ifndef VMS
    strcat(gscmd, "-dSAFER ");
-#else
-   strcat(gscmd, "\"-dSAFER\" ");
-#endif
-
 
   if (gsGeomStr) {
     sprintf(tmp, "-g%s ", gsGeomStr);
@@ -1642,9 +1619,6 @@ int LoadPS(fname, pinfo, quick)
     WaitCursor();
     gsresult = system(cmdstr);
     WaitCursor();
-#ifdef VMS
-    gsresult = !gsresult;   /* VMS returns non-zero if OK */
-#endif
 
     /* count # of files produced... */
     for (i=1; i<1000; i++) {
@@ -1757,7 +1731,6 @@ void buildCmdStr(str, gscmd, xname, quick, epsf)
   }
   strcpy (x, "'");
 
-#ifndef VMS
 
   if      (epsf)  snprintf(str, CMDSIZE, "echo '\n showpage ' | cat %s - | %s -",
 			  fname, gscmd);
@@ -1768,18 +1741,6 @@ void buildCmdStr(str, gscmd, xname, quick, epsf)
 
   else            snprintf(str, CMDSIZE, "%s -- %s", gscmd, fname);
 
-#else /* VMS */
-  /* VMS doesn't have pipes or an 'echo' command and GS doesn't like
-     Unix-style filenames as input files in the VMS version */
-  strcat(tmp, " -- ");
-  rld = strrchr(fname, '/');     /* Pointer to last '/' */
-  if (rld) rld++;                /* Pointer to filename */
-  else rld = fname;              /* No path - use original string */
-  strcat(tmp, rld);
-#endif  /* VMS */
   free(fname);
 }
 #endif  /* GS_PATH */
-
-
-

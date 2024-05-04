@@ -2151,10 +2151,15 @@ static void rndCols()
 	continue;
       }
     }
-
+#ifdef HAS_ARC4RANDOM
+    rcmap[i] = arc4random_uniform(256);
+    gcmap[i] = arc4random_uniform(256);
+    bcmap[i] = arc4random_uniform(256);
+#else
     rcmap[i] = random()&0xff;
     gcmap[i] = random()&0xff;
     bcmap[i] = random()&0xff;
+#endif
   }
 
   ChangeEC(editColor);

@@ -19,10 +19,6 @@
 
 #include <X11/Xatom.h>
 
-#ifdef VMS
-  extern Window pseudo_root();
-#endif
-
 
 /* program needs one of the following fonts.  Trys them in ascending order */
 #define FONT1 "-*-lucida-medium-r-*-*-12-*-*-*-*-*-*-*"
@@ -175,15 +171,7 @@ int main(argc, argv)
 #ifdef AUTO_EXPAND
   signal(SIGHUP, SIG_IGN);
 #endif
-#ifndef NOSIGNAL
   signal(SIGQUIT, SIG_IGN);
-#endif
-
-#ifdef VMS
-  /* convert VMS-style arguments to unix names and glob */
-  do_vms_wildcard(&argc, &argv);
-  getredirection(&argc, &argv);
-#endif
 
 
   /*****************************************************/
@@ -242,11 +230,7 @@ int main(argc, argv)
   allocMode    = AM_READONLY;
   novbrowse    = 0;
 
-#ifndef VMS
   strcpy(printCmd, "lpr");
-#else
-  strcpy(printCmd, "Print /Queue = XV_Queue");
-#endif
 
   forceClipFile = 0;
   clearR = clearG = clearB = 0;
@@ -563,7 +547,6 @@ int main(argc, argv)
 
   /* always search for virtual root window */
   vrootW = rootW;
-#ifndef VMS
   __SWM_VROOT = XInternAtom(theDisp, "__SWM_VROOT", False);
   XQueryTree(theDisp, rootW, &rootReturn, &parentReturn, &children,
 	     &numChildren);
@@ -583,9 +566,6 @@ int main(argc, argv)
       break;
     }
   }
-#else  /* VMS */
-  vrootW = pseudo_root(theDisp, theScreen);
-#endif
 
   if (!useroot && limit2x) { maxWIDE *= 2;  maxHIGH *= 2; }
   if (nolimits) { maxWIDE = 65000; maxHIGH = 65000; }
@@ -866,13 +846,23 @@ int main(argc, argv)
   else if (randomShow) {
     int i, j;
     char *tmp;
-
+#ifdef HAS_ARC4RANDOM
+# if !defined(__GLIBC__) && !defined(HAVE_LIBBSD)
+    arc4random_stir();
+# endif
+    for (i = numnames; i > 1; i--) {
+      j = arc4random_uniform(i);
+      tmp = namelist[i-1];
+      namelist[i-1] = namelist[j];
+      namelist[j] = tmp;
+#else
     srandom((int)time((time_t *)0));
     for (i = numnames; i > 1; i--) {
       j = random() % i;
       tmp = namelist[i-1];
       namelist[i-1] = namelist[j];
       namelist[j] = tmp;
+#endif
     }
   }
 
@@ -1235,15 +1225,9 @@ static void parseResources(argc, argv)
       break;
     }
 
-#ifdef VMS    /* in VMS, cmd-line opts are in lower case */
-    else if (!argcmp(argv[i],"-debug",3,0,&pm)) {
-      if (++i<argc) DEBUG = atoi(argv[i]);
-    }
-#else
     else if (!argcmp(argv[i],"-DEBUG",2,0,&pm)) {
       if (++i<argc) DEBUG = atoi(argv[i]);
     }
-#endif
   }
 
   /* open the display */
@@ -1514,15 +1498,9 @@ static void parseCmdLine(argc, argv)
     else if (!argcmp(argv[i],"-cursor",3,0,&pm))	   /* cursor */
       { if (++i<argc) curstype = atoi(argv[i]); }
 
-#ifdef VMS    /* in VMS, cmd-line-opts are in lower case */
-    else if (!argcmp(argv[i],"-debug",3,0,&pm)) {
-      { if (++i<argc) DEBUG = atoi(argv[i]); }
-    }
-#else
     else if (!argcmp(argv[i],"-DEBUG",2,0,&pm)) {
       { if (++i<argc) DEBUG = atoi(argv[i]); }
     }
-#endif
 
     else if (!argcmp(argv[i],"-dir",4,0,&pm))              /* search dir */
       { if (++i<argc) strcpy(searchdir, argv[i]); }
@@ -1914,13 +1892,7 @@ static void cmdSyntax(i)
   printoption("[-/+cmtmap]");
   printoption("[-crop x y w h]");
   printoption("[-cursor char#]");
-
-#ifndef VMS
   printoption("[-DEBUG level]");
-#else
-  printoption("[-debug level]");
-#endif
-
   printoption("[-dir directory]");
   printoption("[-display disp]");
   printoption("[-/+dither]");
@@ -2307,15 +2279,9 @@ static int openPic(filenum)
 
       /* stick 'initdir ' onto front of filename */
 
-#ifndef VMS
       tmp1 = (char *) malloc(strlen(fullname) + strlen(initdir) + 2);
       if (!tmp1) FatalError("malloc 'filename' failed");
       sprintf(tmp1,"%s/%s", initdir, fullname);
-#else  /* it is VMS */
-      tmp1 = (char *) malloc(strlen(fullname) + 2);
-      if (!tmp1) FatalError("malloc 'filename' failed");
-      sprintf(tmp1,"%s", fullname);
-#endif
 
       if (!strlen(searchdir)) {            /* no searchdir, don't check */
 	fullname = tmp1;
@@ -2331,15 +2297,10 @@ static int openPic(filenum)
 	}
 	else {                             /* doesn't:  try searchdir */
 	  free(tmp1);
-#ifndef VMS
+
 	  tmp1 = (char *) malloc(strlen(fullname) + strlen(searchdir) + 2);
 	  if (!tmp1) FatalError("malloc 'filename' failed");
 	  sprintf(tmp1,"%s/%s", searchdir, fullname);
-#else  /* it is VMS */
-	  tmp1 = (char *) malloc(strlen(fullname) + 2);
-	  if (!tmp1) FatalError("malloc 'filename' failed");
-	  sprintf(tmp1,"%s", fullname);
-#endif
 
 	  fp = fopen(tmp1, "r");
 	  if (fp) {                        /* searchpath/fullname exists */
@@ -2352,39 +2313,22 @@ static int openPic(filenum)
       }
     }
 
-    strncpy(filename, fullname, sizeof(filename)-1);
+    memmove(filename, fullname, strlen(filename)+1);
 
 
     /* if the file is STDIN, write it out to a temp file */
 
     if (strcmp(filename,STDINSTR)==0) {
       FILE *fp = NULL;
-#ifndef USE_MKSTEMP
-      int tmpfd;
-#endif
 
-#ifndef VMS
       snprintf(filename, sizeof(filename)-1, "%s/xvXXXXXX", tmpdir);
-#else /* it is VMS */
-      sprintf(filename, "[]xvXXXXXX");
-#endif
 
-#ifdef USE_MKSTEMP
       fp = fdopen(mkstemp(filename), "w");
-#else
-      mktemp(filename);
-      tmpfd = open(filename,O_WRONLY|O_CREAT|O_EXCL,S_IRWUSR);
-      if (tmpfd < 0) FatalError("openPic(): can't create temporary file");
-      fp = fdopen(tmpfd,"w");
-#endif
       if (!fp) FatalError("openPic(): can't write temporary file");
 
       clearerr(stdin);
       while ( (i=getchar()) != EOF) putc(i,fp);
       fclose(fp);
-#ifndef USE_MKSTEMP
-      close(tmpfd);
-#endif
 
       /* and remove it from list, since we can never reload from stdin */
       if (strcmp(namelist[0], STDINSTR)==0) deleteFromList(0);
@@ -2409,13 +2353,7 @@ static int openPic(filenum)
   if ((filetype == RFT_COMPRESS) || (filetype == RFT_BZIP2)) {
     char tmpname[128];
 
-    if (
-#ifndef VMS
-	UncompressFile(filename, tmpname, filetype)
-#else
-	UncompressFile(basefname, tmpname, filetype)
-#endif
-	) {
+    if (UncompressFile(filename, tmpname, filetype)) {
 
       filetype = ReadFileType(tmpname);    /* and try again */
 
@@ -2451,21 +2389,14 @@ static int openPic(filenum)
 
       if ((icom = mgcsfx_auto_input_com(filename)) != NULL) {
 	sprintf(tmpname, "%s/xvmsautoXXXXXX", tmpdir);
-#ifdef USE_MKSTEMP
 	close(mkstemp(tmpname));
-#else
-	mktemp(tmpname);
-#endif
+
 	SetISTR(ISTR_INFO, "Converting to known format by MgcSfx auto...");
 	sprintf(tmp,"%s >%s", icom, tmpname);
       }
       else goto ms_auto_no;
 
-#ifndef VMS
       if (system(tmp))
-#else
-      if (!system(tmp))
-#endif
       {
 	SetISTR(ISTR_INFO, "Unable to convert '%s' by MgcSfx auto.",
 	  BaseName(filename));
@@ -3370,15 +3301,12 @@ int UncompressFile(name, uncompname, filetype)
      returns '0' on failure */
 
   char namez[128], *fname, buf[512];
-#ifndef USE_MKSTEMP
-  int tmpfd;
-#endif
 
   fname = name;
   namez[0] = '\0';
 
 
-#if !defined(VMS) && !defined(GUNZIP)
+#if !defined(GUNZIP)
   /* see if compressed file name ends with '.Z'.  If it *doesn't* we need
      temporarily rename it so it *does*, uncompress it, and rename *back*
      to what it was.  necessary because uncompress doesn't handle files
@@ -3399,52 +3327,27 @@ int UncompressFile(name, uncompname, filetype)
 
     fname = namez;
   }
-#endif   /* not VMS and not GUNZIP */
+#endif   /* not GUNZIP */
 
-
-#ifndef VMS
   sprintf(uncompname, "%s/xvuXXXXXX", tmpdir);
-#else
-  strcpy(uncompname, "[]xvuXXXXXX");
-#endif
 
-#ifdef USE_MKSTEMP
   close(mkstemp(uncompname));
-#else
-  mktemp(uncompname);
-  tmpfd = open(uncompname,O_WRONLY|O_CREAT|O_EXCL,S_IRWUSR);
-  if (tmpfd < 0) FatalError("UncompressFile(): can't create temporary file");
-  close(tmpfd);
-#endif
 
-#ifndef VMS
   if (filetype == RFT_COMPRESS)
     sprintf(buf,"%s -c '%s' > '%s'", UNCOMPRESS, fname, uncompname);
-# ifdef BUNZIP2
+#ifdef BUNZIP2
   else if (filetype == RFT_BZIP2)
     sprintf(buf,"%s -c '%s' > '%s'", BUNZIP2, fname, uncompname);
-# endif
-#else /* it IS VMS */
-# ifdef GUNZIP
-  sprintf(buf,"%s '%s' '%s'", UNCOMPRESS, fname, uncompname);
-# else
-  sprintf(buf,"%s '%s'", UNCOMPRESS, fname);
-# endif
 #endif
 
   SetISTR(ISTR_INFO, "Uncompressing '%s'...", BaseName(fname));
-#ifndef VMS
   if (system(buf))
-#else
-  if (!system(buf))
-#endif
   {
     SetISTR(ISTR_INFO, "Unable to uncompress '%s'.", BaseName(fname));
     Warning();
     return 0;
   }
 
-#ifndef VMS
   /* if we renamed the file to end with a .Z for the sake of 'uncompress',
      rename it back to what it once was... */
 
@@ -3455,17 +3358,6 @@ int UncompressFile(name, uncompname, filetype)
       ErrPopUp(buf, "\nBummer!");
     }
   }
-#else
-  /*
-    sprintf(buf,"Rename %s %s", fname, uncompname);
-    SetISTR(ISTR_INFO,"Renaming '%s'...", fname);
-    if (!system(buf)) {
-    SetISTR(ISTR_INFO,"Unable to rename '%s'.", fname);
-    Warning();
-    return 0;
-    }
-   */
-#endif /* not VMS */
 
   return 1;
 }
@@ -3478,28 +3370,16 @@ int RemoveMacbinary(src, dst)
 {
   char buffer[8192]; /* XXX */
   int n, eof;
-#ifndef USE_MKSTEMP
-  int tmpfd;
-#endif
   FILE *sfp, *dfp;
 
   sprintf(dst, "%s/xvmXXXXXX", tmpdir);
-#ifdef USE_MKSTEMP
   close(mkstemp(dst));
-#else
-  mktemp(dst);
-  tmpfd = open(dst,O_WRONLY|O_CREAT|O_EXCL,S_IRWUSR);
-  if (tmpfd < 0) FatalError("RemoveMacbinary(): can't create temporary file");
-#endif
 
   SetISTR(ISTR_INFO, "Removing MacBinary...");
 
   sfp = xv_fopen(src, "r");
-#ifdef USE_MKSTEMP
   dfp = xv_fopen(dst, "w");
-#else
-  dfp = fdopen(tmpfd, "w");
-#endif
+
   if (!sfp || !dfp) {
     SetISTR(ISTR_INFO, "Unable to remove a InfoFile header form '%s'.", src);
     Warning();
@@ -3513,9 +3393,7 @@ int RemoveMacbinary(src, dst)
   fclose(sfp);
   fflush(dfp);
   fclose(dfp);
-#ifndef USE_MKSTEMP
-  close(tmpfd);
-#endif
+
   if (!eof) {
     SetISTR(ISTR_INFO, "Unable to remove a InfoFile header form '%s'.", src);
     Warning();
@@ -3652,22 +3530,13 @@ static int readpipe(cmd, fname)
 
   char fullcmd[512], tmpname[64], str[512];
   int i;
-#ifndef USE_MKSTEMP
-  int tmpfd;
-#endif
 
   if (!cmd || (strlen(cmd) < (size_t) 2)) return 1;
 
   sprintf(tmpname,"%s/xvXXXXXX", tmpdir);
-#ifdef USE_MKSTEMP
   close(mkstemp(tmpname));
-#else
-  mktemp(tmpname);
-  tmpfd = open(tmpname,O_WRONLY|O_CREAT|O_EXCL,S_IRWUSR);
-  if (tmpfd < 0) FatalError("openPic(): can't create temporary file");
-  close(tmpfd);
-#endif
-  if (tmpname[0] == '\0') {   /* mktemp() or mkstemp() blew up */
+
+  if (tmpname[0] == '\0') {   /* mkstemp() blew up */
     sprintf(str,"Unable to create temporary filename.");
     ErrPopUp(str, "\nHow unlikely!");
     return 1;
@@ -3696,10 +3565,6 @@ static int readpipe(cmd, fname)
   strcpy(fname, tmpname);
   return 0;
 }
-
-
-
-
 
 
 /****************/
@@ -3818,6 +3683,7 @@ static void openNamedPic()
   openPic(LOADPIC);
 }
 
+
 /****************/
 static void mainLoop()
 {
@@ -3879,7 +3745,6 @@ static void mainLoop()
     }
   }
 }
-
 
 
 /***********************************/
@@ -4654,8 +4519,6 @@ static void add_filelist_to_namelist(char *flist, char **nlist, int *numn,
 }
 
 
-
-
 /************************************************************************/
 
 /***********************************/
@@ -4717,8 +4580,6 @@ int rd_flag(name)
 }
 
 
-
-
 static int xrm_initted = 0;
 
 /***********************************/
@@ -4739,9 +4600,7 @@ int rd_str_cl (name_str, class_str, reinit)
 
 
   if (reinit) {
-#ifndef vax11c
     if (xrm_initted && def_resource) XrmDestroyDatabase(def_resource);
-#endif
     xrm_initted = 0;
   }
 
@@ -4812,13 +4671,9 @@ int rd_str_cl (name_str, class_str, reinit)
 	const char *homedir;
 	XrmDatabase res1;
 
-#ifdef VMS
-	strcpy(foo, "SYS$LOGIN:DECW$XDEFAULTS.DAT");
-#else
 	homedir = (const char *) getenv("HOME");
 	if (!homedir) homedir = ".";
 	sprintf(foo,"%s/.Xdefaults", homedir);
-#endif
 
 	def_resource = XrmGetFileDatabase(foo);
 
@@ -4869,4 +4724,3 @@ int rd_str_cl (name_str, class_str, reinit)
   if (def_str) return 1;
   else return 0;
 }
-

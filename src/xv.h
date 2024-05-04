@@ -30,7 +30,7 @@
 /* GRR 4th public jumbo F+E patch:  	20070520 */
 /* GRR 5th public jumbo F+E patch:  	200xxxxx (probably mid-2009) */
 /* FLMask 2.1 (modified) patch:		20090820 */
-/* MDA 6th patch: 20220127 */
+/* MDA 6th patch:			20220127 */
 #ifdef XV_CMAKE_BUILD
 #  define REVDATE   XV_REVDATE
 #  define VERSTR    XV_VERSTR
@@ -46,25 +46,11 @@
 /* #define REGSTR "Registered for use at the University of Pennsylvania." */
 
 
-#ifndef VMS
-#  define THUMBDIR     ".xvpics"  /* name of thumbnail file subdirectories */
-#  define THUMBDIRNAME ".xvpics"  /* same as THUMBDIR, unlike VMS case... */
-#  define CLIPFILE     ".xvclip"  /* name of clipboard file in home directory */
-#else
-#  define THUMBDIR     "XVPICS"       /* name to use in building paths... */
-#  define THUMBDIRNAME "XVPICS.DIR"   /* name from readdir() & stat() */
-#  define CLIPFILE     "xvclipbd.dat"
-#endif
+#define THUMBDIR     ".xvpics"  /* name of thumbnail file subdirectories */
+#define THUMBDIRNAME ".xvpics"  /* same as THUMBDIR, unlike VMS case... */
+#define CLIPFILE     ".xvclip"  /* name of clipboard file in home directory */
 
-
-#undef PARM
-#ifdef __STDC__
-#  define PARM(a) a
-#else
-#  define PARM(a) ()
-#  define const
-#endif
-
+#define PARM(a) a
 
 
 /*************************************************/
@@ -83,13 +69,12 @@
 /* Things to make xv more likely to just build, without the user tweaking
    the makefile */
 
-#ifdef __hpux        /* HPUX machines (SVR3, (not SVR4) NO_RANDOM) */
+#ifdef __hpux        /* HP-UX machines from the Indusrtial Era. */
 #  undef  SVR4
 #  undef  SYSV
 #  define SYSV
-#  undef  NO_RANDOM
-#  define NO_RANDOM
-#  define USE_GETCWD
+#  undef  NO_ARC4RANDOM
+#  define NO_ARC4RANDOM
 #endif
 
 
@@ -114,9 +99,6 @@
 #  ifndef _LIBC_LIMITS_H_
 #    include <limits.h>
 #  endif
-#  ifndef USLEEP
-#    define USLEEP
-#  endif
    /* want only one or the other defined, not both: */
 #  if !defined(BSDTYPES) && !defined(__USE_BSD)
 #    define BSDTYPES
@@ -134,7 +116,7 @@
  * If your system doesn't have them in <sys/types.h>,
  * then define BSDTYPES in your Makefile.
  */
-#if defined(BSDTYPES) || defined(VMS)
+#if defined(BSDTYPES)
   typedef unsigned char  u_char;
   typedef unsigned short u_short;
   typedef unsigned int   u_int;
@@ -146,73 +128,33 @@
 #  include <sys/fs/b4param.h>   /* Get bsd fast file system params*/
 #endif
 
-
-/* things that *DON'T* have dirent.  Hopefully a very short list */
-#if defined(__UMAXV__)
-#  ifndef NODIRENT
-#    define NODIRENT
-#  endif
-#endif
-
 #include <sys/param.h>
 
 /* include files */
 #include <stdio.h>
 #include <math.h>
 #include <ctype.h>
-
-#ifdef __STDC__
-#  include <stddef.h>
-#  include <stdlib.h>
-#endif
+#include <stddef.h>
+#include <stdlib.h>
 
 /* note: 'string.h' or 'strings.h' is included by Xos.h, and it
    guarantees index() and rindex() will be available */
 
-#ifndef VMS
-#  include <errno.h>
+#include <errno.h>
 #  if !defined(__NetBSD__) && !defined(__FreeBSD__) && !defined(__APPLE__) && !defined(__CYGWIN__)
 #    if !(defined(BSD) && (BSD >= 199103)) && !(defined(__GLIBC__) && __GLIBC__ >= 2) && !defined(__OpenBSD__)
        extern int   errno;         /* SHOULD be in errno.h, but often isn't */
 #      ifndef XV_HAVE_SYSERRLISTDECL
          extern char *sys_errlist[]; /* this too... */
-#      endif
 #    endif
 #  endif
 #endif
 
 
 /* not everyone has the strerror() function, or so I'm told */
-#if !defined(XV_HAVE_STRERROR)
-#  ifdef VMS
-#    define ERRSTR(x) strerror(x, vaxc$errno)
-#  else
-#    if defined(__BEOS__) || defined(__linux__) || defined(__INTERIX) || defined(__sun) || defined(__APPLE__) || defined(__illumos__)
-     /* or all modern/glibc systems? */
-#      define ERRSTR(x) strerror(x)
-#    else
-#      define ERRSTR(x) sys_errlist[x]
-#    endif
-#  endif
-#else
-#  define ERRSTR(x) strerror(x)
-#endif
+/****THEY DO IN 2024. MAL ****/
+#define ERRSTR(x) strerror(x)
 
-
-
-#ifdef VMS   /* VMS config, hacks & kludges */
-#  define MAXPATHLEN    512
-#  define popUp xv_popup
-#  define qsort xv_qsort
-#  define random rand
-#  define srandom srand
-#  define cols xv_cols
-#  define gmap xv_gmap
-#  define index  strchr
-#  define rindex strrchr
-#  include <errno.h>
-#  include <perror.h>
-#endif
 
 
 /* GRR 20070512:  Very few modern systems even have a malloc.h anymore;
@@ -222,14 +164,17 @@
  *                __bsdi__, __386BSD__, __FreeBSD__, __OpenBSD__, __NetBSD__,
  *                __DARWIN__, VMS.)  Anyone who _does_ need it can explicitly
  *                define NEED_MALLOC_H in the makefile. */
-#ifdef NEED_MALLOC_H
-#  if defined(hp300) || defined(hp800) || defined(NeXT)
-#    include <sys/malloc.h>    /* it's in "sys" on HPs and NeXT */
-#  else
-#    include <malloc.h>
-#  endif
-#endif
-
+ 
+/****************************************************************************** 
+ * stdlib.h with malloc() was first included in the Headers section of the    *
+ * X/Open Portability Guide Issue 3 (XPG3), published in 1989.		      *                              *
+ *									      *
+ * We also use CMake in this distribution. No way you'll get too far using a  *
+ * primordial machine with this in mind. Thus, stdlib.h is required.	      *							      *
+ *									      *
+ * Putting the kabosh on this and preserving GRR's comment for posterity.     * 
+ *                                                                   MAL 2024.*
+ ******************************************************************************/
 
 
 #include <X11/Xlib.h>
@@ -246,9 +191,6 @@
 
 
 #include <sys/types.h>
-
-
-
 
 
 
@@ -281,42 +223,28 @@
 #endif  /* NEEDSTIME */
 
 
-
+/****************************************************************************** 
+ * From OpenBSD's fcntl(2):						      *
+ * "The fcntl() system call first appeared in AT&T System III UNIX and was    *
+ * reimplemented for 4.2BSD."						      *
+ *									      *
+ * And OpenBSD's dir(5):						      *
+ * "The dirent structure first appeared in 4.3BSD-Reno."		      *
+ *  									      *
+ * For the history buffs, that would be 1982, 1983, and 1990, respectively.   *
+ * I think it's reasonable to require dirent and fcntl now.	  	      *
+ *                                                                   MAL 2024.*
+ ******************************************************************************/
 #ifdef NEEDSDIR
-#  ifdef VMS
-#    include <descrip.h>
-#    include <stat.h>
-#    include "dirent.h"
-#  else
-#    ifdef NODIRENT
-#      include <sys/dir.h>
-#    else
-#      include <dirent.h>
-#    endif
-
-#    if defined(SVR4) || defined(SYSV)
-#      include <fcntl.h>
-#    endif
-
-#    include <sys/param.h>
-#    include <sys/stat.h>
-
-#    if defined(__convex__) && defined (__STDC__)
-#      define S_IFMT  _S_IFMT
-#      define S_IFDIR _S_IFDIR
-#      define S_IFCHR _S_IFCHR
-#      define S_IFBLK _S_IFBLK
-#    endif
-#  endif
+#include <dirent.h>
+#include <fcntl.h>
+#include <sys/param.h>
+#include <sys/stat.h>
 #endif
 
 
 #ifdef NEEDSARGS
-#  if defined(__STDC__) && !defined(NOSTDHDRS)
-#    include <stdarg.h>
-#  else
-#    include <varargs.h>
-#  endif
+#include <stdarg.h>
 #endif
 
 #ifndef		S_IRWUSR
@@ -380,40 +308,28 @@
 #  endif
 #endif
 
-#ifdef SVR4
-#  define random lrand48
-#  define srandom srand48
-#else
-#  if defined(NO_RANDOM) || (defined(sun) && defined(SYSV))
-#    define random()   rand()
-#    define srandom(x) srand(x)
-#  endif
+/****************************************************************************** 
+ * Machines from the Clinton presidency have random() and srandom().          *
+ *									      *
+ * Allow arc4random() on machines that support it, otherwise use random().    *
+ *                                                                   MAL 2024.*
+ ******************************************************************************/
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || \
+    defined(__DragonFly__) || defined(__sun) || defined(__CYGWIN__) || \
+    defined(__illumos__) || defined(__APPLE__) || defined(__ANDROID__) || \
+    defined(__BIONIC__) || defined(HAVE_LIBBSD) || \
+    (defined(__GLIBC__) && (__GLIBC__ >= 2) && (__GLIBC_MINOR__ >= 36))
+#define HAS_ARC4RANDOM
 #endif
 
-
-#ifndef VMS       /* VMS hates multi-line definitions */
-#  if defined(SVR4)  || defined(SYSV) || defined(sco) || \
-      defined(XENIX) || defined(__osf__) || defined(__linux__) || \
-      defined(BSD) || defined(__illumos__) || defined(__GNU__) || \
-      defined(__CYGWIN__)
-      
-#    undef  USE_GETCWD
-#    define USE_GETCWD          /* use 'getcwd()' instead of 'getwd()' */
-#  endif                        /* >> SECURITY ISSUE << */
-#endif
+/* use 'getcwd()' instead of 'getwd()' */
+/* ...I'd hope so! MAL 2024.           */
 
 
 /* GRR 20040430:  This is new and still not fully deployed.  No doubt there
  *                are other systems that have mkstemp() (SUSv3); we can add
  *                them later. */
-#ifndef VMS       /* VMS hates multi-line definitions */
-#  if defined(__linux__) || defined(BSD) || defined(__illumos__) || defined(_AIX) || defined(_sun) || defined(sco) || defined(_hpux) || defined(_sgi)
-#    ifndef USE_MKSTEMP
-#      define USE_MKSTEMP       /* use 'mkstemp()' instead of 'mktemp()' */
-#    endif                      /* >> SECURITY ISSUE << */
-#  endif
-#endif
-
+/****DISABLE mktemp(), it makes GCC cry. MAL 2024********/
 
 /* GRR 20040503:  This is new and so far tested only under Linux.  But it
  *                allows -wait to work with subsecond values as long as
@@ -427,10 +343,6 @@
 #  ifndef CLK_TCK               /* can be undefined in strict-ANSI mode */
 #    define CLK_TCK sysconf(_SC_CLK_TCK)
 #  endif
-#endif
-
-#if (defined(SYSV) || defined(SVR4) || defined(__linux__) || defined(BSD) || defined (__illumos__) || defined(__GNU__) || defined(__CYGWIN__)) && !defined(USE_GETCWD) 
-#  define USE_GETCWD
 #endif
 
 #ifndef SEEK_SET
@@ -1904,11 +1816,7 @@ void  RedrawInfo           PARM((int, int, int, int));
 void  SetInfoMode          PARM((int));
 char *GetISTR              PARM((int));
 
-#if defined(__STDC__) && !defined(NOSTDHDRS)
 void  SetISTR(int, ...);
-#else
-void  SetISTR();
-#endif
 
 
 /*************************** XVMASK.C ***************************/

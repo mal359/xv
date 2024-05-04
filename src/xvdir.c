@@ -27,9 +27,7 @@
 #include "bits/d_load"
 #include "bits/d_save"
 
-#ifndef VMS
 #include <pwd.h>       /* for getpwnam() prototype and passwd struct */
-#endif
 
 
 #define DIRWIDE  350               /* (fixed) size of directory window */
@@ -614,28 +612,9 @@ static void changedDirMB(sel)
 
     if (path[0] == '\0') {
       /* special case:  if cd to '/', fix path (it's currently "") */
-#ifdef apollo    /*** Apollo DomainOS uses // as the network root ***/
-      strcpy(tmppath,"//");
-#else
       strcpy(tmppath,"/");
-#endif
     }
     else strcpy(tmppath, path);
-
-#ifdef VMS
-    /*
-     *  The VMS chdir always needs 2 components (device and directory),
-     *  so convert "/device" to "/device/000000" and convert
-     *  "/" to "/XV_Root_Device/000000" (XV_Root_Device will need to be
-     *  a special concealed device setup to provide a list of available
-     *  disks).
-     */
-    if ( ((ndirs-sel) == 2) && (strlen(tmppath) > 1) )
-      strcat ( tmppath, "/000000" ); /* add root dir for device */
-    else if  ((ndirs-sel) == 1 ) {
-      strcpy ( tmppath, "/XV_Root_Device/000000" );  /* fake top level */
-    }
-#endif
 
 #ifdef AUTO_EXPAND
     if (Chvdir(tmppath)) {
@@ -685,11 +664,7 @@ void LoadCurrentDirectory()
   char          *dbeg, *dend;
   static char    oldpath[MAXPATHLEN + 2] = { '\0' };
 
-#ifdef NODIRENT
-  struct direct *dp;
-#else
   struct dirent *dp;
-#endif
 
 
   /* get rid of previous file names */
@@ -699,11 +674,7 @@ void LoadCurrentDirectory()
   /* get rid of old dirMBlist */
   for (i=0; i<ndirs; i++) free((char *) dirMBlist[i]);
 
-#ifndef VMS
   if (strlen(path) == 0) xv_getwd(path, sizeof(path));  /* no dir, use cwd */
-#else
-  xv_getwd(path, sizeof(path));
-#endif
 
 #ifdef AUTO_EXPAND
   if (Chvdir(path)) {
@@ -712,11 +683,7 @@ void LoadCurrentDirectory()
 #endif
     ErrPopUp("Current load/save directory seems to have gone away!",
 	     "\nYikes!");
-#ifdef apollo
-    strcpy(path,"//");
-#else
     strcpy(path,"/");
-#endif
 #ifdef AUTO_EXPAND
     Chvdir(path);
 #else
@@ -735,12 +702,6 @@ void LoadCurrentDirectory()
   dbeg = dend = path;
   for (i=0; i<MAXDEEP && dend; i++) {
     dend = (char *) index(dbeg,'/');  /* find next '/' char */
-
-#ifdef apollo
-    /** On apollos the path will be something like //machine/users/foo/ **/
-    /** handle the initial // **/
-    if ((dend == dbeg ) && (dbeg[0] == '/') && (dbeg[1] == '/')) dend += 1;
-#endif
 
     dirs[i] = dbeg;
     dbeg = dend+1;
@@ -809,15 +770,6 @@ void LoadCurrentDirectory()
       /* figure out what type of file the beastie is */
       fnames[i][0] = C_REG;   /* default to normal file, if stat fails */
 
-#ifdef VMS
-      /* For VMS we will default all files EXCEPT directories to avoid
-	 the high cost of the VAX C implementation of the stat function.
-	 Suggested by Kevin Oberman (OBERMAN@icdc.llnl.gov) */
-
-      if (xv_strstr (fnames[i]+1, ".DIR") != NULL) fnames[i][0] = C_DIR;
-      if (xv_strstr (fnames[i]+1, ".EXE") != NULL) fnames[i][0] = C_EXE;
-      if (xv_strstr (fnames[i]+1, ".OBJ") != NULL) fnames[i][0] = C_BLK;
-#else
       if (!nostat && (stat(fnames[i]+1, &st)==0)) {
 	mode  = st.st_mode & 0777;     /* rwx modes */
 
@@ -837,7 +789,6 @@ void LoadCurrentDirectory()
 	/* fprintf(stderr,"problems 'stat-ing' files\n");*/
 	fnames[i][0] = C_REG;
       }
-#endif /* VMS */
 
       i++;
     }
@@ -901,9 +852,6 @@ static int dnamcmp(p1,p2)
   return(strcmp((*s1)+1, (*s2)+1));
 #endif
 }
-
-
-
 
 
 /***************************************************/
@@ -1739,13 +1687,6 @@ static int FNameCdable()
     Globify(newpath);
   }
 
-#ifdef VMS
-  /* Convert names of form "/device.dir" to "/device/000000.DIR"  */
-  if ( rindex ( newpath, '/' ) == newpath ) {
-    strcpy ( rindex ( newpath, '.' ), "/000000.DIR" );
-  }
-#endif
-
 #ifdef AUTO_EXPAND
   Mkvdir(newpath);
   Dirtovd(newpath);
@@ -1757,15 +1698,6 @@ static int FNameCdable()
     isdir = S_ISDIR(st.st_mode);
 
     if (isdir) {
-#ifdef VMS
-      /* remove .DIR from the path so that false 000000 directories work */
-      char *dirext;
-      dirext = rindex ( newpath, '/' );
-      if ( dirext == NULL ) dirext = newpath; else dirext++;
-      dirext = xv_strstr ( dirext, "." );
-      *dirext = '\0';
-#endif
-
       if (chdir(newpath)==0) {
 	loadCWD();  /* success! */
       }
@@ -1794,9 +1726,6 @@ int Globify(fname)
   struct passwd *entry;
   char *cp, *sp, *up, uname[64], tmp[MAXFNLEN+100];
 
-#ifdef VMS
-  return 1;
-#else
   if (*fname != '~') return 0; /* doesn't start with a tilde, don't expand */
 
   /* look for the first '/' after the tilde */
@@ -1827,7 +1756,6 @@ int Globify(fname)
 
   strcpy(fname,tmp);  /* return expanded file name */
   return 0;
-#endif  /* !VMS */
 }
 
 
@@ -1856,23 +1784,14 @@ FILE *OpenOutFile(filename)
 
   if (ISPIPE(filename[0])) {   /* do piping */
     /* make up some bogus temp file to put this in */
-#ifndef VMS
     sprintf(outFName, "%s/xvXXXXXX", tmpdir);
-#else
-    strcpy(outFName, "[]xvXXXXXX.lis");
-#endif
-#ifdef USE_MKSTEMP
     fp = fdopen(mkstemp(outFName), "w");
-#else
-    mktemp(outFName);
-#endif
+
     dopipe = 1;
   }
 
-
-#ifdef USE_MKSTEMP  /* (prior) nonexistence of file is already guaranteed by */
+		    /* (prior) nonexistence of file is already guaranteed by */
   if (!dopipe)      /*  mkstemp(), but now mkstemp() itself has created it */
-#endif
     /* see if file exists (i.e., we're overwriting) */
     if (stat(outFName, &st)==0) {   /* stat succeeded, file must exist */
       static const char *labels[] = { "\nOk", "\033Cancel" };
@@ -1884,9 +1803,7 @@ FILE *OpenOutFile(filename)
 
 
   /* Open file (if not already open via mkstemp()) */
-#ifdef USE_MKSTEMP
   if (!dopipe)
-#endif
     fp = fopen(outFName, "w");
 
   if (!fp) {
@@ -1951,18 +1868,11 @@ int CloseOutFileWhy(fp, filename, failed, why)
     char cmd[512], str[1024];
     int  i;
 
-#ifndef VMS
     sprintf(cmd, "cat %s |%s", outFName, filename+1);  /* lose pipe char */
-#else
-    sprintf(cmd, "Print /Queue = XV_Queue /Delete %s", outFName);
-#endif
+
     sprintf(str,"Doing command: '%s'", cmd);
     OpenAlert(str);
     i = system(cmd);
-
-#ifdef VMS
-    i = !i;
-#endif
 
     if (i) {
       sprintf(str, "Unable to complete command:\n  %s", cmd);
@@ -1974,9 +1884,6 @@ int CloseOutFileWhy(fp, filename, failed, why)
     else {
       CloseAlert();
       SetISTR(ISTR_INFO,"Successfully completed command.");
-#ifndef VMS
-      unlink(outFName);
-#endif
     }
   }
 
@@ -2367,25 +2274,17 @@ int *append;
 
     if (ISPIPE(filename[0])) {   /* do piping */
 	/* make up some bogus temp file to put this in */
-#ifndef VMS
 	sprintf(outFName, "%s/xvXXXXXX", tmpdir);
-#else
-	strcpy(outFName, "[]xvXXXXXX.lis");
-#endif
-#ifdef USE_MKSTEMP
+
 	fp = fdopen(mkstemp(outFName), "w");
-#else
-	mktemp(outFName);
-#endif
+
 	dopipe = 1;
     }
 
 
     /* see if file exists (i.e., we're overwriting) */
     *append = 0;
-#ifdef USE_MKSTEMP
     if (!dopipe)
-#endif
     if (stat(outFName, &st)==0) {    /* stat succeeded, file must exist */
 	if (ReadFileType(outFName) != RFT_PIC2) {
 	    static const char *labels[] = { "\nOk", "\033Cancel" };
@@ -2409,9 +2308,7 @@ int *append;
     }
 
     /* Open file */
-#ifdef USE_MKSTEMP
     if (!dopipe)
-#endif
     fp = *append ? fopen(outFName, "r+") : fopen(outFName, "w");
     if (!fp) {
 	char  str[512];
@@ -2466,16 +2363,10 @@ int OpenOutFileDesc(filename)
 
   if (ISPIPE(filename[0])) {   /* do piping */
     /* make up some bogus temp file to put this in */
-#ifndef VMS
     sprintf(outFName, "%s/xvXXXXXX", tmpdir);
-#else
-    strcpy(outFName, "[]xvXXXXXX.lis");
-#endif
-#ifdef USE_MKSTEMP
+
     close(mkstemp(outFName));
-#else
-    mktemp(outFName);
-#endif
+
     dopipe = 1;
   }
 

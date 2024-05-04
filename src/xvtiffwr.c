@@ -9,6 +9,7 @@
 
 #ifdef HAVE_TIFF
 
+#include <stdio.h>     /* Use c library vs(n)printf. MAL 2024.             */
 #include <tiffio.h>    /* has to be after xv.h, as it needs varargs/stdarg */
 
 
@@ -65,11 +66,7 @@ static int WriteTIFF(fp,pic,ptype,w,h,rmap,gmap,bmap,numcols,colorstyle,
     return -1;
   }
 
-#ifndef VMS
   tif = TIFFOpen(fname, "w");
-#else
-  tif = TIFFFdOpen(dup(fileno(fp)), fname, "w");
-#endif
 
   if (!tif) return -1;   /* GRR:  was 0 */
 

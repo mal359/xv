@@ -265,38 +265,6 @@ int HandleEvent(event, donep)
     int x,y,w,h;
     Window win;
 
-#ifdef VMS
-    static int borders_sized = 0;
-
-    if (!borders_sized  && !useroot && exp_event->window == mainW) {
-      /*
-       * Initial expose of main window, find the size of the ancestor
-       * window just prior to the root window and adjust saved size
-       * of display so that maximize functions will allow for window
-       * decorations.
-       */
-      int status, count, mwid, mhgt, x, y, w, h, b, d, mbrd;
-      Window root, parent, *children, crw = exp_event->window;
-      borders_sized = 1;
-      status = XGetGeometry(theDisp, crw,
-			    &root, &x, &y, &mwid, &mhgt, &mbrd, &d);
-
-      for ( parent = crw, w=mwid, h=mhgt;
-	   status && (parent != root) && (parent != vrootW); ) {
-	crw = parent;
-	status = XQueryTree ( theDisp, crw, &root, &parent,
-			     &children, &count );
-	if ( children != NULL ) XFree ( children );
-      }
-      status = XGetGeometry(theDisp, crw, &root, &x, &y, &w, &h, &b, &d);
-      if ( status ) {
-	dispWIDE = dispWIDE + mwid - w + (2*b);
-	dispHIGH = dispHIGH + mhgt - h + b;
-	/*printf("New display dims: %d %d\n", dispWIDE, dispHIGH ); */
-      }
-    }
-#endif
-
 
     win = exp_event->window;
     x = exp_event->x;      y = exp_event->y;
@@ -534,7 +502,6 @@ int HandleEvent(event, donep)
       }
 #endif
 
-#ifndef VMS
       /* read hints for this window and adjust any position hints, but
          only if this is a 'synthetic' event sent to us by the WM
 	 ('real' events from the server have useless x,y info, since the
@@ -553,7 +520,6 @@ int HandleEvent(event, donep)
 	if (DEBUG) fprintf(stderr,"  CONFIG set hints (0x%x  %d,%d)\n",
 		(u_int) hints.flags, hints.x, hints.y);
       }
-#endif
     }
 
 
@@ -1198,11 +1164,7 @@ static void DoPrint()
 
   strcpy(txt, "Print:  Enter a command that will read a PostScript file ");
   strcat(txt, "from stdin and print it to the desired printer.\n\n");
-#ifndef VMS
   strcat(txt, "(e.g., 'lpr -Pname' on Unix systems)");
-#else
-  strcat(txt, "(e.g., 'Print /Queue = XV_Queue' on a VMS system)");
-#endif
 
   i = GetStrPopUp(txt, labels, 4, printCmd, PRINTCMDLEN, "", 0);
   if (i == 3 || strlen(printCmd)==0) return;   /* CANCEL */

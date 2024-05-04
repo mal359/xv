@@ -3018,32 +3018,16 @@ static int doPadBggen(str, wide, high, opaque,omode)
   }
 
 
-#ifndef VMS
   sprintf(fname, "%s/xvXXXXXX", tmpdir);
-#else
-  strcpy(fname, "Sys$Disk:[]xvuXXXXXX");
-#endif
-#ifdef USE_MKSTEMP
+
   close(mkstemp(fname));
-#else
-  mktemp(fname);
-  tmpfd = open(fname, O_WRONLY|O_CREAT|O_EXCL,S_IRWUSR);
-  if (tmpfd < 0) {
-    sprintf(errstr, "Error: can't create temporary file %s", fname);
-    ErrPopUp(errstr, "\nDoh!");
-    return 0;
-  }
-  close(tmpfd);
-#endif
 
   /* run bggen to generate the background */
   sprintf(syscmd, "bggen -g %dx%d %s > %s", wide, high, str, fname);
   SetISTR(ISTR_INFO, "Running 'bggen %s'...", str);
 
   i = system(syscmd);
-#ifdef VMS
-  i = !i;       /* VMS returns 1 on success */
-#endif
+
   if (i) {
     unlink(fname);
     snprintf(errstr, sizeof(errstr), 
@@ -3301,21 +3285,11 @@ static int ReadImageFile1(name, pinfo)
 {
   int  i, ftype;
   char uncompname[128], errstr[256], *uncName;
-#ifdef VMS
-  char basefname[128];
-#endif
 
   ftype = ReadFileType(name);
 
   if ((ftype == RFT_COMPRESS) || (ftype == RFT_BZIP2)) {  /* handle .Z,gz,bz2 */
-#ifdef VMS
-    basefname[0] = '\0';
-    strcpy(basefname, name);     /* remove trailing .Z */
-    *rindex(basefname, '.') = '\0';
-    uncName = basefname;
-#else
     uncName = name;
-#endif
 
     if (UncompressFile(uncName, uncompname, ftype)) {
       ftype = ReadFileType(uncompname);

@@ -143,7 +143,7 @@ int LoadTIFF(fname, pinfo, quick)
          returned immediately) */
       xv_mktemp(tmpname, "xvpgXXXXXX");
 
-      if (tmpname[0] == '\0') {   /* mktemp() or mkstemp() blew up */
+      if (tmpname[0] == '\0') {   /* mkstemp() blew up */
         sprintf(dummystr,"LoadTIFF: Unable to create temporary filename???");
         ErrPopUp(dummystr, "\nHow unlikely!");
         return 0;

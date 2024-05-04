@@ -261,18 +261,9 @@ static char *get_tmp_fname()
 {
   static char tmp[MAXPATHLEN+1];
 
-#ifndef VMS
   sprintf(tmp, "%s/xvmgcsfxXXXXXX",tmpdir);
-#else
-  /* sprintf(tmp, "Sys$Scratch:xvmgcsfxXXXXXX"); */
-  strcpy(tmp, "[]xvmgcsfxXXXXXX");
-#endif /* VMS */
 
-#ifdef USE_MKSTEMP
   close(mkstemp(tmp));
-#else
-  mktemp(tmp);
-#endif
 
   return tmp;
 }
@@ -285,18 +276,10 @@ static char *make_preprocessed_file(fname)
 
   tmp_name = get_tmp_fname();
 
-#ifndef VMS
   sprintf(buf,"%s %s > %s", MGCSFX_PREPROCESSOR, fname, tmp_name);
-#else
-  sprintf(buf,"%s %s > %s", MGCSFX_PREPROCESSOR, fname, tmp_name); /* really OK? */
-#endif
 
   SetISTR(ISTR_INFO, "Preprocessing '%s'...", BaseName(fname));
-#ifndef VMS
   if (system(buf))
-#else
-  if (!system(buf))
-#endif
   {
     SetISTR(ISTR_INFO, "Unable to preprocess '%s'.", BaseName(fname));
     Warning();

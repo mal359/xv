@@ -1043,16 +1043,10 @@ int WriteBMP(fp,pic824,ptype,w,h,rmap,gmap,bmap,numcols,colorstyle)
 
   if (graypic) free(graypic);
 
-#ifndef VMS
   if (FERROR(fp)) return -1;
-#else
-  if (!FERROR(fp)) return -1;
-#endif
 
   return 0;
 }
-
-
 
 
 /*******************************************/

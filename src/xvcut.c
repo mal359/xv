@@ -968,13 +968,9 @@ static void makeClipFName()
 
   if (clipfname) return;
 
-#ifdef VMS
-  sprintf(clipfnstr, "SYS$LOGIN:%s", CLIPFILE);
-#else
   homedir = (char *) getenv("HOME");
   if (!homedir) homedir = ".";
   sprintf(clipfnstr, "%s/%s", homedir, CLIPFILE);
-#endif
 
   clipfname = clipfnstr;
 }

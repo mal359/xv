@@ -72,7 +72,6 @@ static char *vdtable[VD_VDTABLESIZE];
  */
 void Vdinit()
 {
-#ifndef VMS
     char tmp[MAXPATHLEN+1];
 
     xv_getwd(tmp, MAXPATHLEN+1);
@@ -85,14 +84,8 @@ void Vdinit()
     xv_getwd(vdroot, MAXPATHLEN+1);
     strcat(vdroot, "/.xvvdXXXXXX");
     chdir(tmp);
-#else
-    sprintf(vdroot, "Sys$Scratch:xvvdXXXXXX");
-#endif /* VMS */
-#ifdef USE_MKSTEMP
+
     close(mkstemp(vdroot));
-#else
-    mktemp(vdroot);
-#endif
 
     if (!vd_recursive_mkdir(vdroot))
 	tmpdir = vdroot;
@@ -805,20 +798,11 @@ char *path, *newpath;
     if (newpath) *newpath = '\0';
     strncpy(basename, path, 127);
     comptype = ReadFileType(path);
-#if (defined(VMS) && !defined(GUNZIP))
-    /* VMS decompress doesn't like the file to have a trailing .Z in fname
-    however, GUnZip is OK with it, which we are calling UnCompress */
-    *rindex (basename, '.') = '\0';
-#endif
-#ifdef VMS
-    if (UncompressFile(basename, uncompname)) {
-#else
     if (newpath == NULL)
 	r = vd_UncompressFile(basename, uncompname);
     else
 	r = UncompressFile(basename, uncompname, comptype);
     if (r) {
-#endif
 	if ((file_type = vd_ftype(uncompname)) < 0) {
 	    unlink(uncompname);
 	    return 0;
@@ -879,11 +863,8 @@ char *name, *uncompname;
 #endif   /* not GUNZIP */
 
     sprintf(uncompname, "%s/xvuXXXXXX", tmpdir);
-#ifdef USE_MKSTEMP
+
     tmpfd = mkstemp(uncompname);
-#else
-    mktemp(uncompname);
-#endif
 
     sprintf(buf,"%s -c %s", UNCOMPRESS, fname);
     SetISTR(ISTR_INFO, "Uncompressing Header '%s'...", BaseName(fname));
@@ -891,17 +872,11 @@ char *name, *uncompname;
 	SetISTR(ISTR_INFO, "Cannot extract for archive '%s'.",
 		BaseName(fname));
 	Warning();
-#ifdef USE_MKSTEMP
 	if (tmpfd >= 0)
 	    close(tmpfd);
-#endif
 	return 0;
     }
-#ifdef USE_MKSTEMP
     if (tmpfd < 0)
-#else
-    if ((tmpfd = open(uncompname,O_WRONLY|O_CREAT|O_EXCL,S_IRWUSR)) < 0)
-#endif
     {
 	SetISTR(ISTR_INFO, "Unable to create temporary file.",
 		BaseName(uncompname));

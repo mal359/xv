@@ -17,11 +17,7 @@
 #define USE_GUNZIP 1
 
 #ifdef USE_GUNZIP
-#  ifdef VMS
-#    define GUNZIP "UNCOMPRESS"
-#  else
-#    define GUNZIP "gzip -dq"
-#  endif
+#define GUNZIP "gzip -dq"
 #endif
 
 
@@ -54,9 +50,9 @@
  */
 #define UNCOMPRESS "/usr/bin/uncompress"
 
-#if defined(hpux) || defined(SVR4) || \
+#if defined(__hpux) || defined(SVR4) || \
     defined(__386BSD__) || defined(__FreeBSD__) || defined(__NetBSD__) || \
-    defined(__linux__) || defined(_AIX)
+    defined(__OpenBSD__) || defined(__linux__) || defined(_AIX)
     /*
      I want to use BSD macro for checking if this OS is *BSD or not,
      but the macro is defined in <sys/parm.h>, which I don't know all
@@ -66,23 +62,10 @@
 #  define UNCOMPRESS "/usr/bin/uncompress"
 #endif
 
-#if defined(sgi)
+#if defined(__sgi)
 #  undef UNCOMPRESS
 #  define UNCOMPRESS "/usr/bsd/uncompress"
 #endif
-
-#ifdef VMS
-  /* The default is to use the provided Decompress program.
-     If you have the GNU UnZip program, define it (above)
-     to be "UnCompress" and it will be selected here */
-#  undef UNCOMPRESS
-#  ifdef GUNZIP
-#    define UNCOMPRESS GUNZIP
-#  else
-#    define UNCOMPRESS "Decompress"
-#  endif
-#endif
-
 
 #ifdef GUNZIP
 #  undef  UNCOMPRESS
@@ -367,3 +350,13 @@
 #ifdef TV_MULTILINGUAL
 #  undef TV_L10N
 #endif
+
+/***************************************************************************
+ * libbsd Support
+ *
+ * if you want to use libbsd's arc4random, change'undef' to 'define' in the
+ * following line. Useful for machines with musl, older versions of GLIBC, 
+ * AIX, GNU/Hurd, older versions of Solaris or macOS...
+ */
+
+#undef HAVE_LIBBSD

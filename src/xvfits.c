@@ -229,17 +229,9 @@ static int splitfits(image, comment, nx, ny, nz, basename)
   const char *error;
   char  filename[70];
 
-#ifndef VMS
   sprintf(basename, "%s/xvpgXXXXXX", tmpdir);
-#else
-  sprintf(basename, "Sys$Disk:[]xvpgXXXXXX");
-#endif
 
-#ifdef USE_MKSTEMP
   close(mkstemp(basename));
-#else
-  mktemp(basename);
-#endif
   if (basename[0] == '\0') {
     SetISTR(ISTR_WARNING, "%s", "Unable to build temporary filename");
     return 1;

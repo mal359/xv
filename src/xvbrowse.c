@@ -21,10 +21,6 @@
 #include "xv.h"
 #include <unistd.h>   /* access() */
 
-#if defined(VMS) || defined(isc)
-typedef unsigned int mode_t;  /* file mode bits */
-#endif
-
 #ifndef MAX
 #  define MAX(a,b) (((a)>(b))?(a):(b))   /* used only for wheelmouse support */
 #endif
@@ -1619,9 +1615,6 @@ static void drawIcon(br, num)
   BFIL *bf;
   const char  *nstr, *cstr;
   char  tmpstr[64];
-#ifdef VMS
-  char  fixedname[64];
-#endif
 
 
   if (num<0 || num >= br->bfLen) return;
@@ -1664,15 +1657,6 @@ static void drawIcon(br, num)
 
 
   cstr = bf->name;
-#ifdef VMS
-  if (bf->ftype == BF_DIR) {
-    char  *vstr;
-    strcpy(fixedname, bf->name);
-    vstr = rindex(fixedname, '.');   /* lop off '.DIR' suffix, if any */
-    if (vstr) *vstr = '\0';
-    cstr = fixedname;
-  }
-#endif /* VMS */
 
   if (!strcmp(bf->name,"..")) cstr = "<parent>";
 
@@ -2279,17 +2263,6 @@ static int clickIconWin(br, mx, my, mtime, multi)
       }
       if (DEBUG) fprintf(stderr,"\n\n");
 
-#ifdef VMS
-      /*
-       * For VMS, our directory file names are identifed by the
-       * special filename extension, ".DIR".  Unfortunately, this
-       * needs to be stripped before we ever actually use the name
-       * in a copy command... :(     RLD 26-FEB-1993
-       */
-
-      *rindex ( destFolderName, '.' ) = '\0';  /* FIXME: potentially writing into static strings! */
-#endif
-
 
       dragFiles(br, destBr, br->path, destBr->path, destFolderName, nlist,
 		ncnt, cpymode);
@@ -2371,15 +2344,7 @@ static void doubleClick(br, sel)
 
   /* double-clicked something.  We should do something about it */
   if (br->bfList[sel].ftype == BF_DIR) {  /* try to cd */
-#ifndef VMS
     snprintf(buf, sizeof(buf), "%s%s", br->path, br->bfList[sel].name);
-#else
-    if (strcmp(br->bfList[sel].name,"..")==0) {
-      sprintf(buf,"[-]");
-    } else {
-      snprintf(buf, sizeof(buf), "%s%s", br->path, br->bfList[sel].name);
-    }
-#endif
 
 #ifdef AUTO_EXPAND
     if (Chvdir(buf)) {
@@ -2811,30 +2776,8 @@ static void changedBrDirMB(br, sel)
 
     if (tmppath[0] == '\0') {
       /* special case:  if cd to '/', fix path (it's currently "") */
-#ifdef apollo    /*** Apollo DomainOS uses // as the network root ***/
-      strcpy(tmppath,"//");
-#else
       strcpy(tmppath,"/");
-#endif
     }
-#ifdef VMS
-    else {
-      /*
-       *  The VMS chdir always needs 2 components (device and directory),
-       *  so convert "/device" to "/device/000000" and convert
-       *  "/" to "/XV_Root_Device/000000" (XV_RootDevice will need to be
-       *  a special concealed device setup to provide list of available
-       *  disks).
-       *
-       *  End 'tmppath' by changing trailing '/' (of dir name) to a '\0'
-       */
-      *rindex ( tmppath, '/') = '\0';
-      if ( ((br->ndirs-sel) == 2) && (strlen(tmppath) > 1) )
-	strcat ( tmppath, "/000000" ); /* add root dir for device */
-      else if  ((br->ndirs-sel) == 1 )
-	strcpy ( tmppath, "/XV_Root_Device/000000" );  /* fake top level */
-    }
-#endif
 
 #ifdef AUTO_EXPAND
     if (Chvdir(tmppath)) {
@@ -3063,11 +3006,7 @@ static void scanDir(br)
   char          *dirnames[MAXDEEP];
   static char    path[MAXPATHLEN + 2] = { '\0' };
 
-#ifdef NODIRENT
-  struct direct *dp;
-#else
   struct dirent *dp;
-#endif
 
 
   br->lastIconClicked = -1;  /* turn off possibility of seeing a dblclick */
@@ -3089,12 +3028,6 @@ static void scanDir(br)
   dbeg = dend = path;
   for (i=0; i<MAXDEEP && dend; i++) {
     dend = (char *) index(dbeg,'/');  /* find next '/' char */
-
-#ifdef apollo
-    /** On Apollos the path will be something like //machine/users/foo/ **/
-    /** handle the initial // **/
-    if ((dend == dbeg ) && (dbeg[0] == '/') && (dbeg[1] == '/')) dend += 1;
-#endif
 
     dirnames[i] = dbeg;
     dbeg = dend+1;
@@ -3153,10 +3086,6 @@ static void scanDir(br)
     return;
   }
 
-#ifdef VMS
-  br->bfLen = 1;   /* always have a parent directory */
-#endif
-
   while ( (dp = readdir(dirp)) != NULL) {
     if (strcmp(dp->d_name, ".") &&
 	strcmp(dp->d_name, THUMBDIR)) {
@@ -3179,9 +3108,6 @@ static void scanDir(br)
     rewinddir(dirp);   /* back to beginning of directory */
 
     vmsparent = 0;
-#ifdef VMS
-    vmsparent = 1;
-#endif
 
     /* get info for each file in directory */
 
@@ -3622,11 +3548,7 @@ static char **getDirEntries(dir, lenP, dohidden)
   int    i, dirlen;
   DIR   *dirp;
   char **names;
-#ifdef NODIRENT
-  struct direct *dp;
-#else
   struct dirent *dp;
-#endif
 
 
   dirp = opendir(dir);
@@ -3657,11 +3579,9 @@ static char **getDirEntries(dir, lenP, dohidden)
     if (!dp) break;
 
     if (!dohidden) {
-#ifndef VMS
       if (dp->d_name[0] == '.' &&
 	  strcmp(dp->d_name,"." )!=0 &&
 	  strcmp(dp->d_name,"..")!=0) continue;
-#endif
     }
 
     names[i] = (char *) malloc(strlen(dp->d_name) + 1);
@@ -3780,15 +3700,7 @@ static void genIcon(br, bf)
   filetype = ReadFileType(bf->name);
 
   if ((filetype == RFT_COMPRESS) || (filetype == RFT_BZIP2)) {
-#if (defined(VMS) && !defined(GUNZIP))
-    /* VMS decompress doesn't like the file to have a trailing .Z in fname
-       however, GUnZip is OK with it, which we are calling UnCompress */
-    strcpy (basefname, bf->name);
-    *rindex (basefname, '.') = '\0';
-    uncName = basefname;
-#else
     uncName = bf->name;
-#endif
 
     if (UncompressFile(uncName, uncompname, filetype)) {
       filetype = ReadFileType(uncompname);
@@ -3823,20 +3735,13 @@ static void genIcon(br, bf)
 
       if((icom = mgcsfx_auto_input_com(bf->name)) != NULL){
 	sprintf(tmpname, "%s/xvmsautoXXXXXX", tmpdir);
-#ifdef USE_MKSTEMP
 	close(mkstemp(tmpname));
-#else
-	mktemp(tmpname);
-#endif
+
 	SetISTR(ISTR_INFO, "Converting to known format by MgcSfx auto...");
 	sprintf(str,"%s >%s", icom, tmpname);
       }else goto ms_auto_no;
 
-#ifndef VMS
       if (system(str))
-#else
-      if (!system(str))
-#endif
       {
         sprintf(str, "Unable to convert '%s' by MgcSfx auto.", bf->name);
         setBrowStr(br, str);
@@ -4330,11 +4235,7 @@ static void updateIcons(br)
   char           tmpstr[128];
   BFIL          *bf;
   DIR           *dirp;
-#ifdef NODIRENT
-  struct direct *dp;
-#else
   struct dirent *dp;
-#endif
 
 
   iconsBuilt = iconsKilled = statcount = 0;
@@ -4662,14 +4563,12 @@ static void doChdirCmd(br)
   i = GetStrPopUp("Change to directory:", labels, 2, buf, MAXPATHLEN, " ", 0);
   if (i) return;		/* cancelled */
 
-#ifndef VMS
   if (Globify(buf)) {		/* do ~ expansion if necessary */
     snprintf(str, sizeof(str), "Unable to expand '%s' (unknown uid)\n", buf);
     setBrowStr(br, str);
     XBell(theDisp, 50);
     return;
   }
-#endif
 
   if (buf[0] == '.') {		/* chdir to relative dir */
     if (cdBrow(br)) return;     /* prints its own error message */
@@ -5488,12 +5387,10 @@ static int moveFile(src,dst)
     }
 
     if (dstdir) {
-#ifndef VMS  /* we don't delete directories in VMS */
       if (recursive_remove(dst)) {   /* okay, so it's cheating... */
 	SetISTR(ISTR_WARNING, "Unable to remove directory %s", dst);
 	return 1;
       }
-#endif /* VMS */
     }
     else if (unlink(dst)) {
       SetISTR(ISTR_WARNING, "unlink %s: %s", dst, ERRSTR(errno));
@@ -5511,12 +5408,10 @@ static int moveFile(src,dst)
   i = copyFile(src, dst);
   if (i == 0) {    /* copied okay, kill the original */
     if (srcdir) {
-#ifndef VMS   /* we don't delete directories in VMS */
       if (recursive_remove(src)) {   /* okay, so it's cheating... */
 	SetISTR(ISTR_WARNING, "Unable to remove directory %s", src);
 	return 1;
       }
-#endif /* VMS */
     }
     else if (unlink(src)) {
       SetISTR(ISTR_WARNING, "unlink %s: %s", src, ERRSTR(errno));
@@ -5943,13 +5838,11 @@ static void cp_special(st, exists)
     return;
   }
 
-#ifndef VMS  /* VMS doesn't have a mknod command */
   if (mknod(cpDstPath, st->st_mode, st->st_rdev)) {
     SetISTR(ISTR_WARNING, "mknod %s: %s", cpDstPath, ERRSTR(errno));
     copyerr++;
     return;
   }
-#endif
 
 }
 
