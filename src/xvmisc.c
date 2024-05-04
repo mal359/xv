@@ -1050,11 +1050,7 @@ void xv_getwd(buf, buflen)
 
   const char *rv;
 
-#ifdef USE_GETCWD
   rv = (const char *) getcwd(buf, buflen);
-#else
-  rv = (const char *) getwd(buf);
-#endif
 
   if (!rv || strlen(rv)==0) {
     if (((rv=(const char *) getenv("PWD"))==NULL) &&

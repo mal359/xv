@@ -2313,7 +2313,7 @@ static int openPic(filenum)
       }
     }
 
-    memmove(filename, fullname, strlen(filename)+1);
+     strncpy(filename, fullname, sizeof(filename)-1);
 
 
     /* if the file is STDIN, write it out to a temp file */
