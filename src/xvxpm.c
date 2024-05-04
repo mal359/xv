@@ -277,7 +277,7 @@ int LoadXPM(fname, pinfo)
       }
 
 
-      xvbcopy((char *) c_sptr, (char *) &item, sizeof(item));
+      memmove((char *) &item, (char *) c_sptr, sizeof(item));
       hash_insert(&item);
 
       if (DEBUG > 1)
@@ -466,7 +466,7 @@ static int hash_insert(entry)
     return 0;
   }
 
-  xvbcopy((char *)entry, (char *)tmp, sizeof(hentry));
+  memmove((char *)tmp, (char *)entry, sizeof(hentry));
 
   if (hashtab[key]) tmp->next = hashtab[key];
                else tmp->next = NULL;

@@ -592,8 +592,8 @@ magnify(int mag,  /* power of 2 by which to magnify in place */
                  ((int)*(uptr++))+1)>>1;  /* last pixel */
     }
 
-    xvbcopy((char *)(p + (2*h-2)*mw),     /* 2nd last row */
-            (char *)(p + (2*h-1)*mw),     /* the last row */
+    memmove((char *)(p + (2*h-1)*mw),     /* the last row */
+    	    (char *)(p + (2*h-2)*mw),     /* 2nd last row */
             2*w);                         /* length of a new row */
 
     h*=2; w*=2;

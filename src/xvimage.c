@@ -1274,7 +1274,7 @@ void RotatePic(pic, ptype, wp, hp, dir)
 
 
   /* copy the rotated buffer into the original buffer */
-  xvbcopy((char *) pic1, (char *) pic, (size_t) (w*h*bperpix));
+  memmove((char *) pic, (char *) pic1, (size_t) (w*h*bperpix));
 
   free(pic1);
 

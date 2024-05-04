@@ -1044,7 +1044,7 @@ int x,y,but;
 	  }
 
 	  if (i<numcols) {  /* something changed */
-	    xvbcopy((char *) &tmpcmap, (char *) &prevcmap,
+	    memmove((char *) &prevcmap, (char *) &tmpcmap, 
 		    sizeof(struct cmapstate));
 	    BTSetActive(&gbut[G_BCOLUNDO],1);
 	    applyGamma(1);
@@ -1111,7 +1111,7 @@ int x,y,but;
 
 	if (recolor) {
 	  /* colors changed.  save to color undo area */
-	  xvbcopy((char *) &tmpcmap, (char *) &prevcmap,
+	  memmove((char *) &prevcmap, (char *) &tmpcmap, 
 		  sizeof(struct cmapstate));
 	  BTSetActive(&gbut[G_BCOLUNDO],1);
 	  applyGamma(1);   /* have to regen entire image when groupings chg */
@@ -1476,7 +1476,7 @@ int cmd;
       if (xvbcmp((char *) &tmpcmap, (char *) &tmp1cmap,
 		 sizeof(struct cmapstate))) {
 	/* the reversion changed the cmapstate */
-	xvbcopy((char *) &tmpcmap, (char *) &prevcmap,
+	memmove((char *) &prevcmap, (char *) &tmpcmap, 
 		sizeof(struct cmapstate));
 	BTSetActive(&gbut[G_BCOLUNDO],1);
 
@@ -1539,7 +1539,7 @@ int cmd;
 
     saveCMap(&tmpcmap);
     restoreCMap(&prevcmap);
-    xvbcopy((char *) &tmpcmap, (char *) &prevcmap, sizeof(struct cmapstate));
+    memmove((char *) &prevcmap, (char *) &tmpcmap, sizeof(struct cmapstate));
     RedrawCMap();
     ChangeEC(editColor);
     applyGamma(1);
@@ -1606,9 +1606,9 @@ static void applyGamma(cmapchange)
 
   if (picType == PIC8) {
     /* save current 'desired' colormap */
-    xvbcopy((char *) rMap, (char *) oldr, (size_t) numcols);
-    xvbcopy((char *) gMap, (char *) oldg, (size_t) numcols);
-    xvbcopy((char *) bMap, (char *) oldb, (size_t) numcols);
+    memmove((char *) oldr, (char *) rMap, (size_t) numcols);
+    memmove((char *) oldg, (char *) gMap, (size_t) numcols);
+    memmove((char *) oldb, (char *) bMap, (size_t) numcols);
 
     GammifyColors();
 
@@ -1997,7 +1997,7 @@ int *rr, *gr, *br;
 static void ctrls2gamstate(gs)
      struct gamstate *gs;
 {
-  xvbcopy((char *) hmap, (char *) gs->hmap, sizeof(hmap));
+  memmove((char *) gs->hmap, (char *) hmap, sizeof(hmap));
 
   gs->wht_stval = whtHD.stval;
   gs->wht_satval = whtHD.satval;
@@ -2026,7 +2026,7 @@ struct gamstate *gs;
   }
 
   if (xvbcmp((char *) hmap, (char *) gs->hmap, sizeof(hmap))) { /*hmap chngd*/
-    xvbcopy((char *) gs->hmap, (char *) hmap, sizeof(hmap));
+    memmove((char *) hmap, (char *) gs->hmap, sizeof(hmap));
     build_hremap();
     changed++;
 
@@ -2229,7 +2229,7 @@ static void parseResources()
     if (i) { sprintf(gname,"preset%d",i);  gsp = &preset[i-1]; }
       else { sprintf(gname,"default");     gsp = &defstate; }
 
-    xvbcopy((char *) gsp, (char *) &gs,
+    memmove((char *) &gs, (char *) gsp,
 	    sizeof(struct gamstate));   /* load 'gs' with defaults */
 
     for (j=0; j<6; j++) {                       /* xv.*.huemap resources */
@@ -2304,17 +2304,18 @@ static void parseResources()
       }
 
       if (rd_str_cl(tmp, "Setting.Graf",0)) {       /* got one */
-	strcpy(tmp1, def_str);
-	xvbcopy((char *) gsgst, (char *) &gstat, sizeof(GRAF_STATE));
+	snprintf(tmp1, sizeof(tmp1), "%s", def_str);
+
+	memmove((char *) &gstat, (char *) gsgst, sizeof(GRAF_STATE));
 	if (DEBUG) fprintf(stderr,"parseResource 'xv.%s: %s'\n",tmp, tmp1);
 	if (!Str2Graf(&gstat, tmp1)) {            /* successful parse */
-	  xvbcopy((char *) &gstat, (char *) gsgst, sizeof(GRAF_STATE));
+	  memmove((char *) gsgst, (char *) &gstat, sizeof(GRAF_STATE));
 	}
       }
     }
 
     /* copy (potentially) modified gs back to default/preset */
-    xvbcopy((char *) &gs, (char *) gsp, sizeof(struct gamstate));
+    memmove((char *) gsp, (char *) &gs, sizeof(struct gamstate));
   }
 }
 

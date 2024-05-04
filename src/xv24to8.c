@@ -172,7 +172,7 @@ static int quick_check(pic24, w,h, pic8, rmap,gmap,bmap, maxcol)
 
     if (high < low) { /* didn't find color in list, add it. */
       if (nc>=maxcol) return 0;
-      xvbcopy((char *) &colors[low], (char *) &colors[low+1],
+      memmove((char *) &colors[low+1], (char *) &colors[low],
 	      (nc - low) * sizeof(u_long));
       colors[low] = col;
       nc++;

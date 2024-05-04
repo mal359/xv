@@ -190,7 +190,7 @@ static void Blur()
 	  (HaveSelection() ? "selection" : "image"), n,n);
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   doBlurConvolv(pic24, pWIDE,pHIGH, tmpPic, sx,sy,sw,sh, n);
 
@@ -232,7 +232,7 @@ static void Sharpen()
 	  (HaveSelection() ? "selection" : "image"), n);
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   doSharpConvolv(pic24, pWIDE,pHIGH, tmpPic, sx,sy,sw,sh, n);
 
@@ -258,7 +258,7 @@ static void EdgeDetect()
   SetISTR(ISTR_INFO, str);
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   doEdgeConvolv(pic24, pWIDE, pHIGH, tmpPic, sx,sy,sw,sh);
 
@@ -303,7 +303,7 @@ static void TinFoil()
   CropRect2Rect(&sx,&sy,&sw,&sh, 0,0,pWIDE,pHIGH);
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   /* fill selected area of tmpPic with gray128 */
   for (i=sy; i<sy+sh; i++) {
@@ -344,7 +344,7 @@ static void OilPaint()
   CropRect2Rect(&sx,&sy,&sw,&sh, 0,0,pWIDE,pHIGH);
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   doOilPaint(pic24, pWIDE, pHIGH, tmpPic, sx,sy,sw,sh, 3);
 
@@ -366,7 +366,7 @@ static void Blend()
   WaitCursor();
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   doBlend(pic24, pWIDE, pHIGH, tmpPic, sx,sy,sw,sh);
 
@@ -402,7 +402,7 @@ static void FineRotate(clr)
   WaitCursor();
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   doRotate(pic24, pWIDE, pHIGH, tmpPic, sx,sy,sw,sh, rotval, clr);
 
@@ -448,7 +448,7 @@ static void Pixelize()
   WaitCursor();
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   doPixel(pic24, pWIDE, pHIGH, tmpPic, sx,sy,sw,sh, pixX, pixY);
 
@@ -498,7 +498,7 @@ static void Spread()
   WaitCursor();
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   doSpread(pic24, pWIDE, pHIGH, tmpPic, sx,sy,sw,sh, pixX, pixY);
 
@@ -542,7 +542,7 @@ static void MedianFilter()
 	  (HaveSelection() ? "selection" : "image"), n,n);
 
   if (start24bitAlg(&pic24, &tmpPic)) return;
-  xvbcopy((char *) pic24, (char *) tmpPic, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) tmpPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
 
   doMedianFilter(pic24, pWIDE,pHIGH, tmpPic, sx,sy,sw,sh, n);
 
@@ -1637,7 +1637,7 @@ void end24bitAlg(pic24, outPic)
   saveOrigPic();  /* also kills pic/cpic/epic/egampic/theImage, NOT pic24 */
 
   /* copy results to pic24 */
-  xvbcopy((char *) outPic, (char *) pic24, (size_t) (pWIDE*pHIGH*3));
+  memmove((char *) pic24, (char *) outPic, (size_t) (pWIDE*pHIGH*3));
   free(outPic);
 
   if (picType == PIC8) {
@@ -1677,7 +1677,7 @@ void saveOrigPic()
     /* make a backup copy of 'pic' */
     origPic = (byte *) malloc((size_t)(pWIDE*pHIGH*((picType==PIC8) ? 1 : 3)));
     if (!origPic) FatalError("out of memory in 'saveOrigPic()'");
-    xvbcopy((char *) pic, (char *) origPic,
+    memmove((char *) origPic, (char *) pic, 
 	    (size_t) (pWIDE * pHIGH * ((picType==PIC8) ? 1 : 3)));
 
     origPicType = picType;

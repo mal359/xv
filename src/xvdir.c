@@ -877,7 +877,7 @@ int DirKey(c)
 
     if (len >= MAXFNLEN-1) return(-1);  /* max length of string */
 
-    xvbcopy(&filename[curPos], &filename[curPos+1], (size_t) (len-curPos+1));
+    memmove(&filename[curPos+1], &filename[curPos], (size_t) (len-curPos+1));
     filename[curPos]=c;  curPos++;
 
     scrollToFileName();
@@ -885,7 +885,7 @@ int DirKey(c)
 
   else if (c=='\010') {                 /* BS */
     if (curPos==0) return(-1);          /* at beginning of str */
-    xvbcopy(&filename[curPos], &filename[curPos-1], (size_t) (len-curPos+1));
+    memmove(&filename[curPos-1], &filename[curPos], (size_t) (len-curPos+1));
     curPos--;
 
     if (strlen(filename) > (size_t) 0) scrollToFileName();
@@ -910,7 +910,7 @@ int DirKey(c)
 
   else if (c=='\004' || c=='\177') {    /* ^D or DEL: delete character at curPos */
     if (curPos==len) return(-1);
-    xvbcopy(&filename[curPos+1], &filename[curPos], (size_t) (len-curPos));
+    memmove(&filename[curPos], &filename[curPos+1], (size_t) (len-curPos));
   }
 
   else if (c=='\002') {                 /* ^B: move backwards char */
@@ -2204,7 +2204,7 @@ int CheckPoll(del)
       if (!haveLastStat ||
 	  st.st_size  != lastStat.st_size  ||
 	  st.st_mtime != lastStat.st_mtime)   {
-	xvbcopy((char *) &st, (char *) &lastStat, sizeof(struct stat));
+	memmove((char *) &lastStat, (char *) &st, sizeof(struct stat));
 	haveLastStat = 1;
 	lastchgtime = nowT;
 	return 0;
@@ -2212,7 +2212,7 @@ int CheckPoll(del)
 
       /* if it hasn't changed in a while... */
       if (haveLastStat && st.st_size > 0 && (nowT - lastchgtime) > del) {
-	xvbcopy((char *) &st, (char *) &origStat, sizeof(struct stat));
+	memmove((char *) &origStat, (char *) &st, sizeof(struct stat));
 	haveLastStat = 0;  lastchgtime = 0;
 	return 1;
       }

@@ -963,7 +963,7 @@ static int writeJFIF(fp, pic, w,h, coltype)
 	if (*sp1 == '\n') sp1++;               /* move past \n */
 
 	/* move comments from sp1 and on down to sp */
-	xvbcopy(sp1, sp, strlen(sp1) + 1);   /* +1 to copy the trailing \0 */
+	memmove(sp, sp1, strlen(sp1) + 1);   /* +1 to copy the trailing \0 */
 
 	done = 1;
       }

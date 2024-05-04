@@ -876,7 +876,7 @@ static int brChkEvent(br, xev)
 
       XSync(theDisp, False);
 
-      xvbcopy((char *) e, (char *) &evt, sizeof(XEvent));
+      memmove((char *) &evt, (char *) e, sizeof(XEvent));
       reg = XCreateRegion();
       count = 0;
       do {
@@ -2942,7 +2942,7 @@ static void copyDirInfo(srcbr, dstbr)
     if (sbf->pimage) {
       dbf->pimage = (byte *) malloc((size_t) dbf->w * dbf->h);
       if (!dbf->pimage) FatalError("ran out of memory for dbf->pimage");
-      xvbcopy((char *) sbf->pimage, (char *) dbf->pimage,
+      memmove((char *) dbf->pimage, (char *) sbf->pimage, 
 	      (size_t) (dbf->w * dbf->h));
     }
     else dbf->pimage = (byte *) NULL;
@@ -2950,13 +2950,13 @@ static void copyDirInfo(srcbr, dstbr)
     if (sbf->ximage) {
       dbf->ximage = (XImage *) malloc(sizeof(XImage));
       if (!dbf->ximage) FatalError("ran out of memory for dbf->ximage");
-      xvbcopy((char *) sbf->ximage, (char *) dbf->ximage, sizeof(XImage));
+      memmove((char *) dbf->ximage, (char *) sbf->ximage, sizeof(XImage));
 
       if (sbf->ximage->data) {
 	dbf->ximage->data = (char *) malloc((size_t) dbf->ximage->height *
 					    dbf->ximage->bytes_per_line);
 	if (!dbf->ximage->data) FatalError("ran out of memory for ximg data");
-	xvbcopy((char *) sbf->ximage->data, (char *) dbf->ximage->data,
+	memmove((char *) dbf->ximage->data, (char *) sbf->ximage->data, 
 		(size_t) dbf->ximage->height * dbf->ximage->bytes_per_line);
       }
     }
@@ -3461,7 +3461,7 @@ static void rescanDir(br)
 	if (strcmp(bf->name, bfnames[j])==0) break;
       }
       if (j == bflen) {   /* not in del list.  copy to new list */
-	xvbcopy((char *) bf, (char *) &(newbflist[n++]),  sizeof(BFIL));
+	memmove((char *) &(newbflist[n++]), (char *) bf, sizeof(BFIL));
       }
       else {              /* in deleted list.  free all data for this entry */
 	if (bf->name)    free(bf->name);

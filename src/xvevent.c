@@ -332,7 +332,7 @@ int HandleEvent(event, donep)
       XRectangle    rect;
       XEvent        evt;
 
-      xvbcopy((char *) exp_event, (char *) &evt, sizeof(XEvent));
+      memmove((char *) &evt, (char *) exp_event, sizeof(XEvent));
       reg = XCreateRegion();
       count = 0;
 

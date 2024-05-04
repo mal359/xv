@@ -516,12 +516,12 @@ static const char *rdheader(fs)
 	  if (new == NULL)
 	    FatalError("Insufficient memory for comment buffer");
 
-	  if (commlen) xvbcopy(fs->comment, new, (size_t) commlen);
+	  if (commlen) memmove(new, fs->comment, (size_t) commlen);
 	  free(fs->comment);
 	  fs->comment = new;
 	}
 
-	xvbcopy(p, &fs->comment[commlen], (size_t) j);  /* add string */
+	memmove(&fs->comment[commlen], p, (size_t) j);  /* add string */
 	commlen += j;
 	fs->comment[commlen++] = '\n';       /* with trailing cr */
 	fs->comment[commlen] = '\0';
@@ -561,7 +561,7 @@ static void wrcard(card, name, dtype, kvalue, svalue)
   for (l=0, sp=card; l<80; l++,sp++) *sp=' ';
 
   l = strlen(name);
-  if (l) xvbcopy(name, card, (size_t) l);   /* copy name */
+  if (l) memmove(card, name, (size_t) l);   /* copy name */
 
   if (dtype == T_NOVAL) return;
 
@@ -569,7 +569,7 @@ static void wrcard(card, name, dtype, kvalue, svalue)
     l = kvalue;
     if (l <= 0) return;
     if (l > 72) l = 72;
-    xvbcopy(svalue, &card[8], (size_t) l);
+    memmove(&card[8], svalue, (size_t) l);
     return;
   }
 
@@ -607,7 +607,7 @@ static const char *rdcard(card, name, dtype, kvalue)
   char        namestr[9];
   static char error[45];
 
-  xvbcopy(card, namestr, (size_t) 8);
+  memmove(namestr, card, (size_t) 8);
 
   for (i=7; i>=0 && namestr[i] == ' '; i--);
   namestr[i+1] = '\0';
@@ -635,7 +635,7 @@ static const char *rdcard(card, name, dtype, kvalue)
     char num[21];
 
     if (ptr > 29) return "Keyword has bad integer value in FITS file";
-    xvbcopy(&card[ptr], num, (size_t) (30-ptr));
+    memmove(num, &card[ptr], (size_t) (30-ptr));
     num[30-ptr] = '\0';
     j = sscanf(num, "%ld", &ival);
     if (j != 1) return "Keyword has bad integer value in FITS file";

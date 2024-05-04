@@ -1244,7 +1244,7 @@ int pnum;
     if ((fp = fopen(pagefile, "wb")) == NULL)
 	pic2_error(pi, PIC2_WRITE);
 
-    xvbcopy((char *) pi, (char *) &pic2, sizeof(struct pic2_info));
+    memmove((char *) &pic2, (char *) pi, sizeof(struct pic2_info));
     pic2.fp = fp;
 
     pic2_write_header1(&pic2);

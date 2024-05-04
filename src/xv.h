@@ -8,13 +8,12 @@
 #  include "conf.h"
 #endif
 
-/*******************************************************************************
- *									       *
- * This program is showing its age. At the very least, let's ban some old,     *
- * poorly-designed C functions. This ban header is from Git.                   *
- *                                                                   MAL 2024  *
- *******************************************************************************
-#include <banned.h>
+/******************************************************************************
+ *									      *
+ * This program is showing its age. At the very least, let's ban some old,    *
+ * poorly-designed C functions. This ban header is from Git.                  *
+ *                                                                   MAL 2024 *
+ ******************************************************************************/
 
 #include "copyright.h"
 #include "config.h"
@@ -1866,7 +1865,6 @@ void DrawTempGauge         PARM((Window, int, int, int, int, double, u_long,
 void ProgressMeter         PARM((int, int, int, const char *));
 void XVDeletedFile         PARM((char *));
 void XVCreatedFile         PARM((char *));
-void xvbcopy               PARM((const char *, char *, size_t));
 int  xvbcmp                PARM((const char *, const char *, size_t));
 void xvbzero               PARM((char *, size_t));
 void xv_getwd              PARM((char *, size_t));

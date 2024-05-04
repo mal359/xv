@@ -320,7 +320,7 @@ int ClickGraf(GRAF *gp, Window child, int mx, int my)
 	      }
 
 	    /* open up position in hands[] array */
-	    xvbcopy((char *) &gp->hands[lpos], (char *) &gp->hands[lpos+1],
+	    memmove((char *) &gp->hands[lpos+1], (char *) &gp->hands[lpos],
 		    (gp->nhands - lpos) * sizeof(XPoint));
 
 	    x = gp->hands[lpos-1].x + lgap/2;
@@ -361,7 +361,7 @@ int ClickGraf(GRAF *gp, Window child, int mx, int my)
 	    }
 
 	    /* delete position 'mpos' in hands[] array */
-	    xvbcopy((char *) &gp->hands[mpos+1], (char *) &gp->hands[mpos],
+	    memmove((char *) &gp->hands[mpos], (char *) &gp->hands[mpos+1],
 		    (gp->nhands-mpos-1) * sizeof(XPoint));
 
 	    gp->nhands--;

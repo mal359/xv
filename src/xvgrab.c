@@ -1192,7 +1192,7 @@ static int CountColors24(pic, pwide, phigh, x, y, w, h)
       }
 
       if (high < low) { /* didn't find color in list, add it. */
-	xvbcopy((char *) &colors[low], (char *) &colors[low+1],
+	memmove((char *) &colors[low+1], (char *) &colors[low],
 		(nc - low) * sizeof(u_int));
 	colors[low] = col;
 	nc++;
@@ -1240,7 +1240,7 @@ static int Trivial24to8(pic24, w,h, pic8, rmap,gmap,bmap, maxcol)
 
     if (high < low) { /* didn't find color in list, add it. */
       if (nc>=maxcol) return 0;
-      xvbcopy((char *) &colors[low], (char *) &colors[low+1],
+      memmove((char *) &colors[low+1], (char *) &colors[low],
 	      (nc - low) * sizeof(u_long));
       colors[low] = col;
       nc++;

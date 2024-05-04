@@ -983,19 +983,27 @@ void XVCreatedFile(fullname)
 }
 
 
-/***************************************************/
+/***************************************************
 void xvbcopy(src, dst, len)
      const char *src;
      char *dst;
      size_t  len;
-{
+{ */
   /* Modern OS's (Solaris, etc.) frown upon the use of bcopy(),
    * and only want you to use memcpy().  However, memcpy() is broken,
    * in the sense that it doesn't properly handle overlapped regions
    * of memory.  This routine does, and also has its arguments in
    * the same order as bcopy() did, without using bcopy().
    */
-
+  /**************************************************************************
+   * memmove(3) properly handles overlapped regions of memory and is a      *
+   * standard function in ANSI C89, ISO C90, and POSIX.1-2001. Plenty 	    *
+   * modern for our uses here.						    *	    *
+   * 									    *
+   * Preserving this kludge, that's so 90's that it's wearing checkerboard  *
+   * Vans, in amber.							    *
+   * 								   MAL 2024 *
+   **************************************************************************/
   /* determine if the regions overlap
    *
    * 3 cases:  src=dst, src<dst, src>dst
@@ -1003,22 +1011,22 @@ void xvbcopy(src, dst, len)
    * if src=dst, they overlap completely, but nothing needs to be moved
    * if src<dst and src+len>dst then they overlap
    * if src>dst and src<dst+len then they overlap
-   */
+   *
 
-  if (src==dst || len<=0) return;    /* nothin' to do */
+  if (src==dst || len<=0) return;    * nothin' to do *
 
-  if (src<dst && src+len>dst) {  /* do a backward copy */
+  if (src<dst && src+len>dst) {  * do a backward copy *
     src = src + len - 1;
     dst = dst + len - 1;
     for ( ; len>0; len--, src--, dst--) *dst = *src;
   }
 
-  else {  /* they either overlap (src>dst) or they don't overlap */
-    /* do a forward copy */
+  else {  * they either overlap (src>dst) or they don't overlap *
+    * do a forward copy *
     for ( ; len>0; len--, src++, dst++) *dst = *src;
   }
 }
-
+*/
 
 /***************************************************/
 int xvbcmp (s1, s2, len)
