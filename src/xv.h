@@ -14,6 +14,7 @@
  * poorly-designed C functions. This ban header is from Git.                  *
  *                                                                   MAL 2024 *
  ******************************************************************************/
+/*#include banned.h */
 
 #include "copyright.h"
 #include "config.h"
@@ -1865,7 +1866,6 @@ void DrawTempGauge         PARM((Window, int, int, int, int, double, u_long,
 void ProgressMeter         PARM((int, int, int, const char *));
 void XVDeletedFile         PARM((char *));
 void XVCreatedFile         PARM((char *));
-void xvbzero               PARM((char *, size_t));
 void xv_getwd              PARM((char *, size_t));
 char *xv_strstr            PARM((const char *, const char *));
 FILE *xv_fopen             PARM((const char *, const char *));

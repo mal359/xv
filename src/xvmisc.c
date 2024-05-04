@@ -1072,12 +1072,33 @@ void xvbcopy(src, dst, len)
 }*/
 
 /***************************************************/
-void xvbzero(s, len)
+  /**************************************************************************
+   * 									    *
+   * This is a local reimplementation of Berkeley's bzero() function.	    *
+   * 									    *
+   * FreeBSD's manual entry gives historial/political context...            *
+   *									    *
+   * ``A bzero() function appeared in 4.3BSD. Its prototype existed         *
+   * previously in <string.h> before it was moved to <strings.h> for        *
+   * IEEE Std 1003.1-2001 ("POSIX.1") compliance.''			    *
+   * 									    *
+   * ...and comments on its status and use-cases			    *
+   *  									    *
+   * ``IEEE Std 1003.1-2008 ("POSIX.1") removes the specification of        * 
+   * bzero() and it is marked as LEGACY in IEEE Std 1003.1-2004 	    *
+   * ("POSIX.1"). For portability with other systems new programs should    *
+   * use memset(3).''	   	 					    *
+   *									    *
+   * If you say so!							    *
+   * Preserved in formaldehyde.					 	    * 
+   * 								   MAL 2024 *
+   **************************************************************************/
+/*void xvbzero(s, len)
      char   *s;
      size_t  len;
 {
   for ( ; len>0; len--) *s++ = 0;
-}
+}*/
 
 
 /***************************************************/

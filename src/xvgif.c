@@ -759,7 +759,7 @@ static int readImage(pinfo)
     SetISTR(ISTR_WARNING,"%s:  %s", bname,
 	    "This GIF file seems to be truncated.  Winging it.");
     if (!Interlace)  /* clear->EOBuffer */
-      xvbzero((char *) pic8+npixels,
+      memset((char *) pic8+npixels, 0,
 	      (size_t) (maxpixels-npixels<0 ? 0 : maxpixels-npixels));
   }
 

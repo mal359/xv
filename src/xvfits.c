@@ -689,7 +689,7 @@ static int ftgdata(fs, buffer, nelem)
     /* if we read to the end of the penultimate record */
     if (res >= loffs) {
       /* pad with zeros */
-      xvbzero((char *)buffer+res*fs->size, (size_t) ((nelem-res)*fs->size));
+      memset((char *)buffer+res*fs->size, 0, (size_t) ((nelem-res)*fs->size));
       res = nelem;
     }
   }

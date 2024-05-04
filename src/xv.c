@@ -2077,7 +2077,7 @@ static int openPic(filenum)
   origname[0] = '\0';
 #endif
 
-  xvbzero((char *) &pinfo, sizeof(PICINFO));
+  memset((char *) &pinfo, 0, sizeof(PICINFO));
 
   /* init important fields of pinfo */
   pinfo.pic = (byte *) NULL;
@@ -3905,7 +3905,7 @@ static void createMainWindow(geom, name)
 
     mwm_wm_hints = XInternAtom(theDisp, "_MOTIF_WM_HINTS", False);
     if (mwm_wm_hints != None) {
-      xvbzero((char *) &mwmhints, sizeof(mwmhints));
+      memset((char *) &mwmhints, 0, sizeof(mwmhints));
       mwmhints.flags = 2;
       mwmhints.decorations = 4;
 

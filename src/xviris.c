@@ -117,7 +117,7 @@ int LoadIRIS(fname, pinfo)
   long    filesize;
 
   trunc = 0;
-  xvbzero((char *) &img, sizeof(IMAGE));
+  memset((char *) &img, 0, sizeof(IMAGE));
 
   bname = BaseName(fname);
 
@@ -538,7 +538,7 @@ int WriteIRIS(FILE *fp, byte *pic, int ptype, int w, int h, byte *rmap,
   byte   *rlebuf, *pptr;
   byte   *lumbuf, *lptr, *longpic;
 
-  xvbzero((char *) &img, sizeof(IMAGE));
+  memset((char *) &img, 0, sizeof(IMAGE));
 
   /* write header information */
   fwrite(&img, sizeof(IMAGE), (size_t) 1, fp);

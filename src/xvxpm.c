@@ -588,7 +588,7 @@ int WriteXPM(fp, pic, ptype, w, h, rp, gp, bp, nc, col, name, comments)
     /* index array into the colormap (which may not be 'packed') */
     /* Thanks to John Bradley for this code..                    */
 
-    xvbzero((char *) hist, sizeof(hist));
+    memset((char *) hist, 0, sizeof(hist));
     numcol = 0;
 
     if (DEBUG)

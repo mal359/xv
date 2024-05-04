@@ -335,8 +335,8 @@ int   len;
   /* initialize 'compress' globals */
   maxbits = XV_BITS;
   maxmaxcode = 1<<XV_BITS;
-  xvbzero((char *) htab,    sizeof(htab));
-  xvbzero((char *) codetab, sizeof(codetab));
+  memset((char *) htab,    0, sizeof(htab));
+  memset((char *) codetab, 0, sizeof(codetab));
   hsize = HSIZE;
   free_ent = 0;
   clear_flg = 0;

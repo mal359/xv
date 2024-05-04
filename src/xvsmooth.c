@@ -401,9 +401,9 @@ int   is24, swide, shigh, dwide, dhigh;
 	*pic24++ = lbufB[j] / linecnt;
       }
 
-      xvbzero( (char *) lbufR, dwide * sizeof(int));  /* clear out line bufs */
-      xvbzero( (char *) lbufG, dwide * sizeof(int));
-      xvbzero( (char *) lbufB, dwide * sizeof(int));
+      memset( (char *) lbufR, 0, dwide * sizeof(int)); /* clear out line bufs */
+      memset( (char *) lbufG, 0, dwide * sizeof(int));
+      memset( (char *) lbufB, 0, dwide * sizeof(int));
       linecnt = 0;  lastline = thisline;
     }
   }
@@ -493,9 +493,9 @@ int   is24, swide, shigh, dwide, dhigh;
       }
 
       lastline = thisline;
-      xvbzero( (char *) lbufR, swide * sizeof(int));  /* clear out line bufs */
-      xvbzero( (char *) lbufG, swide * sizeof(int));
-      xvbzero( (char *) lbufB, swide * sizeof(int));
+      memset((char *) lbufR, 0, swide * sizeof(int)); /* clear out line bufs */
+      memset((char *) lbufG, 0, swide * sizeof(int));
+      memset((char *) lbufB, 0, swide * sizeof(int));
       linecnt = 0;
     }
 

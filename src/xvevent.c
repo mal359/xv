@@ -2168,7 +2168,7 @@ static void WMaximize()
   if (useroot) WResize((int) dispWIDE, (int) dispHIGH);
   else {
     XWindowAttributes xwa;
-    xvbzero((char *) &xwa, sizeof(XWindowAttributes));
+    memset((char *) &xwa, 0, sizeof(XWindowAttributes));
     xwa.x = xwa.y = 0;
     xwa.width  = dispWIDE;
     xwa.height = dispHIGH;
@@ -3296,7 +3296,7 @@ static void annotatePic()
   cimg[CIMG_TRANS] = 1;
   cimg[CIMG_TRVAL] = 0;
 
-  xvbzero((char *) cimg + CIMG_PIC8, (size_t) w*h);
+  memset((char *) cimg + CIMG_PIC8, 0, (size_t) w*h);
 
   if (picType == PIC8) {
     cimg[CIMG_CMAP + 3 + 0] = rMap[editColor];
