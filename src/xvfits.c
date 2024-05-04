@@ -368,7 +368,7 @@ static const char *ftopen3d(fs, file, nx, ny, nz, bitpix)
   int naxis, i;
   const char *error;
 
-  fp = xv_fopen(file, "r");
+  fp = fopen(file, "r");
   if (!fp) return "Unable to open FITS file";
 
   fs->fp     = fp;

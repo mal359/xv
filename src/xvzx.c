@@ -57,7 +57,7 @@ int LoadZX(fname, pinfo)
   if (!zxfile)     FatalError("malloc failure in xvzx.c LoadZX");
 
   /* open the file */
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return (zxError(bname, "can't open file"));
 
   /* Load it in en bloc */

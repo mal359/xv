@@ -82,7 +82,7 @@ int LoadBMP(fname, pinfo)
   pic8 = pic24 = (byte *) NULL;
   bname = BaseName(fname);
 
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return (bmpError(bname, "couldn't open file"));
 
   fseek(fp, 0L, 2);      /* figure out the file size */

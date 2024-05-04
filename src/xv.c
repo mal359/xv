@@ -2978,7 +2978,7 @@ int ReadFileType(fname)
 
   if (!fname) return RFT_ERROR;   /* shouldn't happen */
 
-  fp = xv_fopen(fname, "r");
+  fp = fopen(fname, "r");
   if (!fp) return RFT_ERROR;
 
   if (strlen(fname) > 4 &&
@@ -3163,7 +3163,7 @@ int ReadFileType(fname)
 
     /* Skip MACBSIZE and recheck */
     macbin_alrchk = True;
-    fp = xv_fopen(fname, "r");
+    fp = fopen(fname, "r");
     if (!fp) return RFT_ERROR;
     fseek(fp, MACBSIZE, SEEK_SET);
     n = fread(magicno, (size_t) 1, (size_t) 30, fp);
@@ -3377,8 +3377,8 @@ int RemoveMacbinary(src, dst)
 
   SetISTR(ISTR_INFO, "Removing MacBinary...");
 
-  sfp = xv_fopen(src, "r");
-  dfp = xv_fopen(dst, "w");
+  sfp = fopen(src, "r");
+  dfp = fopen(dst, "w");
 
   if (!sfp || !dfp) {
     SetISTR(ISTR_INFO, "Unable to remove a InfoFile header form '%s'.", src);

@@ -134,7 +134,7 @@ int LoadSIR(fname, pinfo)
 
   bname = BaseName(fname);
 
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return (bmpError(bname, "couldn't open file"));
 
 /* get SIR image header information */

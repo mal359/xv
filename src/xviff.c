@@ -90,7 +90,7 @@ int LoadIFF(fname, pinfo)
   pinfo->comment = (char *) NULL;
 
   /* open the file */
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return (iffError(bname, "cannot open file"));
 
   /* compute file length */

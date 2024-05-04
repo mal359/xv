@@ -71,7 +71,7 @@ int LoadPM(fname, pinfo)
   pinfo->comment = (char *) NULL;
 
 
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return( pmError(bname, "unable to open file") );
 
   /* read in the pmpic struct, one byte at a time */

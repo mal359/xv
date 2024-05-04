@@ -310,7 +310,7 @@ int is_mgcsfx(fname,buffer,size)
 	fprintf(stderr,"Can't allocate memory\n");
 	return 0;
       }
-      if((fp = xv_fopen(fname, "r"))==NULL){
+      if((fp = fopen(fname, "r"))==NULL){
 	fprintf(stderr,"Can't open file %s\n", fname);
 	free(buf);
 	return 0;
@@ -353,7 +353,7 @@ char *fname;
     fprintf(stderr,"Can't allocate memory\n");
     return NULL;
   }
-  if((fp = xv_fopen(fname, "r"))==NULL){
+  if((fp = fopen(fname, "r"))==NULL){
     fprintf(stderr,"Can't open file %s\n", fname);
     free(buf);
     return NULL;

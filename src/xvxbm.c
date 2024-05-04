@@ -49,7 +49,7 @@ int LoadXBM(fname, pinfo)
   k = 0;
 
   bname = BaseName(fname);
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return (xbmError(bname, "couldn't open file"));
 
   fseek(fp, 0L, 2);
@@ -64,7 +64,7 @@ int LoadXBM(fname, pinfo)
 
     if (strncmp(line,"#define",    (size_t) 7)==0 &&
 	sscanf(line,"#define %s %d", name, &w)==2 &&
-	xv_strstr(name, "_width") != NULL) break;
+	strstr(name, "_width") != NULL) break;
   }
 
 
@@ -75,7 +75,7 @@ int LoadXBM(fname, pinfo)
 
     if (strncmp(line,"#define",    (size_t) 7)==0 &&
 	sscanf(line,"#define %s %d", name, &h)==2 &&
-	xv_strstr(name, "_height") != NULL) break;
+	strstr(name, "_height") != NULL) break;
   }
   
   /* scan forward until we see '= {' before bitmap array to skip filename */

@@ -56,7 +56,7 @@ int LoadTarga(fname, pinfo)
   pinfo->pic     = (byte *) NULL;
   pinfo->comment = (char *) NULL;
 
-  fp=xv_fopen(fname,"r");
+  fp=fopen(fname,"r");
   if (!fp) {
      SetISTR(ISTR_WARNING,"%s:  %s", bname, "can't open file");
      return 0;

@@ -56,7 +56,7 @@ int LoadRLE(fname, pinfo)
   bname = BaseName(fname);
 
   /* open the stream */
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return (rleError(bname, "unable to open file"));
 
 

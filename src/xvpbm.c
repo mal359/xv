@@ -148,7 +148,7 @@ int LoadPBM(fname, pinfo)
 #ifdef HAVE_MGCSFX
   if(fd < 0){
     /* open the file */
-    fp = xv_fopen(fname,"r");
+    fp = fopen(fname,"r");
     if (!fp) return (pbmError(bname, "can't open file"));
 
     /* compute file length */
@@ -162,7 +162,7 @@ int LoadPBM(fname, pinfo)
   }
 #else
   /* open the file */
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return (pbmError(bname, "can't open file"));
 
   /* compute file length */

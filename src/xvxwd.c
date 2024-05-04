@@ -127,7 +127,7 @@ int LoadXWD(fname, pinfo)
   pinfo->pic     = (byte *) NULL;
   pinfo->comment = (char *) NULL;
 
-  ifp = xv_fopen(fname, "r");
+  ifp = fopen(fname, "r");
   if (!ifp) return (xwdError("can't open file"));
 
   /* figure out the file size (used to check colormap size) */

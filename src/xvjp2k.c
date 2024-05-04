@@ -156,7 +156,7 @@ static int LoadJP2K(char *fname, PICINFO *pinfo, int quick, bool jpc_format)
 	jas_setdbglevel(debug_level);
 #endif
 
-	if (!(fp = xv_fopen(fname, fmode))) {
+	if (!(fp = fopen(fname, fmode))) {
 		return 0;
 	}
 	/* Input file's base name, for message(s) */

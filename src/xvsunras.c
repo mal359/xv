@@ -62,7 +62,7 @@ int LoadSunRas(fname, pinfo)
   bname = BaseName(fname);
 
   /* read in the Sun Rasterfile picture */
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return( sunRasError(bname, "unable to open file") );
 
   read_sun_long (&sunheader.ras_magic	 , fp);

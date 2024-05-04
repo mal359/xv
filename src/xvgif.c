@@ -132,7 +132,7 @@ int LoadGIF(fname, pinfo)
   pinfo->numpages= 0;
 
   bname = BaseName(fname);
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return ( gifError(pinfo, "can't open file") );
 
 
@@ -441,14 +441,14 @@ int LoadGIF(fname, pinfo)
            *  (though all appended-number ones do); ergo, open for reading (see
            *  if it's there), close, and explicitly unlink() if necessary */
           /* GRR 20070506:  could/should call KillPageFiles() (xv.c) instead */
-	  fp = xv_fopen(pinfo->pagebname, "r");
+	  fp = fopen(pinfo->pagebname, "r");
 	  if (fp) {
 	    fclose(fp);
 	    unlink(pinfo->pagebname);  /* no errors during testing */
 	  }
 	}
 	sprintf(tmpname, "%s%d", pinfo->pagebname, pinfo->numpages);
-	fp = xv_fopen(tmpname, "w");
+	fp = fopen(tmpname, "w");
 	if (!fp) {
 	  ErrPopUp("LoadGIF: Unable to open temp file", "\nDang!");
 	  return 0;
@@ -512,7 +512,7 @@ int LoadGIF(fname, pinfo)
     int numpages = pinfo->numpages;
     char *comment = pinfo->comment;
     sprintf(tmpname, "%s%d", pinfo->pagebname, pinfo->numpages);
-    fp = xv_fopen(tmpname, "w");
+    fp = fopen(tmpname, "w");
     if (!fp) {
       ErrPopUp("LoadGIF: Unable to open temp file", "\nDang!");
       return 0;

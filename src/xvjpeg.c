@@ -521,7 +521,7 @@ int LoadJFIF(fname, pinfo, quick)
 
   pinfo->type  = PIC8;
 
-  if ((fp = xv_fopen(fname, "r")) == NULL) return 0;
+  if ((fp = fopen(fname, "r")) == NULL) return 0;
 
   fseek(fp, 0L, 2);
   filesize = ftell(fp);

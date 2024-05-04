@@ -1030,7 +1030,6 @@ void xvbcopy(src, dst, len)
 
 /***************************************************/
   /**************************************************************************
-   * 									    *
    * This is a local reimplementation of Berkeley's bcmp() function.	    *
    * 									    *
    * Here's what Single UNIX Specification v2 (published 1997) has to say:  *
@@ -1073,7 +1072,6 @@ void xvbcopy(src, dst, len)
 
 /***************************************************/
   /**************************************************************************
-   * 									    *
    * This is a local reimplementation of Berkeley's bzero() function.	    *
    * 									    *
    * FreeBSD's manual entry gives historial/political context...            *
@@ -1138,7 +1136,16 @@ void xv_getwd(buf, buflen)
  * software for any purpose.  It is provided "as is" without
  * express or implied warranty.
  */
-
+ 
+/******************************************************************************
+ * Not only is this function redundant, it's probably vulnerable. Indeed,     *
+ * there have been several strstr CVE's since the 80's, more than a few       *
+ * of those were reported on BSD machines. 				      *
+ * 									      *
+ * But this is an interesting memento. Preserved.			      *
+ *								     MAL 2024 *
+ ******************************************************************************/
+/*
 char *xv_strstr(string, substring)
      const char *string;        /* String to search. */
      const char *substring;	/* Substring to try to find in string. */
@@ -1167,11 +1174,12 @@ char *xv_strstr(string, substring)
   return (char *) 0;
 }
 
-
-
-/***************************************************/
+*/
 
 /***************************************************/
+
+/***************************************************
+* REDUNDANT FUNCTION 			   MAL2024 *
 FILE *xv_fopen(fname, mode)
      const char *fname;
      const char *mode;
@@ -1184,7 +1192,7 @@ FILE *xv_fopen(fname, mode)
 }
 
 
-/***************************************************/
+***************************************************/
 /* GRR 20050320:  added actual mk[s]temp() call... */
 void xv_mktemp(buf, fname)
      char       *buf;

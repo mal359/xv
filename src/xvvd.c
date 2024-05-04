@@ -740,7 +740,7 @@ char *fname;
 
     if ((!stat(fname, &st)) && (st.st_mode & S_IFMT) == S_IFDIR)
 	return VD_UKN;
-    fp = xv_fopen(fname, "r");
+    fp = fopen(fname, "r");
     if (!fp) return VD_ERR;
 
     n = fread(magicno, (size_t) 1, (size_t) 30, fp);

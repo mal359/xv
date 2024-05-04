@@ -281,7 +281,7 @@ int LoadPDS(fname, pinfo)
      image, since that's what the Voyager cd's have, or even a 2kx2k, since
      some of the Magellan images from Ames are that size */
 
-  zf = xv_fopen(fname,"r");
+  zf = fopen(fname,"r");
   if (!zf) {
     SetISTR(ISTR_WARNING,"LoadPDS: can't open %s\n",fname);
     return 0;
@@ -453,7 +453,7 @@ int LoadPDS(fname, pinfo)
 	lastwasinote=FALSE; continue;
       } else if (sscanf(scanbuff," SPACECRAFT_NAME = " S(COMMENTSIZE) " " S(1023),
 			spacecraft,garbage) == 2 ) {
-	const char *tmp = xv_strstr(scanbuff, spacecraft) + strlen(spacecraft);
+	const char *tmp = strstr(scanbuff, spacecraft) + strlen(spacecraft);
 	strncat(spacecraft, tmp, COMMENTSIZE - strlen(spacecraft));
 	lastwasinote=FALSE;  continue;
       } else if (sscanf(scanbuff, " SPACECRAFT_NAME = " S(COMMENTSIZE), spacecraft) == 1) {
@@ -582,7 +582,7 @@ int LoadPDS(fname, pinfo)
     --labelsofar;
 
     if (fread(scanbuff, (size_t) (labelsize-labelsofar),(size_t) 1,zf) == 1) {
-      if ((tmp = (char *) xv_strstr(scanbuff," NL=")) == NULL) {
+      if ((tmp = (char *) strstr(scanbuff," NL=")) == NULL) {
 	SetISTR(ISTR_WARNING,"LoadPDS: bad NL in VICAR\n");
 	returnp=TRUE;
       }
@@ -592,7 +592,7 @@ int LoadPDS(fname, pinfo)
 	returnp=TRUE;
       }
 
-      if ((tmp = (char *) xv_strstr(scanbuff, " NS=")) == NULL) {
+      if ((tmp = (char *) strstr(scanbuff, " NS=")) == NULL) {
 	SetISTR(ISTR_WARNING,"LoadPDS: bad NS in VICAR\n");
 	returnp=TRUE;
       }
@@ -602,19 +602,19 @@ int LoadPDS(fname, pinfo)
 	returnp=TRUE;
       }
 
-      if ( (tmp=(char *) xv_strstr(scanbuff, " NBB=")))
+      if ( (tmp=(char *) strstr(scanbuff, " NBB=")))
         if (sscanf(tmp, " NBB = %d",&lpsize) != 1) {
 	  SetISTR(ISTR_WARNING,"LoadPDS: bad scan NBB in VICAR\n");
 	  returnp=TRUE;
         }
 
-      vaxbyte = (xv_strstr(scanbuff, " INTFMT='HIGH'") == NULL);
+      vaxbyte = (strstr(scanbuff, " INTFMT='HIGH'") == NULL);
 
-      if (xv_strstr(scanbuff, " FORMAT='BYTE'"))
+      if (strstr(scanbuff, " FORMAT='BYTE'"))
         samplesize = 8;
-      else if (xv_strstr(scanbuff, " FORMAT='HALF'"))
+      else if (strstr(scanbuff, " FORMAT='HALF'"))
         samplesize = 16;
-      else if (xv_strstr(scanbuff, " FORMAT=")) {
+      else if (strstr(scanbuff, " FORMAT=")) {
 	SetISTR(ISTR_WARNING,"LoadPDS: unsupported FORMAT in VICAR\n");
 	returnp=TRUE;
       } else {
@@ -713,7 +713,7 @@ int LoadPDS(fname, pinfo)
     }
 
 
-    zf = xv_fopen(pdsuncompfname,"r");
+    zf = fopen(pdsuncompfname,"r");
     if (!zf) {
       SetISTR(ISTR_WARNING,"LoadPDS: can't open uncompressed file %s\n",
 	      pdsuncompfname);
@@ -893,7 +893,7 @@ static int Convert16BitImage(fname, pinfo, swab)
   (void)strcpy(c ? c+1 : name, "hist.tab");
 
   /* read the histogram file which is always LSB_INTEGER */
-  if ((fp = xv_fopen(name, "r")) != NULL) {
+  if ((fp = fopen(name, "r")) != NULL) {
     for (n = k = nTot = 0; n < 65536 && k != EOF; n++, nTot += j) {
       for (i = j = 0; i < 4 && (k = getc(fp)) != EOF; i++)
         j = ((j >> 8) & 0xffffff) | ((k & 255) << 24);
@@ -989,7 +989,7 @@ static int LoadPDSPalette(fname, pinfo)
   c = (char *) rindex(strcpy(name, fname), '/');
   (void)strcpy(c ? c+1 : name, "palette.tab");
 
-  if ((fp = xv_fopen(name, "r")) == NULL)
+  if ((fp = fopen(name, "r")) == NULL)
     return 0;
   for (i = 0; i < 256; i++) {
     if (fgets(c = buf, (int) (sizeof(buf)-1), fp) == NULL)

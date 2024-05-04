@@ -1867,8 +1867,6 @@ void ProgressMeter         PARM((int, int, int, const char *));
 void XVDeletedFile         PARM((char *));
 void XVCreatedFile         PARM((char *));
 void xv_getwd              PARM((char *, size_t));
-char *xv_strstr            PARM((const char *, const char *));
-FILE *xv_fopen             PARM((const char *, const char *));
 void xv_mktemp             PARM((char *, const char *));
 void Timer                 PARM((int));
 

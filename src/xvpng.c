@@ -925,7 +925,7 @@ int LoadPNG(fname, pinfo)
   read_anything=0;
 
   /* open the file */
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) {
     SetISTR(ISTR_WARNING,"%s:  can't open file", fname);
     return 0;

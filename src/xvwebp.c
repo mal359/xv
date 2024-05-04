@@ -222,7 +222,7 @@ int LoadWEBP(fname, pinfo)
   VP8StatusCode         status;
 
   /* open the file */
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) {
     SetISTR(ISTR_WARNING,"%s:  can't open file", fname);
     return 0;

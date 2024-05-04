@@ -3856,7 +3856,7 @@ ms_auto_no:
 
   sprintf(str, "%dx%d ", pinfo.normw, pinfo.normh);
   switch (filetype) {
-  case RFT_GIF:      if (xv_strstr(pinfo.shrtInfo, "GIF89"))
+  case RFT_GIF:      if (strstr(pinfo.shrtInfo, "GIF89"))
                        strcat(str,"GIF89 file");
                      else
 		       strcat(str,"GIF87 file");
@@ -3864,7 +3864,7 @@ ms_auto_no:
 
   case RFT_PM:       strcat(str,"PM file");               break;
 
-  case RFT_PBM:      if (xv_strstr(pinfo.fullInfo, "raw")) strcat(str,"Raw ");
+  case RFT_PBM:      if (strstr(pinfo.fullInfo, "raw")) strcat(str,"Raw ");
                      else strcat(str,"Ascii ");
 
                      for (i=0; i<3 && (strlen(pinfo.fullInfo)>(size_t)3); i++){

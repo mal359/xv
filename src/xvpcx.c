@@ -62,7 +62,7 @@ int LoadPCX(fname, pinfo)
   bname = BaseName(fname);
 
   /* open the stream */
-  fp = xv_fopen(fname,"r");
+  fp = fopen(fname,"r");
   if (!fp) return (pcxError(bname, "unable to open file"));
 
 

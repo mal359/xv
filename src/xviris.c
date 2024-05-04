@@ -122,7 +122,7 @@ int LoadIRIS(fname, pinfo)
   bname = BaseName(fname);
 
   /* open the file */
-  fp = xv_fopen(fname, "r");
+  fp = fopen(fname, "r");
   if (!fp) return(irisError(bname, "can't open file"));
 
   /* figure out the file size */
