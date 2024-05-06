@@ -43,7 +43,6 @@ if(XV_ENABLE_PDS)
 endif()
 
 set(xv_sources
-	vprintf.c
 	xv24to8.c
 	xvalg.c
 	xvbmp.c
