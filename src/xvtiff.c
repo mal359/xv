@@ -141,7 +141,10 @@ int LoadTIFF(fname, pinfo, quick)
       /* GRR 20050320:  converted this fake mktemp() to use mktemp()/mkstemp()
          internally (formerly it simply prepended tmpdir to the string and
          returned immediately) */
-      xv_mktemp(tmpname, "xvpgXXXXXX");
+	 /* Just use mkstemp directly. MAL 2024. */
+      char tmpname[] = "/tmp/xvpgXXXXXX";
+      int fd = mkstemp(tmpname);
+      close(fd);
 
       if (tmpname[0] == '\0') {   /* mkstemp() blew up */
         sprintf(dummystr,"LoadTIFF: Unable to create temporary filename???");

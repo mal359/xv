@@ -431,8 +431,10 @@ int LoadGIF(fname, pinfo)
 
       if (pinfo->numpages > 0) {   /* do multipage stuff */
 	if (pinfo->numpages == 1) {    /* first time only... */
-	  xv_mktemp(pinfo->pagebname, "xvpgXXXXXX"); /*a.k.a. close(mkstemp())*/
-	  if (pinfo->pagebname[0] == '\0') {
+	  char tmpname[] = "/tmp/xvpgXXXXXX"; /*a.k.a. close(mkstemp())*/
+	  int fd = mkstemp(tmpname);
+          close(fd);
+	  if (tmpname[0] == '\0') {
 	    ErrPopUp("LoadGIF: Unable to create temporary filename???",
 			"\nHow unlikely!");
 	    return 0;
@@ -441,10 +443,10 @@ int LoadGIF(fname, pinfo)
            *  (though all appended-number ones do); ergo, open for reading (see
            *  if it's there), close, and explicitly unlink() if necessary */
           /* GRR 20070506:  could/should call KillPageFiles() (xv.c) instead */
-	  fp = fopen(pinfo->pagebname, "r");
+	  fp = fopen(tmpname, "r");
 	  if (fp) {
 	    fclose(fp);
-	    unlink(pinfo->pagebname);  /* no errors during testing */
+	    unlink(tmpname);  /* no errors during testing */
 	  }
 	}
 	sprintf(tmpname, "%s%d", pinfo->pagebname, pinfo->numpages);

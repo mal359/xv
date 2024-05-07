@@ -1194,6 +1194,12 @@ FILE *xv_fopen(fname, mode)
 
 ***************************************************/
 /* GRR 20050320:  added actual mk[s]temp() call... */
+/******************************************************************************
+ * Just call mkstemp directly now that mktemp() is dead. This function is no  *
+ * longer pertinent, as it was meant to make xv portable from ancient	      *
+ * machines without mkstemp(3), a 4.3BSD introduction.			      *
+ *								     MAL 2024 *
+ ******************************************************************************
 void xv_mktemp(buf, fname)
      char       *buf;
      const char *fname;
@@ -1203,7 +1209,7 @@ void xv_mktemp(buf, fname)
 }
 
 
-/***************************************************/
+***************************************************/
 
 /******************************************************************************
  * Once upon a time, this function provided a timer for machines from the     *
