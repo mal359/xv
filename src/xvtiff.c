@@ -520,15 +520,14 @@ static void _TIFFerr(module, fmt, ap)
      va_list     ap;
 {
   char buf[2048];
-  char *cp = buf;
+  size_t len = 0;
 
   if (module != NULL) {
-    sprintf(cp, "%s: ", module);
-    cp = (char *) index(cp, '\0');
+    len = snprintf(buf, sizeof(buf), "%s: ", module);
   }
 
-  vsprintf(cp, fmt, ap);
-  strcat(cp, ".");
+  vsnprintf(buf + len, sizeof(buf) - len, fmt, ap);
+  snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), ".");
 
   SetISTR(ISTR_WARNING, "%s", buf);
 
@@ -543,16 +542,14 @@ static void _TIFFwarn(module, fmt, ap)
      va_list     ap;
 {
   char buf[2048];
-  char *cp = buf;
+  size_t len = 0;
 
   if (module != NULL) {
-    sprintf(cp, "%s: ", module);
-    cp = (char *) index(cp, '\0');
+    len = snprintf(buf, sizeof(buf), "%s: ", module);
   }
-  strcpy(cp, "Warning, ");
-  cp = (char *) index(cp, '\0');
-  vsprintf(cp, fmt, ap);
-  strcat(cp, ".");
+  len += snprintf(buf + len, sizeof(buf) - len, "Warning, ");
+  vsnprintf(buf + len, sizeof(buf) - len, fmt, ap);
+  snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), ".");
 
   SetISTR(ISTR_WARNING, "%s", buf);
 }
