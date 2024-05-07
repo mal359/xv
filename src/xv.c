@@ -185,7 +185,7 @@ int main(argc, argv)
 	/* if X doesn't support ja_JP.ujis text viewer l10n doesn't work. */
 #endif
 
-  xv_getwd(initdir, sizeof(initdir));
+  getcwd(initdir, sizeof(initdir));
   searchdir[0] = '\0';
   fullfname[0] = '\0';
 

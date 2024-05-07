@@ -165,8 +165,8 @@ void CreateDirW(geom)
 {
   path[0] = '\0';
 
-  xv_getwd(loadpath, sizeof(loadpath));
-  xv_getwd(savepath, sizeof(savepath));
+  getcwd(loadpath, sizeof(loadpath));
+  getcwd(savepath, sizeof(savepath));
 
 
   dirW = CreateWindow("","XVdir", geom, DIRWIDE, DIRHIGH, infofg, infobg, 0);
@@ -647,7 +647,7 @@ static void loadCWD()
 {
   /* loads up current-working-directory into load/save list */
 
-  xv_getwd(path, sizeof(path));
+  getcwd(path, sizeof(path));
   LoadCurrentDirectory();
 }
 
@@ -674,7 +674,7 @@ void LoadCurrentDirectory()
   /* get rid of old dirMBlist */
   for (i=0; i<ndirs; i++) free((char *) dirMBlist[i]);
 
-  if (strlen(path) == 0) xv_getwd(path, sizeof(path));  /* no dir, use cwd */
+  if (strlen(path) == 0) getcwd(path, sizeof(path));  /* no dir, use cwd */
 
 #ifdef AUTO_EXPAND
   if (Chvdir(path)) {

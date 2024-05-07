@@ -74,14 +74,14 @@ void Vdinit()
 {
     char tmp[MAXPATHLEN+1];
 
-    xv_getwd(tmp, MAXPATHLEN+1);
+    getcwd(tmp, MAXPATHLEN+1);
     if (chdir(tmpdir)) {
 	fprintf(stderr, "Warning: cannot chdir to tmpdir = '%s'.\n", tmpdir);
 	fprintf(stderr,
 		"         I will use current directory '%s' instead of tmpdir.\n",
 		tmp);
     }
-    xv_getwd(vdroot, MAXPATHLEN+1);
+    getcwd(vdroot, MAXPATHLEN+1);
     strcat(vdroot, "/.xvvdXXXXXX");
     chdir(tmp);
 
@@ -305,7 +305,7 @@ char *dir;
 
 	    WaitCursor();
 
-	    xv_getwd(origdir, MAXPATHLEN+1);
+	    getcwd(origdir, MAXPATHLEN+1);
 
 	    snprintf(tmp, sizeof(tmp), "%s%s", vdroot, dir2);
 	    if (vd_recursive_mkdir(tmp) || chdir(tmp)) {
@@ -664,7 +664,7 @@ char *path;
 	return;
 
     if (*path == '\0') {
-	xv_getwd(path, MAXPATHLEN+1);
+	getcwd(path, MAXPATHLEN+1);
 	return;
     }
     if (*path == '~')
@@ -673,7 +673,7 @@ char *path;
 	char tmp[MAXPATHLEN+1];
 
 	strcpy(tmp, path);
-	xv_getwd(path, MAXPATHLEN+1);
+	getcwd(path, MAXPATHLEN+1);
 	strcat(path, "/");
 	strcat(path, tmp);
     }

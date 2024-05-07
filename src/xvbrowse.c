@@ -690,7 +690,7 @@ void OpenBrowse()
 
   /* see if some browser is pointing to the same path as CWD.  If so,
      copy the info, rather than reading the directory */
-  xv_getwd(path, sizeof(path));
+  getcwd(path, sizeof(path));
   if (path[strlen(path)-1] != '/') strcat(path,"/");   /* add trailing '/' */
 
   for (i=0; i<MAXBRWIN; i++) {
@@ -3018,7 +3018,7 @@ static void scanDir(br)
   /********************************************************************/
 
 
-  xv_getwd(path, sizeof(path));
+  getcwd(path, sizeof(path));
   if (path[strlen(path)-1] != '/') strcat(path,"/");   /* add trailing '/' */
 
   for (i=0; i<br->ndirs; i++) free((char *) br->mblist[i]);  /* clear old dir names */
@@ -4862,7 +4862,7 @@ static void recurseUpdate(br, subdir)
   char *sp;
   BFIL *bf;
 
-  xv_getwd(orgDir, sizeof(orgDir));
+  getcwd(orgDir, sizeof(orgDir));
 
   sprintf(curDir, "%s%s", br->path, subdir);
 #ifdef AUTO_EXPAND
@@ -4876,7 +4876,7 @@ static void recurseUpdate(br, subdir)
     return;
   }
 
-  xv_getwd(curDir, sizeof(curDir));
+  getcwd(curDir, sizeof(curDir));
 
   /* have we looped? */
   for (i=0; i<dirStackLen && strcmp(curDir, dirStack[i]); i++);
@@ -4931,7 +4931,7 @@ static void recurseUpdate(br, subdir)
   /* remove this directory from the stack */
   free(dirStack[--dirStackLen]);
 
-  xv_getwd(curDir, sizeof(curDir));
+  getcwd(curDir, sizeof(curDir));
   if (strcmp(orgDir, curDir)) {   /* change back to orgdir */
 #ifdef AUTO_EXPAND
     Chvdir(orgDir);

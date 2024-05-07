@@ -105,7 +105,7 @@ int LoadTIFF(fname, pinfo, quick)
   filename = fname;    /* use fullname unless it all works out */
   oldpath[0] = '\0';
   if (fname[0] == '/') {
-    xv_getwd(oldpath, sizeof(oldpath));
+    getcwd(oldpath, sizeof(oldpath));
     strcpy(tmppath, fname);
     sp = (char *) BaseName(tmppath);  /* intentionally losing constness */
     if (sp != tmppath) {

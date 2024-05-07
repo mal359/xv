@@ -1867,7 +1867,6 @@ void DrawTempGauge         PARM((Window, int, int, int, int, double, u_long,
 void ProgressMeter         PARM((int, int, int, const char *));
 void XVDeletedFile         PARM((char *));
 void XVCreatedFile         PARM((char *));
-void xv_getwd              PARM((char *, size_t));
 
 
 /*************************** XVPOPUP.C ***************************/

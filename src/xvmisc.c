@@ -1100,11 +1100,12 @@ void xvbcopy(src, dst, len)
 
 
 /***************************************************/
+/* Unnecessary. MAL 2024. *
 void xv_getwd(buf, buflen)
      char   *buf;
      size_t  buflen;
 {
-  /* Gets the current working directory and puts it in buf.  No trailing '/'. */
+   * Gets the current working directory and puts it in buf.  No trailing '/'. *
 
   const char *rv;
 
@@ -1122,7 +1123,7 @@ void xv_getwd(buf, buflen)
 
 
 
-/***************************************************/
+***************************************************/
 
 /*
  *	Source code for the "strstr" library routine.
