@@ -72,9 +72,10 @@ static int    CountColors24       PARM((byte *, int, int,
 static int    Trivial24to8        PARM((byte *, int, int, byte *,
 					byte *, byte *, byte *, int));
 
-#ifndef NOSIGNAL
 extern XtAppContext context;
-#endif
+
+struct timespec req = {0, 100000000};
+
 
 /***********************************/
 int Grab()
@@ -130,7 +131,7 @@ int Grab()
 	  else XBell(theDisp, 0);
 	}
       }
-      Timer(100);
+      nanosleep(&req, NULL);
     }
     grabInProgress = 0;
   }
@@ -279,9 +280,9 @@ int Grab()
     startflash();
     for (i=0; i<5; i++) {
       flashrect(ix, iy, iw, ih, 1);
-      XFlush(theDisp);  Timer(100);
+      XFlush(theDisp);  nanosleep(&req, NULL);
       flashrect(ix, iy, iw, ih, 0);
-      XFlush(theDisp);  Timer(100);
+      XFlush(theDisp);  nanosleep(&req, NULL);
     }
     endflash();
   }
@@ -318,9 +319,9 @@ int Grab()
     /* flash the rectangle a bit... */
     for (i=0; i<5; i++) {
       flashrect(ix, iy, iw, ih, 1);
-      XFlush(theDisp);  Timer(100);
+      XFlush(theDisp);  nanosleep(&req, NULL);
       flashrect(ix, iy, iw, ih, 0);
-      XFlush(theDisp);  Timer(100);
+      XFlush(theDisp);  nanosleep(&req, NULL);
     }
 #endif
 

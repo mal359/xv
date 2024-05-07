@@ -48,6 +48,7 @@
 
 
 #define  NEEDSDIR               /* for stat() */
+#define  NEEDSTIME
 #include "copyright.h"
 #include "xv.h"
 
@@ -1386,7 +1387,7 @@ static int dragHandle(ev)
       DrawSelection(0);
       DrawSelection(1);
       XSync(theDisp, False);
-      Timer(100);
+      nanosleep(&(struct timespec){0, 100000000}, NULL);
     }
   }
 
@@ -1476,7 +1477,7 @@ static void dragSelection(ev, bmask, dragndrop)
       DrawSelection(0);
       DrawSelection(1);
       XSync(theDisp, False);
-      Timer(100);
+      nanosleep(&(struct timespec){0, 100000000}, NULL);
     }
   }
 
@@ -1587,7 +1588,7 @@ static void rectSelection(ev)
 	DrawSelection(0);
 	DrawSelection(1);
 	XFlush(theDisp);
-	Timer(100);
+	nanosleep(&(struct timespec){0, 100000000}, NULL);
       }
     }
   }
@@ -1733,7 +1734,7 @@ void BlinkSelection(cnt)
   for ( ; cnt>0; cnt--) {
     DrawSelection(0);
     XFlush(theDisp);
-    Timer(100);
+    nanosleep(&(struct timespec){0, 100000000}, NULL);
   }
 }
 
@@ -1751,7 +1752,7 @@ void FlashSelection(cnt)
     selFilled = 2;
     DrawSelection(0);
     XFlush(theDisp);
-    Timer(100);
+    nanosleep(&(struct timespec){0, 100000000}, NULL);
   }
 
   selFilled = i;

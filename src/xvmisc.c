@@ -1147,16 +1147,16 @@ void xv_getwd(buf, buflen)
  ******************************************************************************/
 /*
 char *xv_strstr(string, substring)
-     const char *string;        /* String to search. */
-     const char *substring;	/* Substring to try to find in string. */
+     const char *string;         * String to search. * 
+     const char *substring;	 * Substring to try to find in string. * 
 {
   const char *a;
   const char *b;
 
-  /* First scan quickly through the two strings looking for a
+   * First scan quickly through the two strings looking for a
    * single-character match.  When it's found, then compare the
    * rest of the substring.
-   */
+   * 
 
   b = substring;
   if (*b == 0) return (char *) string;
@@ -1204,7 +1204,20 @@ void xv_mktemp(buf, fname)
 
 
 /***************************************************/
-void Timer(msec)   /* waits for 'n' milliseconds */
+
+/******************************************************************************
+ * Once upon a time, this function provided a timer for machines from the     *
+ * steam age that didn't implement usleep(3), which was first implemented in  *
+ * 4.3BSD. A cute piece of memorabilia from the UCB-AT&T War.		      *
+ *									      *
+ * usleep(3) has been obsoleted by nanosleep(3) as of POSIX.1-2001.	      *
+ *									      *
+ * We'll keep this as a memento.      					      *
+ *								     MAL 2024 *
+ ******************************************************************************/
+/*
+
+void Timer(msec)    * waits for 'n' milliseconds * 
      int  msec;
 {
   long usec;
@@ -1213,10 +1226,69 @@ void Timer(msec)   /* waits for 'n' milliseconds */
 
   usec = (long) msec * 1000;
 
-  usleep(usec);
-  /* return */
 
-  /* NOTIMER case, fallthroughs, etc. ... but we return void, so who cares */
-  /* return */
+#ifdef USLEEP
+  usleep(usec);
+   * return * 
+#endif
+
+
+#if defined(VMS) && !defined(USLEEP)
+  {
+    float ftime;
+    ftime = msec / 1000.0;
+    lib$wait(&ftime);
+     * return *
+  }
+#endif
+
+
+#if defined(sgi) && !defined(USLEEP)
+  {
+    float ticks_per_msec;
+    long ticks;
+    ticks_per_msec = (float) CLK_TCK / 1000.0;
+    ticks = (long) ((float) msec * ticks_per_msec);
+    sginap(ticks);
+     * return * 
+  }
+#endif
+
+
+ * does SGI define SVR4?  not sure... *
+#if (defined(SVR4) || defined(sco)) && !defined(sgi) && !defined(USLEEP)
+  {
+    struct pollfd dummy;
+    poll(&dummy, 0, msec);
+     * return * 
+  }
+#endif
+
+
+#if !defined(USLEEP) && !defined(VMS) && !defined(sgi) && !defined(SVR4) && !defined(sco) && !defined(NOTIMER)
+  {
+     * default/fall-through Timer() method now uses 'select()', which
+     * probably works on all systems *anyhow* (except for VMS...) *
+
+    struct timeval time;
+
+    time.tv_sec = usec / 1000000L;
+    time.tv_usec = usec % 1000000L;
+    select(0, XV_FDTYPE NULL, XV_FDTYPE NULL, XV_FDTYPE NULL, &time);
+     * return *
+  }
+#endif
+
+
+   * NOTIMER case, fallthroughs, etc. ... but we return void, so who cares *
+   * return *
 }
 
+  usec = (long) msec * 1000;
+
+  usleep(usec);
+   * return * 
+
+   * NOTIMER case, fallthroughs, etc. ... but we return void, so who cares * 
+   * return * 
+} */

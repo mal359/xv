@@ -43,8 +43,8 @@
 #  define REVDATE   XV_REVDATE
 #  define VERSTR    XV_VERSTR
 #else
-#  define REVDATE   "version 3.10a-20220127"
-#  define VERSTR    "3.10a-20220127"
+#  define REVDATE   "version 5.0.0-20240506"
+#  define VERSTR    "5.0.0-20240506"
 #endif
 
 /*
@@ -203,6 +203,7 @@
 
 
 #ifdef NEEDSTIME
+#  include <time.h>
 #  include <sys/time.h>
 
 #  ifdef _AIX

@@ -34,8 +34,8 @@ static int    pixmaps_built=0;   /* true if pixmaps created already */
 #define INCCW2 3
 #define INDIAL 4
 
-#define INC1WAIT 150   /* milliseconds to wait after initial hit */
-#define INC2WAIT 150   /* milliseconds to wait between increments */
+#define INC1WAIT 150000000   /* nanoseconds to wait after initial hit */
+#define INC2WAIT 150000000   /* nanoseconds to wait between increments */
 #define DEG2RAD (3.14159265 / 180.0)
 #define RAD2DEG (180.0 / 3.14159265)
 
@@ -233,7 +233,7 @@ int mx,my;
     case INCCW2: if (dp->val > dp->min) DSetVal(dp, dp->val-dp->page); break;
     }
     if (dp->drawobj != NULL) (dp->drawobj)();
-    Timer(INC1WAIT);
+    nanosleep(&(struct timespec){0, INC1WAIT}, NULL);
     lit = 1;
   }
 
@@ -283,7 +283,7 @@ int mx,my;
 	/* track whatever dial controls */
 	if (dp->drawobj != NULL) (dp->drawobj)();
 
-	Timer(INC2WAIT);
+	nanosleep(&(struct timespec){0, INC2WAIT}, NULL);
       }
     }
     XFlush(theDisp);

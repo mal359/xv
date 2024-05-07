@@ -259,7 +259,7 @@ int LoadXPM(fname, pinfo)
 	if (strcasecmp(color, "None") == 0) rgb = 0xb2c0dc;  /* infobg */
 	else {
 	  SetISTR(ISTR_INFO, "%s:  unknown color spec '%s'", bname, color);
-	  Timer(1000);
+	  nanosleep(&(struct timespec){0, 1000000000}, NULL);;
 	  rgb = 0x808080;
 	}
 

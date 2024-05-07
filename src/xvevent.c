@@ -162,7 +162,7 @@ int EventLoop()
 	DrawSelection(0);
 	DrawSelection(1);
 	XFlush(theDisp);
-	Timer(200);             /* milliseconds */
+	nanosleep(&(struct timespec){0, 200000000}, NULL);   /* nanoseconds */
       }
 
       if (polling) {
@@ -186,7 +186,7 @@ int EventLoop()
           sleep(1);
         else {
           /* less than one second remaining:  do delay in msec, then return */
-          Timer((remaining_interval * 1000L) / clock_ticks);  /* can't overflow */
+          nanosleep(&(struct timespec){0, remaining_interval * 1000L / clock_ticks}, NULL);  /* can't overflow */
           return waitloop? NEXTLOOP : NEXTQUIT;
         }
 #else
@@ -2853,7 +2853,7 @@ static void Paint()
 	  paintXLine(lx, ly, px1, py1, 0);
 	  paintXLine(lx, ly, px1, py1, 1);
 	  XSync(theDisp, False);
-	  Timer(100);
+	  nanosleep(&(struct timespec){0, 100000000}, NULL);
 	}
 
 	if (nmask & Button2Mask) seenRelease = 1;

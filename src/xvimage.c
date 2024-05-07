@@ -545,7 +545,7 @@ static void do_zoom(mx,my)
       XSetPlaneMask(theDisp, theGC, xorMasks[m]);
       XDrawRectangle(theDisp,mainW,theGC, orx,ory, (u_int)orw, (u_int)orh);
       XFlush(theDisp);
-      Timer(100);
+      nanosleep(&(struct timespec){0, 100000000}, NULL);
     }
   }
 
@@ -560,7 +560,7 @@ static void do_zoom(mx,my)
   for (i=0; i<4; i++) {
     XDrawRectangle(theDisp, mainW, theGC, orx, ory, (u_int) orw, (u_int) orh);
     XFlush(theDisp);
-    Timer(100);
+    nanosleep(&(struct timespec){0, 100000000}, NULL);
   }
 
   XSetFunction(theDisp, theGC, GXcopy);
@@ -673,7 +673,7 @@ static void do_pan(mx,my)
       XDrawRectangle(theDisp, mainW, theGC, ox-offx, oy-offy,
 		     (u_int) rw, (u_int) rh);
       XFlush(theDisp);
-      Timer(100);
+      nanosleep(&(struct timespec){0, 100000000}, NULL);
     }
   }
 
@@ -692,7 +692,7 @@ static void do_pan(mx,my)
     XDrawRectangle(theDisp, mainW, theGC, mx-offx, my-offy,
 		   (u_int) rw, (u_int) rh);
     XFlush(theDisp);
-    Timer(100);
+    nanosleep(&(struct timespec){0, 100000000}, NULL);
   }
 
 

@@ -245,7 +245,7 @@ BUTT *bp;
   bp->lit = !bp->lit;
 
   BTRedraw(bp);  XFlush(theDisp);
-  Timer(120);  /* long enough for turn on to be visible */
+  nanosleep(&(struct timespec){0, 120000000}, NULL);  /* long enough for turn on to be visible */
 
   while (XQueryPointer(theDisp,bp->win,&rW,&cW,&rx,&ry,&x,&y,&mask)) {
     if (!(mask & Button1Mask)) break;    /* button released */
@@ -618,7 +618,7 @@ int RBTrack(rblist, n)
   lit = 1;
   drawRB(rb, lit);
   XFlush(theDisp);
-  Timer(75);          /* give chance for 'turn on' to become visible */
+  nanosleep(&(struct timespec){0, 75000000}, NULL);  /* give chance for 'turn on' to become visible */
 
   while (XQueryPointer(theDisp,rb->win,&rW,&cW,&rx,&ry,&x,&y,&mask)) {
     if (!(mask & Button1Mask)) break;    /* button released */
@@ -762,7 +762,7 @@ CBUTT *cb;
   lit = 1;
   drawCB(cb, lit);
   XFlush(theDisp);
-  Timer(75);          /* give chance for 'turn on' to become visible */
+  nanosleep(&(struct timespec){0, 75000000}, NULL);          /* give chance for 'turn on' to become visible */
 
   while (XQueryPointer(theDisp,cb->win,&rW,&cW,&rx,&ry,&x,&y,&mask)) {
     if (!(mask & Button1Mask)) break;    /* button released */
@@ -1213,7 +1213,7 @@ int MBTrack(mb)
     for (i=0; i<5; i++) {
       XFillRectangle(theDisp, win, theGC, 0,y,(u_int) mwide,(u_int) LINEHIGH);
       XFlush(theDisp);
-      Timer(50);
+      nanosleep(&(struct timespec){0, 50000000}, NULL);
     }
   }
 

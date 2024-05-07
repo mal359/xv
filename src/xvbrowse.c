@@ -2065,7 +2065,7 @@ static int clickIconWin(br, mx, my, mtime, multi)
 		hasrect = 0;
 
 		SCSetVal(&(destBr->scrl), destBr->scrl.val + scamt);
-		Timer(150);
+		nanosleep(&(struct timespec){0, 150000000}, NULL);
 	      }
 	    }
 

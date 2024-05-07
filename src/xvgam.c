@@ -2837,7 +2837,7 @@ int mx, my;
 	}
 
 	if (hd->drawobj) (hd->drawobj)();
-	Timer(150);
+	nanosleep(&(struct timespec){0, 150000000}, NULL);
       }
     }
 

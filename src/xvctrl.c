@@ -803,7 +803,7 @@ XButtonEvent *ev;
       if (lp->scrl.val > lp->scrl.min) {
 	lp->selected = lp->scrl.val - 1;
 	SCSetVal(&lp->scrl, lp->scrl.val - 1);
-	Timer(100);
+	nanosleep(&(struct timespec){0, 100000000}, NULL);
       }
     }
 
@@ -812,7 +812,7 @@ XButtonEvent *ev;
 	lp->selected = lp->scrl.val + lp->nlines;
 	if (lp->selected >= lp->nstr) lp->selected = lp->nstr - 1;
 	SCSetVal(&lp->scrl, lp->scrl.val + 1);
-	Timer(100);
+	nanosleep(&(struct timespec){0, 100000000}, NULL);
       }
     }
 

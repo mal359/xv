@@ -41,7 +41,7 @@ static int    pixmaps_built=0;   /* true if pixmaps created already */
 #define DNPAGE 3
 #define THUMB  4
 
-#define SCRLWAIT 80   /* milliseconds to wait between scrolls */
+#define SCRLWAIT 80000000  /* nanoseconds to wait between scrolls */
 
 /* local functions */
 static int  whereInScrl PARM((SCRL *, int, int));
@@ -395,13 +395,13 @@ int mx,my;
   case UPLINE:  sp->uplit = 1;
                 drawArrow(sp, UPLINE);
                 if (sp->val > sp->min) SCSetVal(sp,sp->val-1);
-                Timer(SCRLWAIT*3);
+                nanosleep(&(struct timespec){0, SCRLWAIT * 3}, NULL);
                 break;
 
   case DNLINE:  sp->dnlit = 1;
                 drawArrow(sp, DNLINE);
                 if (sp->val < sp->max) SCSetVal(sp,sp->val+1);
-                Timer(SCRLWAIT*3);
+                nanosleep(&(struct timespec){0, SCRLWAIT * 3}, NULL);
                 break;
 
   case UPPAGE:  SCSetVal(sp,sp->val - sp->page);  break;
@@ -459,11 +459,11 @@ int mx,my;
 	else {
 	  if (sp->val > sp->min && pos==UPLINE) {
 	    SCSetVal(sp, sp->val-1);
-	    Timer(SCRLWAIT);
+	    nanosleep(&(struct timespec){0, SCRLWAIT}, NULL);
 	  }
 	  else if (sp->val < sp->max && pos==DNLINE) {
 	    SCSetVal(sp, sp->val+1);
-	    Timer(SCRLWAIT);
+	    nanosleep(&(struct timespec){0, SCRLWAIT}, NULL);
 	  }
 	}
       }
@@ -484,21 +484,3 @@ int mx,my;
   if (lit && ipos == UPLINE) { sp->uplit = 0; drawArrow(sp, UPLINE); }
   if (lit && ipos == DNLINE) { sp->dnlit = 0; drawArrow(sp, DNLINE); }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
